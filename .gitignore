@@ -1,4 +1,6 @@
 *
 !*.md
+!*.c
+!*.h
 !.gitignore
 !*/
