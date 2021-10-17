@@ -8,7 +8,10 @@ size_t StrLen (const char *str);
 char *StrCpy(char *dest, const char *src);
 int main()
 {
-	printf("%s\n",SrtDup("Abc"));
+	char *ptr = NULL;
+	ptr = SrtDup("Abc");
+	printf("%s\n",ptr);
+	free(ptr);
 	return 0;
 }
 
@@ -16,7 +19,7 @@ char *SrtDup(const char *str)
 {
 	
 	int num = StrLen(str);
-	char *dest = (char*)malloc(num*sizeof(char));
+	char *dest = (char*)malloc((num+1)*sizeof(char));/* num+1 so it will include the \0 also*/
 	assert(str);
 	
 	if (dest == NULL)
