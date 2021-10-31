@@ -1,30 +1,59 @@
 #include<stdio.h>
 #include<string.h>
-char *itoa (int value, char* str, int base);
+#include<assert.h>
+#include<stdlib.h>
+char *Itoa (int value, char* str, int base);
 char *reversed_str (char *str);
 void swap(char *x, char *y);
+void test();
 int main()
 {
-	int value = 12345678;
-	char str[256] = {0};
-	int base = 10;
-	printf("%s\n", itoa(value, str, base));
+	test();
 	return 0;
 }
 
+void test()
+{
+	char str[256] = {0};
+	char str_result1[]= "123";
+	char str_result2[]= "7B";
+	char str_result3[]= "-123";
+	printf("%d\n",strcmp(str_result2, Itoa(0x7B, str, 16)));
+	printf("%d\n",strcmp(str_result1, Itoa(123, str, 10)));
+	printf("%d\n",strcmp(str_result3, Itoa(-123, str, 10)));
 
-char *itoa (int value, char* str, int base)
+}
+char *Itoa (int value, char* str, int base)
 {
 	int j = 0;
 	int temp = 0;
+	int is_neg = 0;
+	if (value < 0)
+	{
+		value = -value;
+		str[j] = '-'; 
+		++j;
+		is_neg = 1;
+	}
 	while (value != 0)
 	{
 		temp = value % base;
-		str[j] = temp + '0';
+		if (temp < 10)
+		{
+			temp = temp + '0';
+		}
+		else
+		{
+			temp = temp + 'A' - 10;
+		}
+		str[j] = temp;
 		++j;
 		value = value/base;
 	}
-	reversed_str(str);
+	if (is_neg)
+		reversed_str(str+1);
+	else
+		reversed_str(str);
 	return str;
 }
 
