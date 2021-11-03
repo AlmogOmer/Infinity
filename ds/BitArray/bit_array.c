@@ -37,11 +37,13 @@ bitarray_t BitArrayResetAll()
 
 bitarray_t BitArraySetOn(bitarray_t array, size_t idx)
 {
+	assert (idx <= 63);
 	return (array | ((bitarray_t)1<<(idx-1)));
 }
 
 bitarray_t BitArraySetOff(bitarray_t array, size_t idx)
 {
+	assert (idx <= 63);
 	if (array & ((bitarray_t)1<<(idx-1)))
 	{
 		return (array ^ ((bitarray_t)1<<(idx-1)));
@@ -51,6 +53,7 @@ bitarray_t BitArraySetOff(bitarray_t array, size_t idx)
 
 bitarray_t BitArraySetBit(bitarray_t array, size_t idx, bitstate_t value)
 {
+	assert (idx <= 63);
 	if (value)
 	{
 		return (array | ((bitarray_t)1<<(idx-1)));
@@ -61,6 +64,7 @@ bitarray_t BitArraySetBit(bitarray_t array, size_t idx, bitstate_t value)
 
 size_t BitArrayGetValue(bitarray_t array, size_t idx)
 {
+	assert (idx <= 63);
 	return ((array>>(idx-1)) & 1);
 }
 
@@ -126,6 +130,7 @@ char *BitArrayToString(bitarray_t array, char *dest)
 
 bitarray_t BitArrayToggleBit(bitarray_t array, size_t idx)
 {
+	assert (idx <= 63);
 	return BitArraySetBit(array, idx, ~BitArrayGetValue(array, idx));
 
 }
