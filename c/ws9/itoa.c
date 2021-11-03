@@ -14,7 +14,7 @@ int main()
 
 void test()
 {
-	char str[256] = {0};
+	char str[256] = {0}; 
 	char str_result1[]= "123";
 	char str_result2[]= "7B";
 	char str_result3[]= "-123";

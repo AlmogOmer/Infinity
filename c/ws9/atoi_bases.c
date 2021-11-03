@@ -28,7 +28,7 @@ int Atoi (const char *str, int base)
 	{
 		if (((str[i] < 'A') && (str[i]>'9')) || (str[i] > 'z') || (str[i]<'0'))
 		{
-			return result;
+			break;
 		}
 		else if (str[i] >= 'A' && str[i] <= 'Z')
 		{

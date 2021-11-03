@@ -1,8 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-int result [256] = {0};
-void Three_Arr(char *arr1, int len1, char *arr2, int len2, char *arr3, int len3);
+int *Three_Arr(char *arr1, int len1, char *arr2, int len2, char *arr3, int len3);
 void test(void);
 int main()
 {
@@ -26,10 +25,18 @@ void test(void)
 	
 }
 
-void Three_Arr(char *arr1, int len1, char *arr2, int len2, char *arr3, int len3)
+int *Three_Arr(char *arr1, int len1, char *arr2, int len2, char *arr3, int len3)
 {
 	
 	int i = 0;
+	int *result = NULL;
+	result = (int *)malloc(256*(sizeof(int)));
+	if (result == NULL)
+	{
+		return NULL;
+	}
+		
+		
 	
 	for (i = 0; i < len3; ++i)					/* loop on arr3 */
 	{
@@ -62,4 +69,8 @@ void Three_Arr(char *arr1, int len1, char *arr2, int len2, char *arr3, int len3)
 						
 		}
 	}
+	free(result);
+	result = NULL;
+	return 0;
+	
 }
