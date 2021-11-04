@@ -12,7 +12,7 @@ struct Stack
 	void **array;
 };
 
-int main()
+/*int main()
 {
 	size_t capacity;
 	int first_element, second_element;
@@ -47,7 +47,7 @@ int main()
 	return 0;
 
 
-}
+}*/
 
 Stack_t *StackCreate(size_t capacity)
 {
