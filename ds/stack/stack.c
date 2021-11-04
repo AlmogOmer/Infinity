@@ -42,8 +42,7 @@ int main()
 	assert(10==StackCapacity(Stack));
 	
 	StackDestroy(Stack);
-	assert(Stack->array==NULL);
-	/*assert(Stack==NULL);*/
+	
 	
 	return 0;
 
@@ -79,16 +78,18 @@ void StackDestroy(Stack_t *stack)
 {
 	assert(stack);
 	free(stack->array);
-	stack->array = NULL;
 	free(stack);
-	stack = NULL;
+	
 }
 
 void StackPush(Stack_t *stack, void* new_element)
 {
 	assert(stack && new_element);
 	if (stack->top == stack->capacity)
+	{
+		printf("stack is full, push cannot be execute)");
 		return;
+	}
 	stack->array[++stack->top] = new_element;
 }
 
@@ -96,7 +97,10 @@ void StackPop(Stack_t *stack)
 {
 	assert(stack);
 	if (StackIsEmpty(stack))
+	{
+		printf("stack is empty, pop cannot be execute)");
 		return;
+	}
 	--stack->top;
 }
 
@@ -110,7 +114,9 @@ int StackIsEmpty(Stack_t *stack)
 {
 	assert(stack);
 	if (stack->top == 0)
+	{
 		return 1;
+	}
 	return 0;
 
 }
@@ -126,24 +132,3 @@ size_t StackCapacity(Stack_t *stack)
 	assert(stack);
 	return stack->capacity;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
