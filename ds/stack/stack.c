@@ -87,7 +87,7 @@ void StackDestroy(Stack_t *stack)
 void StackPush(Stack_t *stack, void* new_element)
 {
 	assert(stack && new_element);
-	assert(stack->top == stack->capacity)
+	assert(stack->top == stack->capacity);
 	stack->array[++stack->top] = new_element;
 }
 
@@ -107,7 +107,7 @@ void* StackPeek(Stack_t *stack)
 int StackIsEmpty(Stack_t *stack)
 {
 	assert(stack);
-	return (strck->top == 0);
+	return (stack->top == 0);
 
 }
 
