@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<assert.h>
+#include<string.h>
 #include "dynamic_vector.h"
 
 struct Vector
@@ -15,13 +16,41 @@ struct Vector
 int main()
 {
 	
-	size_t initial_capacity, type_size;
+	size_t initial_capacity, type_size, num;
 	Vector_t *Vector = NULL;
-	initial_capacity = 100;
-	type_size = 4; 
+	int element_value = 8;
+	int *element = NULL;
+	element = &element_value;
+	*element = element_value;
+	initial_capacity = 1;
+	type_size = 4;
+	num = 10; 
+	
 	
 	Vector  = VectorCreate(initial_capacity, type_size);
-	assert(Vector->top==0 && Vector->capacity==100 && Vector->array!=NULL);
+	assert(Vector->top==0 && Vector->capacity==1 && Vector->array!=NULL);
+	
+	VectorPushBack(Vector, element);
+	assert(Vector->top==1 && Vector->capacity==1 && VectorGetAccessToElement(Vector,Vector->top )==element);
+	
+	VectorPushBack(Vector, element);
+	assert(Vector->top==2 && Vector->capacity==2 && VectorGetAccessToElement(Vector,Vector->top )==element);
+	
+	VectorPushBack(Vector, element);
+	assert(Vector->top==3 && Vector->capacity==4 && VectorGetAccessToElement(Vector,Vector->top )==element);
+	
+	VectorPopBack(Vector);
+	assert(Vector->top==2 && Vector->capacity==4 && VectorGetAccessToElement(Vector,Vector->top )==element);
+	
+	VectorReserve(Vector, num);
+	assert(Vector->top==2 && Vector->capacity==10 && VectorGetAccessToElement(Vector,Vector->top )==element);
+	
+	assert(2==VectorSize(Vector));
+	
+	assert(10==VectorCapacity(Vector));
+	
+	VectorDestroy(Vector);
+	
 	return 0;
 }
 
@@ -52,7 +81,7 @@ void VectorDestroy(Vector_t *vector)
 
 void VectorPushBack(Vector_t *vector, const void* element)
 {
-	if (vector->top+1 >= vector->apacity)
+	if (vector->top+1 >= vector->capacity)
 		{
 			vector->array = (void *) realloc(vector->array,2*vector->capacity*vector->type_size);
 		}
@@ -63,7 +92,7 @@ void VectorPushBack(Vector_t *vector, const void* element)
 		
 	
 	/* first push the data, then increment top */
-	memcpy((char*)vector->array + vector->type_size * vector->top, element , vector->type_size));
+	memcpy((char*)vector->array + vector->type_size * vector->top, element , vector->type_size);
 	vector->top++;
 
 }
@@ -76,7 +105,7 @@ void VectorPopBack(Vector_t *vector)
 void* VectorGetAccessToElement(Vector_t *vector, size_t idx)
 {
 	/*vector->array[idx]*/
-	return ((char *) vector->array + index * vector->type_size))
+	return ((char *) vector->array + idx * vector->type_size);
 }
 
 void VectorReserve(Vector_t *vector, size_t num)
