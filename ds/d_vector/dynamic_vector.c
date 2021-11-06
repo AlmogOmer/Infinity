@@ -31,23 +31,34 @@ int main()
 	assert(Vector->top==0 && Vector->capacity==1 && Vector->array!=NULL);
 	
 	VectorPushBack(Vector, element);
-	assert(Vector->top==1 && Vector->capacity==1 && VectorGetAccessToElement(Vector,Vector->top )==element);
+	assert(Vector->top==1 && Vector->capacity==1) ;
 	
 	VectorPushBack(Vector, element);
-	assert(Vector->top==2 && Vector->capacity==2 && VectorGetAccessToElement(Vector,Vector->top )==element);
+	assert(Vector->top==2 && Vector->capacity==2) ;
+	
+	assert(*element==*(int *)VectorGetAccessToElement(Vector, 1));
 	
 	VectorPushBack(Vector, element);
-	assert(Vector->top==3 && Vector->capacity==4 && VectorGetAccessToElement(Vector,Vector->top )==element);
+	assert(Vector->top==3 && Vector->capacity==4);
+	
+	VectorPushBack(Vector, element);
+	assert(Vector->top==4 && Vector->capacity==4);
 	
 	VectorPopBack(Vector);
-	assert(Vector->top==2 && Vector->capacity==4 && VectorGetAccessToElement(Vector,Vector->top )==element);
+	assert(Vector->top==3 && Vector->capacity==4);
 	
-	VectorReserve(Vector, num);
-	assert(Vector->top==2 && Vector->capacity==10 && VectorGetAccessToElement(Vector,Vector->top )==element);
+	assert(3==VectorSize(Vector));
 	
-	assert(2==VectorSize(Vector));
+	assert(4==VectorCapacity(Vector));
 	
-	assert(10==VectorCapacity(Vector));
+	VectorPopBack(Vector);
+	assert(Vector->top==2 && Vector->capacity==4);
+	
+	VectorPopBack(Vector);
+	assert(Vector->top==1 && Vector->capacity==2);
+	
+	/*VectorReserve(Vector, num);
+	assert(Vector->top==1 && Vector->capacity==10);*/
 	
 	VectorDestroy(Vector);
 	
@@ -81,9 +92,11 @@ void VectorDestroy(Vector_t *vector)
 
 void VectorPushBack(Vector_t *vector, const void* element)
 {
-	if (vector->top+1 >= vector->capacity)
+	if (vector->top == vector->capacity)
 		{
-			vector->array = (void *) realloc(vector->array,2*vector->capacity*vector->type_size);
+			
+			VectorReserve(vector, 2*(vector->capacity));
+		
 		}
 		if (NULL == vector->array)
 		{
@@ -100,26 +113,30 @@ void VectorPushBack(Vector_t *vector, const void* element)
 void VectorPopBack(Vector_t *vector)
 {
 	vector->top--;
+	if (vector->top <= ((vector->capacity)/3))
+		{
+			vector->capacity = (vector->capacity)/2;
+		}
 }
 
 void* VectorGetAccessToElement(Vector_t *vector, size_t idx)
 {
-	/*vector->array[idx]*/
-	return ((char *) vector->array + idx * vector->type_size);
+	
+	return ((char *) vector->array + idx*vector->type_size);
 }
 
 void VectorReserve(Vector_t *vector, size_t num)
 {
 	if (num > vector->capacity)
 	{
-		vector->array = (void *)realloc(vector->array, num * vector->type_size);
+		vector->capacity = num;
+		vector = (Vector_t *)realloc(vector, sizeof(vector)+(vector->capacity)*(vector->type_size));
 	
 		if (NULL == vector->array)
 		{
 			exit (1);
 		}
 
-		vector->capacity = num;
 	}
 }
 
