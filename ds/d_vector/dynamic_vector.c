@@ -44,23 +44,15 @@ void VectorDestroy(Vector_t *vector)
 	free(vector->array);
 	vector->array = NULL;
 	free(vector);
-	vector = NULL;
 }
 
 void VectorPushBack(Vector_t *vector, const void* element)
 {
 	assert(vector && element);
 	if (vector->top == vector->capacity)
-		{
-			
-			VectorReserve(vector, 2*(vector->capacity));
-		
-		}
-		if (NULL == vector->array)
-		{
-			exit (1);
-		}
-		
+	{
+		VectorReserve(vector, 2*(vector->capacity));
+	}
 	
 	/* first push the data, then increment top */
 	memcpy((char*)vector->array + vector->type_size * vector->top, element , vector->type_size);
@@ -72,10 +64,13 @@ void VectorPopBack(Vector_t *vector)
 {
 	assert(vector);
 	vector->top--;
+	
 	if (vector->top <= ((vector->capacity)/3))
-		{
-			vector->capacity = (vector->capacity)/2;
-		}
+	{
+		vector->capacity = (vector->capacity)/2;
+		VectorReserve(vector, vector->capacity);
+
+	}
 }
 
 void* VectorGetAccessToElement(Vector_t *vector, size_t idx)
@@ -87,21 +82,20 @@ void* VectorGetAccessToElement(Vector_t *vector, size_t idx)
 
 void VectorReserve(Vector_t *vector, size_t num)
 {
-	assert(vector);
-	if (num > vector->capacity)
-	{
-		void *temp = NULL;
-		temp = vector->array;
-		vector->capacity = num;
-		vector->array = (void*)realloc(vector->array, (vector->capacity)*(vector->type_size));
-	
-		if (NULL == vector->array)
-		{
-			vector->array = temp;
-			exit (1);
-		}
 
+	void *temp = NULL;
+	assert(vector);
+	
+	temp = vector->array;
+	vector->capacity = num;
+	vector->array = (void*)realloc(vector->array, (vector->capacity)*(vector->type_size));
+
+	if (NULL == vector->array)
+	{
+		vector->array = temp;
+		exit (1);
 	}
+	
 }
 
 size_t VectorSize(Vector_t *vector)
