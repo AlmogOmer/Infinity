@@ -41,12 +41,6 @@ static int print(void* data, void* param)
 	return 1;
 }
 
-static int Minus(void* data, void* param)
-{
-
-	*(size_t*)data = *(size_t*)data - *(size_t*)param;
-	return 1;
-}
 
 int main() {
 
@@ -143,47 +137,26 @@ int main() {
 	}
     	
 	iter4 = SListBegin(list2);
-	iter5 = SListIterNext(iter4);
-	iter6 = SListIterNext(iter5);
+	iter5 = SListEnd(list2);
 	
-	if(!(*(int*)SListIterGetData(iter4) == 111))
+	
+	if(!(SListIterIsEqual(iter4, iter5) == 0))
 	{
 		printf("fail in %d\n", __LINE__);
 	}
 	
-	if(!(*(int*)SListIterGetData(iter5) == 445))
+	
+	test1 = 445;
+	
+	iter6 = SListFind(SListBegin(list2), SListEnd(list2), is_match_func, &test1);
+	
+	if(!(((person_t*)SListIterGetData(iter6))->idNum == 445))
 	{
 		printf("fail in %d\n", __LINE__);
 	}
 	
-	if(!(*(int*)SListIterGetData(iter6) == 123))
-	{
-		printf("fail in %d\n", __LINE__);
-	}
-	/*test1 = 445;
-	
-	iter4 = SListFind(SListBegin(list2), iter5, is_match_func, &test1);*/
-	
-	/*if(!(((person_t*)SListIterGetData(iter4))->idNum == 445))
-	{
-		printf("fail in %d\n", __LINE__);
-	}
-	
-	/*test1 = 123;
-	iter4 = SListFind(SListBegin(list2), SListEnd(list2), is_match_func, &test1);
-	
-	if(!(((person_t*)SListIterGetData(iter4))->idNum == 123))
-	{
-		printf("fail in %d\n", __LINE__);
-	}*/
 	
 	SListForEach(SListBegin(list2), SListEnd(list2), print, NULL);
-	
-
-	/*test1 = 20;
-	SListForEach(SListBegin(list2), SListEnd(list2), Minus, &test1);
-	
-	SListForEach(SListBegin(list2), SListEnd(list2), print, NULL);*/
 	
 	SListDestroy(list2);
 	
@@ -266,7 +239,7 @@ slist_iter_t SListBegin(slist_t *list)
 
 slist_iter_t SListEnd(slist_t *list)
 {
-	snode_t *temp;
+	snode_t *temp = NULL;
 	slist_iter_t end_iter;
 	
 	temp = list->head;
