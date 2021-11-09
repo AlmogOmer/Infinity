@@ -14,7 +14,16 @@ struct SListNode {
 	struct SListNode* next;
 };
 
+static int count_func(void* data, void* param)
+{
 
+	if((int*)data)
+	{
+		++*(int*)param;
+		return 1;
+	}
+	return 0;
+}
 /*typedef struct 
 {
     size_t idNum;

@@ -31,16 +31,6 @@ static int print(void* data, void* param)
 	return 1;
 }
 
-static int count_func(void* data, void* param)
-{
-
-	if((int*)data)
-	{
-		++*(int*)param;
-		return 1;
-	}
-	return 0;
-}
 int main() 
 {
 
