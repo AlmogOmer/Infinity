@@ -15,7 +15,7 @@ struct SListNode {
 };
 
 
-/*typedef struct 
+typedef struct 
 {
     size_t idNum;
 } person_t;
@@ -41,6 +41,16 @@ static int print(void* data, void* param)
 	return 1;
 }
 
+static int count_func(void* data, void* param)
+{
+
+	if((int*)data)
+	{
+		++*(int*)param;
+		return 1;
+	}
+	return 0;
+}
 
 int main() 
 {
@@ -122,7 +132,7 @@ int main()
 
 	SListDestroy(list);
 	
-	***********************************************************
+
 	
 	p1.idNum = 111;
 	p2.idNum = 445;
@@ -162,7 +172,7 @@ int main()
 	SListDestroy(list2);
 	
    return 0;
-}*/
+}
 
 /* Create new list */
 slist_t *SListCreate(void)
@@ -288,10 +298,10 @@ void SListRemove(slist_iter_t iter)
 
 size_t SListCount(slist_t *list)
 {
-	size_t counter = 0;
+	/*size_t counter = 0;
 	snode_t *node_temp = list->head ;
 	assert(list);
-
+	
 	while(node_temp->data != NULL)
 	{	
 		
@@ -301,7 +311,17 @@ size_t SListCount(slist_t *list)
 		
 	}	
 	
+	return counter;*/
+	
+	size_t counter = 0;
+	
+	assert(list);
+	
+	SListForEach(SListBegin(list), SListEnd(list), count_func, &counter);
+	
 	return counter;
+	
+	
 }
 
 void* SListIterGetData(slist_iter_t iter)
