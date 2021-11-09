@@ -15,7 +15,7 @@ struct SListNode {
 };
 
 
-typedef struct 
+/*typedef struct 
 {
     size_t idNum;
 } person_t;
@@ -172,7 +172,7 @@ int main()
 	SListDestroy(list2);
 	
    return 0;
-}
+}*/
 
 /* Create new list */
 slist_t *SListCreate(void)
