@@ -8,7 +8,7 @@ int main()
 	queue_t *queue = NULL;
 	
 	int a = 5;
-	char b [15] = "Dumbeldore";
+	char b [15] = "abc";
 	int c = 100;
 	
 	queue = QueueCreate();
@@ -39,14 +39,14 @@ int main()
 	QueueEnqueue(queue, b);
 	QueueDequeue(queue);
 	
-	if(!(strcmp((char*)QueuePeek(queue),"Dumbeldore") == 0))
+	if(!(strcmp((char*)QueuePeek(queue),"abc") == 0))
 	{
 		printf("fail in %d\n", __LINE__);
 	}
 	
 	QueueEnqueue(queue, &c);
 	
-	if(!(strcmp((char*)QueuePeek(queue),"Dumbeldore") == 0))
+	if(!(strcmp((char*)QueuePeek(queue),"abc") == 0))
 	{
 		printf("fail in %d\n", __LINE__);
 	}

@@ -15,6 +15,7 @@ queue_t *QueueCreate(void)
 {
 	queue_t *new_queue = NULL;
 	new_queue = (queue_t*)malloc(sizeof(queue_t));
+	
 	if (new_queue == NULL)
 	{
 		return NULL;
@@ -29,6 +30,7 @@ queue_t *QueueCreate(void)
 void QueueDestroy(queue_t *queue)
 {
 	assert(queue);
+	
 	SListDestroy(queue->list);
 	queue->list = NULL;
 	free(queue);
@@ -39,6 +41,7 @@ void QueueDestroy(queue_t *queue)
 void QueueEnqueue(queue_t *queue, const void *val)
 {
 	assert(queue);
+	
 	SListInsert(SListEnd(queue->list), val);
 }
 
@@ -46,6 +49,7 @@ void QueueEnqueue(queue_t *queue, const void *val)
 void QueueDequeue(queue_t *queue)
 {
 	assert(queue);
+	
 	SListRemove(SListBegin(queue->list));
 }
 
@@ -53,6 +57,7 @@ void QueueDequeue(queue_t *queue)
 extern void *QueuePeek(const queue_t *queue)
 {
 	assert(queue);
+	
 	return SListIterGetData(SListBegin(queue->list));
 } 
 
@@ -60,6 +65,7 @@ extern void *QueuePeek(const queue_t *queue)
 extern size_t QueueSize(const queue_t *queue)
 {
 	assert(queue);
+	
 	return SListCount(queue->list);
 }
 
@@ -67,6 +73,7 @@ extern size_t QueueSize(const queue_t *queue)
 extern int QueueIsEmpty(const queue_t *queue)
 {
 	assert(queue);
+	
 	return (0 == SListCount(queue->list));
 }
 
