@@ -3,18 +3,18 @@ CFLAGS = -ansi -pedantic-errors -Wall -Wextra
 DEBUG = -g
 
 #write here all the c files
-SRC = singly_list.c singly_list_tests.c 
+SRC = queue.c queue_test.c 
 #####
 
 #write here all the obj files in the obj directory that you need
-PROTECTEDOBJ = 
+PROTECTEDOBJ = ../obj/singly_list.o 
 ##########
 
 OBJ = $(filter %.o, $(SRC:%.c=../obj/%.o))
 OBJ_DEBUG = $(SRC:.c=.dbg.o)
 
 #write here the target name
-TARGET = singly_list.out
+TARGET = queue.out
 ######
 
 $(TARGET) :$(OBJ) 
@@ -45,8 +45,8 @@ queue.ar: $(OBJ)
 
 #write here the o files that you will be compiled here and its prerequisites
 
-singly_list.o: singly_list.h
-singly_list_tests.o: singly_list.h
+queue_test.o: queue.h
+queue.o: queue.h ../s_list/singly_list.h ../obj/singly_list.o
 
 
 ######
