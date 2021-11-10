@@ -20,7 +20,12 @@ queue_t *QueueCreate(void)
 	{
 		return NULL;
 	}
+	
 	new_queue->list = SListCreate();
+	if (new_queue->list == NULL)
+	{
+		return NULL;
+	}
 	
 	return new_queue;
 
@@ -40,7 +45,7 @@ void QueueDestroy(queue_t *queue)
 /* insert new item to back of the queue */
 void QueueEnqueue(queue_t *queue, const void *val)
 {
-	assert(queue);
+	assert(queue && val);
 	
 	SListInsert(SListEnd(queue->list), val);
 }
