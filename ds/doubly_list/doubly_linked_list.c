@@ -2,15 +2,7 @@
 #include "doubly_linked_list.h"
 #include <assert.h>
 #include <stdio.h>
-#include <string.h>
 
-static int print(void* data, void* param)
-{
-
-	(void)param;
-	printf("%lu\n", *(size_t*)data);
-	return 1;
-}
 
 struct DList
 {
@@ -27,156 +19,7 @@ struct DListNode
 };
 
 
-typedef struct 
-{
-    size_t idNum;
-} person_t;
 
-
-
-static int is_match_func(void* data, void* param)
-{
-    person_t* p = (person_t*)data;
-
-    if (p->idNum == *(size_t*)param)
-    {
-        return 1;
-    }
-
-    return 0;
-}
-
-int main()
-{
-	/*
-	dlist_t *list = NULL;
-	list = dlistCreate();
-	assert(1==dlistIterIsEqual(dlistBegin(list), dlistEnd(list)));
-
-	
-	dlistDestroy(list);
-	*/
-	dlist_t *list = DListCreate();
-    	dlist_t* list2 = DListCreate();
-	
-    
-	dlist_iter_t iter = DListBegin(list);
-	dlist_iter_t iter2 = DListBegin(list);
-	dlist_iter_t iter3 = DListBegin(list2);
-	
-	int a = 5;
-	char b [15] = "abc";
-	int c = 100;
-	size_t test1;
-	person_t p1, p2, p3;
-    	dlist_iter_t iter4, iter5, iter6;
-	
-	
-	if(!(DListIterIsEqual(iter, iter2) == 1))
-	{
-		printf("fail in %d\n", __LINE__);
-	}
-		
-	
-    	if(!(DListSize(list) == 0))
-	{
-		printf("fail in %d\n", __LINE__);
-	}
-	/*
-	DListInsert(iter, &a);
-	/*
-	if(!(DListSize(list) == 1))
-	{
-		printf("fail in %d\n", __LINE__);
-	}
-	/*
-	if(!(*(int*)DListIterGetData(iter) == 5))
-	{
-		printf("fail in %d\n", __LINE__);
-	}
-	
-	
-	DListInsert(iter, b); 
-	
-	
-	if(!(DListSize(list) == 2))
-	{
-		printf("fail in %d\n", __LINE__);
-	}
-	
-
-	if(!(strcmp((char*)DListIterGetData(iter),"abc" ) == 0))
-	{
-		printf("fail in %d\n", __LINE__);
-	}
-	
-	DListInsert(iter, &c);
-	
-	if(!(DListSize(list) == 3))
-	{
-		printf("fail in %d\n", __LINE__);
-	}
-	
-
-	if(!(*(int*)DListIterGetData(iter) == 100))
-	{
-		printf("fail in %d\n", __LINE__);
-	}
-	
-	
-	DListRemove(iter);
-	
-	if(!(DListSize(list) == 2))
-	{
-		printf("fail in %d\n", __LINE__);
-	}
-
-	DListDestroy(list);
-	
-	
-	
-	p1.idNum = 111;
-	p2.idNum = 445;
-	p3.idNum = 123;
-	
-	DListInsert(iter3, &p1);
-    	DListInsert(iter3, &p2);
-    	DListInsert(iter3, &p3);
-    	
-    	if(!(DListSize(list2) == 3))
-	{
-		printf("fail in %d\n", __LINE__);
-	}
-    	
-	iter4 = DListBegin(list2);
-	iter5 = DListEnd(list2);
-	
-	
-	if(!(DListIterIsEqual(iter4, iter5) == 0))
-	{
-		printf("fail in %d\n", __LINE__);
-	}
-	
-	
-	test1 = 445;
-	
-	iter6 = DListFind(DListBegin(list2), DListEnd(list2), is_match_func, &test1);
-	
-	if(!(((person_t*)DListIterGetData(iter6))->idNum == 445))
-	{
-		printf("fail in %d\n", __LINE__);
-	}
-	
-	
-	DListForEach(DListBegin(list2), DListEnd(list2), print, NULL);
-	*/
-	DListDestroy(list2);
-
-	
-	
-	
-	return 0;
-}
 /* Create new list */
 dlist_t *DListCreate()
 {
@@ -212,21 +55,26 @@ dlist_t *DListCreate()
 /* Delete the list */
 void DListDestroy(dlist_t *list)
 {
-	dnode_t *node_temp = NULL;
+	
+	dnode_t *node_temp;
+	dnode_t *temp;
 	assert(list);
+	
 	node_temp = list->head;
 	
 	
-	while(node_temp->next)
+	while(node_temp != NULL)
 	{	
-		free(node_temp->prev);
-		node_temp = node_temp->next;
+		temp = node_temp->next;
+		free(node_temp);
+		node_temp = temp;
 		
 	}	
 	
 	free(node_temp);
 	free(list);
 
+	
 }
 
 int DListIterIsEqual(dlist_iter_t iter1, dlist_iter_t iter2)
@@ -301,25 +149,46 @@ dlist_iter_t DListInsert(dlist_iter_t iter, const void *item)
 	
 	new_node-> data = iter.node->data;
 	iter.node->data = item;
-	new_node-> next = iter.node->next;
-	new_node->prev = iter.node;
-	iter.node-> next -> prev = new_node;
 	
+	new_node-> next = iter.node->next;
+	iter.node-> next = new_node;
+	
+	new_node->prev = iter.node;
+	if (new_node->next != NULL)  /*checks if this is not the first item in list*/
+	{
+		new_node-> next ->prev = new_node;
+	}
 	return iter;
 
 }
 
 void DListRemove(dlist_iter_t iter)
 {
-
+	
+	dnode_t *temp;
 	assert(iter.node);
+	
+	temp = iter.node->next;
+	
 	if (!iter.node->next)
+	{
 		return;
+	}
 	
-	iter.node->next->prev = iter.node->prev;
-	iter.node->prev->next = iter.node->next;
+	if (!iter.node->prev)
+	{
+		iter.node->data = temp ->data;
+		iter.node->next = temp->next;
+		free(temp);
+	}
 	
-	free(iter.node);
+	else
+	{
+		iter.node->next->prev = iter.node->prev;
+		iter.node->prev->next = iter.node->next;
+		free(iter.node);
+	}
+
 }
 
 
