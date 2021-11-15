@@ -206,20 +206,23 @@ dlist_iter_t DListPushBack(dlist_t *list, const void *data)
 	return DListInsert(DListEnd(list), data);
 }	
 
-void DListPopFront(dlist_t *list)
+void *DListPopFront(dlist_t *list)
 {
+	void *temp = NULL; 
 	assert(list);
-	
+	temp = DListIterGetData(DListBegin(list));
 	DListRemove(DListBegin(list));
-
+	
+	return temp;
 }
-void DListPopBack(dlist_t *list)
+void *DListPopBack(dlist_t *list)
 {
-
+	void *temp = NULL; 
 	assert(list);
-	
-	
+	temp = DListIterGetData(DListIterPrev(DListEnd(list)));
 	DListRemove(DListIterPrev(DListEnd(list)));
+	
+	return temp;
 }
 
 

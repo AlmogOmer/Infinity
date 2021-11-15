@@ -43,8 +43,8 @@ size_t DListSize(dlist_t *list);
 
 dlist_iter_t DListPushFront(dlist_t *list, const void *data);
 dlist_iter_t DListPushBack(dlist_t *list, const void *data);
-void DListPopFront(dlist_t *list);
-void DListPopBack(dlist_t *list);
+void* DListPopFront(dlist_t *list);
+void* DListPopBack(dlist_t *list);
 
 /* Cuts & pastes the range between begin and end into the list before 
    the element referred to by where.
