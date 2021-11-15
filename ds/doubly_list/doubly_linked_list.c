@@ -36,14 +36,15 @@ dlist_t *DListCreate()
 	
 	if (NULL == dummy_node)
 	{
+		free(new_dlist);
 		return NULL;	
 	}
 	
-	dummy_node-> data = NULL;
-	dummy_node-> next = NULL;
-	dummy_node-> prev = NULL;
+	dummy_node->data = NULL;
+	dummy_node->next = NULL;
+	dummy_node->prev = NULL;
 	
-	new_dlist-> head = dummy_node;
+	new_dlist->head = dummy_node;
 
 	
 	
@@ -139,7 +140,7 @@ size_t DListSize(dlist_t *list)
 
 dlist_iter_t DListInsert(dlist_iter_t iter, const void *item)
 {
-	dnode_t *new_node = (dnode_t *) malloc(sizeof(dnode_t));
+	dnode_t *new_node = (dnode_t *) malloc(sizeof(dnode_t)); 
 	
 	assert(item && iter.node);
 	if (NULL == new_node)
@@ -147,16 +148,16 @@ dlist_iter_t DListInsert(dlist_iter_t iter, const void *item)
 		return iter;	
 	}
 	
-	new_node-> data = iter.node->data;
+	new_node->data = iter.node->data; /*data allocation to the precedent node*/
 	iter.node->data = item;
 	
-	new_node-> next = iter.node->next;
-	iter.node-> next = new_node;
+	new_node->next = iter.node->next;
+	iter.node->next = new_node;
 	
 	new_node->prev = iter.node;
-	if (new_node->next != NULL)  /*checks if this is not the first item in list*/
+	if (new_node->next != NULL)  /*checks if this is not the last item of the list*/
 	{
-		new_node-> next ->prev = new_node;
+		new_node->next->prev = new_node;
 	}
 	return iter;
 
@@ -177,7 +178,7 @@ void DListRemove(dlist_iter_t iter)
 	
 	if (!iter.node->prev)
 	{
-		iter.node->data = temp ->data;
+		iter.node->data = temp->data;
 		iter.node->next = temp->next;
 		free(temp);
 	}
@@ -230,7 +231,9 @@ dlist_iter_t DListIterNext(dlist_iter_t iter)
 {
 	assert(iter.node);
 	if (!iter.node->next)
+	{
 		return iter;
+	}
 	iter.node = iter.node->next;
 	
 	return iter;
@@ -242,7 +245,9 @@ dlist_iter_t DListIterPrev(dlist_iter_t iter)
 
 	assert(iter.node);
 	if (!iter.node->prev)
+	{
 		return iter;
+	}
 	iter.node = iter.node->prev;
 	
 	return iter;
