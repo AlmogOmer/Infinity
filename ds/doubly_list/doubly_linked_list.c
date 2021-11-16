@@ -167,28 +167,25 @@ void DListRemove(dlist_iter_t iter)
 {
 	
 	dnode_t *temp;
-	assert(iter.node);
-	
-	temp = iter.node->next;
-	
-	if (!iter.node->next)
+
+    	assert(iter.node);
+
+	temp = iter.node -> next;
+
+    	if(!(temp)) /* Dummy node (end)*/
+    	{
+       		return;
+    	}
+
+	iter.node -> data = temp -> data;
+        iter.node -> next = temp -> next;
+
+	if(iter.node -> next != NULL) /*in case of deletion of last element before dummy*/
 	{
-		return;
-	}
-	
-	if (!iter.node->prev)
-	{
-		iter.node->data = temp->data;
-		iter.node->next = temp->next;
-		free(temp);
-	}
-	
-	else
-	{
-		iter.node->next->prev = iter.node->prev;
-		iter.node->prev->next = iter.node->next;
-		free(iter.node);
-	}
+        	iter.node -> next -> prev = iter.node;      	 	
+        }
+        free(temp);
+
 
 }
 
