@@ -200,7 +200,29 @@ int SortedListForEach(sorted_list_iter_t from, sorted_list_iter_t to, act_func_t
 
 
 /* Merge lists */ 
-extern sorted_list_t *SortListMerge(sorted_list_t *dest_list, sorted_list_t *src_list);
+sorted_list_t *SortListMerge(sorted_list_t *dest_list, sorted_list_t *src_list)
+{
+
+	sorted_list_iter_t from_runner ;
+	
+	assert(dest_list && src_list);
+	
+	from_runner = SortedListBegin(src_list);
+	
+	/* traverse the from list */
+	while (!SortedListIterIsEqual(from_runner, SortedListEnd(src_list)))
+	{
+		
+		SortedListInsert(dest_list, SortedListIterGetData(from_runner));
+		from_runner = SortedListIterNext(from_runner);
+	
+	}
+	SortedListDestroy(src_list);
+	return dest_list;	
+}
+
+
+
 
 
 

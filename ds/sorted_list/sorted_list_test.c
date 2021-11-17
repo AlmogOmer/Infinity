@@ -8,12 +8,7 @@ typedef struct
     char name[50];
 }person_t;
 
-/*static int IsBefore(const void *new_elem, const void *curr_elem, void *param)
-{
-	(void)param;
-	return ((*(int *) new_elem) < (*(int *) curr_elem));
-}*/
-	
+
 static int IsBefore(const void *new_elem, const void *curr_elem, const void *param)
 {
 	int newP, currP;
@@ -53,7 +48,7 @@ int main()
 	IterTest();
 	InsertTest();
 	FindEachTest();
-	/*MergeTest();*/
+	MergeTest();
 
 	return 0;
 }
@@ -168,9 +163,10 @@ static void FindEachTest(void)
 	
 	puts("SUCCESS - Find + ForEach Test");
 }
-/*
+
 static void MergeTest(void)
 {
+	int param = 1;
 	int i1 = 45;
 	int i2 = 23;
 	int i3 = 36;
@@ -178,53 +174,23 @@ static void MergeTest(void)
 	
 	int i = 0;
 	
-	sorted_list_t *list1 = SortedListCreate(IsBefore, NULL);
-	sorted_list_t *list2 = SortedListCreate(IsBefore, NULL);
-	assert(list1 && list2);
+	sorted_list_t *list1 = SortedListCreate(IsBefore, &param);
+	sorted_list_t *list2 = SortedListCreate(IsBefore, &param);
 	
 	assert(NULL != SortedListInsert(list2, &i2));
 	assert(NULL != SortedListInsert(list2, &i3));
 	assert(NULL != SortedListInsert(list1, &i1));
 	assert(NULL != SortedListInsert(list1, &i4));
 	
-	SortedListMerge(list1, list2);
+	SortListMerge(list1, list2);
 	
-	assert(1 == SortedListForEach(SortedListBegin(list1), SortedListEnd(list1), PrintList, &i));
-	assert(0 == strcmp(buffer, "23,36,45,58,"));
+	assert(1 == SortedListForEach(SortedListBegin(list1), SortedListEnd(list1), print, &i));
 	
-	assert(1 == SortedListIsEmpty(list2));
-	assert(0 == SortedListSize(list2));
-	
-	assert(0 == SortedListIsEmpty(list1));
 	assert(4 == SortedListSize(list1));
 	
-	SortedListMerge(list1, list2);
 	
-	i = 0;
-	assert(1 == SortedListForEach(SortedListBegin(list1), SortedListEnd(list1), PrintList, &i));
-	assert(0 == strcmp(buffer, "23,36,45,58,"));
-	
-	assert(1 == SortedListIsEmpty(list2));
-	assert(0 == SortedListSize(list2));
-	
-	assert(0 == SortedListIsEmpty(list1));
-	assert(4 == SortedListSize(list1));
-	
-	SortedListMerge(list2, list1);
-	
-	i = 0;
-	assert(1 == SortedListForEach(SortedListBegin(list2), SortedListEnd(list2), PrintList, &i));
-	assert(0 == strcmp(buffer, "23,36,45,58,"));
-	
-	assert(1 == SortedListIsEmpty(list1));
-	assert(0 == SortedListSize(list1));
-	
-	assert(0 == SortedListIsEmpty(list2));
-	assert(4 == SortedListSize(list2));
-
 	SortedListDestroy(list1);
-	SortedListDestroy(list2);
 	
 	puts("SUCCESS - Merge Test");
-}*/
+}
 
