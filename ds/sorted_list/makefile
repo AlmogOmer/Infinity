@@ -30,7 +30,7 @@ $(TARGET) :$(OBJ)
 
 .PHONY: clean
 clean:
-	rm $(OBJ) $(TARGET)
+	rm -f $(OBJ) $(TARGET)
 
 .PHONY: all
 all: $(SRC) $(PROTECTEDOBJ)
@@ -45,8 +45,8 @@ queue.ar: $(OBJ)
 
 #write here the o files that you will be compiled here and its prerequisites
 
-queue_test.o: soted_list.h
-queue.o: sorted_list.h ../doubly_list/doubly_linked_list.h ../obj/doubly_linked_list.o
+sorted_list_test.o: soted_list.h
+sorted_list.o: sorted_list.h ../doubly_list/doubly_linked_list.h ../obj/doubly_linked_list.o
 
 
 ######

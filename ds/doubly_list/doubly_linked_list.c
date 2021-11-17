@@ -299,8 +299,28 @@ int DListForEach(dlist_iter_t from, dlist_iter_t to, action_func_t action_func, 
 /* Cuts & pastes the range between begin and end into the list before 
    the element referred to by where.
    Returns iterator to the last spliced element.
-   O(1) 
+   O(1) */
 
-dlist_iter_t DListSplice(dlist_iter_t where, dlist_iter_t begin,  dlist_iter_t end);*/
+dlist_iter_t DListSplice(dlist_iter_t where, dlist_iter_t begin,  dlist_iter_t end)
+{
+	dnode_t *tmp = NULL;
+	
+	assert(where.node && begin.node && end.node);
+	
+	if (1 == DListIterIsEqual(begin, end)) /* do nothing if from_iter is to_iter */
+	{
+		return where;
+	}
+	
+	end.node->prev->next = where.node;
+	where.node->prev->next = begin.node;
+	begin.node->prev->next = end.node;
+	
+	tmp = begin.node->prev;
+	begin.node->prev = where.node->prev;
+	where.node->prev = end.node->prev;
+	end.node->prev = tmp;
 
+	return where;
+}
 

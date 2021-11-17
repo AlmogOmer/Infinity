@@ -3,18 +3,18 @@ CFLAGS = -ansi -pedantic-errors -Wall -Wextra
 DEBUG = -g
 
 #write here all the c files
-SRC = doubly_linked_list.c doubly_linked_list_test.c 
+SRC = priority_queue.c priority_queue_test.c 
 #####
 
 #write here all the obj files in the obj directory that you need
-PROTECTEDOBJ = 
+PROTECTEDOBJ = ../obj/sorted_list.o 
 ##########
 
 OBJ = $(filter %.o, $(SRC:%.c=../obj/%.o))
 OBJ_DEBUG = $(SRC:.c=.dbg.o)
 
 #write here the target name
-TARGET = doubly_list.out
+TARGET = priority_queue.out
 ######
 
 $(TARGET) :$(OBJ) 
@@ -30,7 +30,7 @@ $(TARGET) :$(OBJ)
 
 .PHONY: clean
 clean:
-	rm $(OBJ) $(TARGET)
+	rm -f $(OBJ) $(TARGET)
 
 .PHONY: all
 all: $(SRC) $(PROTECTEDOBJ)
@@ -45,10 +45,5 @@ queue.ar: $(OBJ)
 
 #write here the o files that you will be compiled here and its prerequisites
 
-doubly_linked_list.o: doubly_linked_list.h
-oubly_linked_list_test.o: doubly_linked_list.h
-
-
-######
-
-
+priority_queue_test.o: priority_queue.h 
+priority_queue.o: priority_queue.h  ../sorted_list/sorted_list.h ../obj/sorted_list.o

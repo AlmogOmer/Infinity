@@ -179,8 +179,12 @@ static void MergeTest(void)
 	
 	assert(NULL != SortedListInsert(list2, &i2));
 	assert(NULL != SortedListInsert(list2, &i3));
+	
 	assert(NULL != SortedListInsert(list1, &i1));
 	assert(NULL != SortedListInsert(list1, &i4));
+	
+	SortedListForEach(SortedListBegin(list1), SortedListEnd(list1), print, &i);
+	SortedListForEach(SortedListBegin(list2), SortedListEnd(list2), print, &i);
 	
 	SortListMerge(list1, list2);
 	
