@@ -2,11 +2,32 @@
 #include <stdio.h>
 #include "sorted_list.h"
 
+typedef struct 
+{
+    int id_num;
+    char name[50];
+}person_t;
 
-static int IsBefore(const void *new_elem, const void *curr_elem, void *param)
+/*static int IsBefore(const void *new_elem, const void *curr_elem, void *param)
 {
 	(void)param;
 	return ((*(int *) new_elem) < (*(int *) curr_elem));
+}*/
+	
+static int IsBefore(const void *new_elem, const void *curr_elem, const void *param)
+{
+	int newP, currP;
+	newP = ((person_t*)new_elem)->id_num;
+	currP = ((person_t*)curr_elem)->id_num;
+
+	if (*(int*)param == 1)
+	{
+		return (newP < currP);
+	}
+	else
+	{
+		return (newP > currP);
+	}
 }
 
 static int print(void* data, void* param)
@@ -39,8 +60,8 @@ int main()
 
 static void CreateTest(void)
 {
-	sorted_list_t *list = SortedListCreate(IsBefore, NULL);
-	assert(list);
+	int param = 1;
+	sorted_list_t *list = SortedListCreate(IsBefore, &param);
 	
 	assert(0 == SortedListSize(list));
 	
@@ -51,18 +72,13 @@ static void CreateTest(void)
 
 static void IterTest(void)
 {
-	sorted_list_iter_t begin_iter = NULL;
-	sorted_list_iter_t end_iter = NULL;
+	int param = 1;
 	
-	sorted_list_t *list = SortedListCreate(IsBefore, NULL);
+	sorted_list_t *list = SortedListCreate(IsBefore, &param);
 	assert(list);
+
 	
-	begin_iter = SortedListBegin(list);
-	end_iter = SortedListEnd(list);
-	
-	assert(begin_iter == end_iter);
-	
-	assert(1 == SortedListIterIsEqual(begin_iter, end_iter));
+	assert(1 == SortedListIterIsEqual(SortedListBegin(list), SortedListEnd(list)));
 	
 	SortedListDestroy(list);
 	
@@ -71,14 +87,14 @@ static void IterTest(void)
 
 static void InsertTest(void)
 {
+	int param = 1;
 	int i1 = 45;
 	int i2 = 23;
 	int i3 = 36;
 	int i4 = 58;
+	sorted_list_iter_t iter;
 	
-	sorted_list_iter_t iter = NULL;
-	
-	sorted_list_t *list = SortedListCreate(IsBefore, NULL);
+	sorted_list_t *list = SortedListCreate(IsBefore, &param);
 	
 	assert(NULL != SortedListInsert(list, &i1));
 	assert(NULL != SortedListInsert(list, &i2));
@@ -88,37 +104,34 @@ static void InsertTest(void)
 	iter = SortedListBegin(list);
 	assert(1 == SortedListIterIsEqual(iter, SortedListBegin(list)));
 	assert((*(int *) SortedListIterGetData(iter)) == i2);
-	iter = SortedListNext(iter);
+	iter = SortedListIterNext(iter);
 	assert((*(int *) SortedListIterGetData(iter)) == i3);
-	iter = SortedListNext(iter);
+	iter = SortedListIterNext(iter);
 	assert((*(int *) SortedListIterGetData(iter)) == i1);
-	iter = SortedListNext(iter);
+	iter = SortedListIterNext(iter);
 	assert((*(int *) SortedListIterGetData(iter)) == i4);
-	iter = SortedListNext(iter);
+	iter = SortedListIterNext(iter);
 	assert(1 == SortedListIterIsEqual(iter, SortedListEnd(list)));
 	
-	iter = SortedListRemove(SortedListNext(SortedListBegin(list)));
-	assert((*(int *) SortedListIterGetData(iter)) == i1);
-	
+	SortedListRemove(SortedListIterNext(SortedListBegin(list)));
 	iter = SortedListBegin(list);
 	assert(1 == SortedListIterIsEqual(iter, SortedListBegin(list)));
 	assert((*(int *) SortedListIterGetData(iter)) == i2);
-	iter = SortedListNext(iter);
+	iter = SortedListIterNext(iter);
 	assert((*(int *) SortedListIterGetData(iter)) == i1);
-	iter = SortedListNext(iter);
+	iter = SortedListIterNext(iter);
 	assert((*(int *) SortedListIterGetData(iter)) == i4);
-	iter = SortedListNext(iter);
+	iter = SortedListIterNext(iter);
 	assert(1 == SortedListIterIsEqual(iter, SortedListEnd(list)));
 	
-	iter = SortedListRemove(SortedListBegin(list));
-	assert((*(int *) SortedListIterGetData(iter)) == i1);
+	SortedListRemove(SortedListBegin(list));
 	
 	iter = SortedListBegin(list);
 	assert(1 == SortedListIterIsEqual(iter, SortedListBegin(list)));
 	assert((*(int *) SortedListIterGetData(iter)) == i1);
-	iter = SortedListNext(iter);
+	iter = SortedListIterNext(iter);
 	assert((*(int *) SortedListIterGetData(iter)) == i4);
-	iter = SortedListNext(iter);
+	iter = SortedListIterNext(iter);
 	assert(1 == SortedListIterIsEqual(iter, SortedListEnd(list)));
 	
 	SortedListDestroy(list);
@@ -126,9 +139,10 @@ static void InsertTest(void)
 	puts("SUCCESS- Insert Test");
 }
 
-/*
+
 static void FindEachTest(void)
 {
+	int param = 1;
 	int i1 = 45;
 	int i2 = 23;
 	int i3 = 36;
@@ -136,8 +150,7 @@ static void FindEachTest(void)
 	
 	int i = 0;
 	
-	sorted_list_t *list = SortedListCreate(IsBefore, NULL);
-	assert(list);
+	sorted_list_t *list = SortedListCreate(IsBefore, &param);
 	
 	assert(NULL != SortedListInsert(list, &i1));
 	assert(NULL != SortedListInsert(list, &i2));
