@@ -8,15 +8,11 @@ struct Pri_Queue
 	sorted_list_t *list;
 };
 
-typedef struct Pri_Queue pri_queue_t;
-
-typedef int (*compare_func_t)(const void *new_elem, const void *curr_elem, const void *param);
-typedef int(*is_match_t)(const void *curr_item, const void *param);
 
 /*creat new pri_queue*/
-pri_queue_t *PriQueueCreate(compare_func_t cmp_func, const void *param)
+pri_queue_t *PriQueueCreate(compare_func_t cmp_func, void *param)
 {
-	pq_t *new_pq = NULL;
+	pri_queue_t *new_pq = NULL;
 	
 	new_pq = (pri_queue_t *) malloc(sizeof(pri_queue_t));
 	if (NULL == new_pq)
@@ -48,12 +44,11 @@ void PriQueueDestroy(pri_queue_t *pri_queue)
 /* insert new item to back of the pri_queue */
 int PriQueueEnqueue(pri_queue_t *pri_queue, const void *data)
 {
-	sorted_list_iter_t iter;
+
 	assert(pri_queue);
 	SortedListInsert(pri_queue->list, data);
 	
-	iter=SortedListFind(SortedListBegin(pri_queue->list), SortedListEnd(pri_queue->list), data);
-	return SortedListIterIsEqual(iter,SortedListEnd(pri_queue->list));
+	return 1;
 
 
 }
@@ -61,15 +56,10 @@ int PriQueueEnqueue(pri_queue_t *pri_queue, const void *data)
 /* pop item from the front of the pri_queue*/
 void PriQueueDequeue(pri_queue_t *pri_queue)
 {
-	sorted_list_iter_t iter popped_iter;
+	
 	assert(pri_queue && !PriQueueIsEmpty(pri_queue));
-	
 
-	popped_itet.list = pri_queue->list;
-	popped_iter = SortedListBegin(list);
-	
-	
-	SortedListRemove(popped_iter);
+	SortedListRemove(SortedListIterPrev(SortedListEnd(pri_queue->list)));
 	
 
 }
@@ -79,7 +69,7 @@ void *PriQueuePeek(const pri_queue_t *pri_queue)
 { 
 	assert(pri_queue && !PriQueueIsEmpty(pri_queue));
 	
-	return SortedListIterGetData(SortedListBegin(pri_queue->list));
+	return SortedListIterGetData(SortedListIterPrev(SortedListEnd(pri_queue->list)));
 
 }
 /*return the sizeof pri_queue*/
@@ -92,11 +82,36 @@ size_t PriQueueSize(const pri_queue_t *pri_queue)
 }
 
 /*check if pri_queue is empty*/
-extern int PriQueueIsEmpty(const pri_queue_t *pri_queue);	/* return value empty - 1, not empty - 0 */
+int PriQueueIsEmpty(const pri_queue_t *pri_queue)	/* return value empty - 1, not empty - 0 */
+{
+
+	return (SortedListIterIsEqual(SortedListBegin(pri_queue->list), SortedListEnd(pri_queue->list)));
+
+}
+
 
 /*remove all elements*/
-extern void PriQueueClear(pri_queue_t *pri_queue);
+void PriQueueClear(pri_queue_t *pri_queue)
+{
+	assert(pri_queue);
+	
+	/* freeing all queue elements */
+	while (!PriQueueIsEmpty(pri_queue))
+	{
+		PriQueueDequeue(pri_queue);
+	}
+}
+
 
 /*remove elements with a certain UID*/
-extern void PriQueueErase(pri_queue_t *pri_queue, is_match_t match_func, const void *param);
+void PriQueueErase(pri_queue_t *pri_queue, is_match_t is_match_func, void *param)
+{
+
+	assert(pri_queue && !PriQueueIsEmpty(pri_queue));
+	
+	SortedListRemove(SortedListFindIf(SortedListBegin(pri_queue->list), SortedListEnd(pri_queue->list), is_match_func, param));
+	
+	
+
+}
 

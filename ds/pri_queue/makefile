@@ -7,7 +7,7 @@ SRC = priority_queue.c priority_queue_test.c
 #####
 
 #write here all the obj files in the obj directory that you need
-PROTECTEDOBJ = ../obj/sorted_list.o 
+PROTECTEDOBJ = ../obj/sorted_list.o ../obj/doubly_linked_list.o 
 ##########
 
 OBJ = $(filter %.o, $(SRC:%.c=../obj/%.o))

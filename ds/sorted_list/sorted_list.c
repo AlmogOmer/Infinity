@@ -186,7 +186,30 @@ sorted_list_iter_t SortedListFind(sorted_list_iter_t from, sorted_list_iter_t to
 }
 
 	
-/*sorted_list_iter_t SortedListFindIf(sorted_list_iter_t from, sorted_list_iter_t to, match_func_t is_match_func, void *param); */
+sorted_list_iter_t SortedListFindIf(sorted_list_iter_t from, sorted_list_iter_t to, match_func_t is_match_func, void *param)
+{
+	sorted_list_iter_t match_iter;
+	
+	match_iter.d_list_iter.node = NULL;
+	match_iter.list = from.list;
+	
+	assert(from.d_list_iter.node && to.d_list_iter.node);
+	
+	while (!SortedListIterIsEqual(from, to))
+	{
+		if(is_match_func(SortedListIterGetData(from), param))
+		{
+			match_iter = from;
+			break;
+		}
+		
+		from = SortedListIterNext(from);
+	}
+	
+	return match_iter;
+	
+}
+
 
 int SortedListForEach(sorted_list_iter_t from, sorted_list_iter_t to, act_func_t action_func, void *param)
 {

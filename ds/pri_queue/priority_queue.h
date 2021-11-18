@@ -6,10 +6,10 @@
 typedef struct Pri_Queue pri_queue_t;
 
 typedef int (*compare_func_t)(const void *new_elem, const void *curr_elem, const void *param);
-typedef int(*is_match_t)(const void *curr_item, const void *param);
+typedef int(*is_match_t)(void *curr_item, void *param);
 
 /*creat new pri_queue*/
-extern pri_queue_t *PriQueueCreate(compare_func_t cmp_func, const void *param);
+extern pri_queue_t *PriQueueCreate(compare_func_t cmp_func,  void *param);
 
 /*destroy pri_queue*/
 extern void PriQueueDestroy(pri_queue_t *pri_queue);
@@ -33,6 +33,6 @@ extern int PriQueueIsEmpty(const pri_queue_t *pri_queue);	/* return value empty 
 extern void PriQueueClear(pri_queue_t *pri_queue);
 
 /*remove elements with a certain UID*/
-extern void PriQueueErase(pri_queue_t *pri_queue, is_match_t match_func, const void *param);
+extern void PriQueueErase(pri_queue_t *pri_queue, is_match_t is_match_func, void *param);
 
 #endif
