@@ -8,8 +8,8 @@ static size_t u_counter = 0;
 
 
 /* aka BADUID */
-const unique_id_t uid_null_uid; 
 
+const unique_id_t uid_null_uid ={0, 0, 0};
 /* generate a unique identifier */ 
 unique_id_t UIDGenerate(void)
 {
