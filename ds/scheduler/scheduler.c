@@ -61,26 +61,35 @@ int TaskExecute(task_t *task)
 	return (task->task_func(task->params));
 }
 
+int TaskIsSame(void* task1, void* task2)
+{
+	
+	return (UIDIsEqual(((task_t*)task1)->uid, ((task_t*)task2)->uid));
+}
 
 static int IsPrior(const void *data1, const void *data2, const void *param)
 {
 	assert(data1 && data2);
-	(void)param;
+
 	
-	return (TaskGetExecTime(data1) <= TaskGetExecTime(data2));
+	if(*(int*)param == 1)
+	{
+		return TaskGetExecTime(data1) < TaskGetExecTime(data2);
+	}
+	return TaskGetExecTime(data1) > TaskGetExecTime(data2);
+
 }
-
-
 /*creates new scheduler engine*/
 scheduler_t *SchedulerCreate()
 {
+	int param = 1;
 	scheduler_t *sch = (scheduler_t *) malloc(sizeof(scheduler_t));
 	if (!sch)
 	{
 		return NULL;
 	}
 	
-	sch->task_queue = PriQueueCreate(IsPrior, NULL);
+	sch->task_queue = PriQueueCreate(IsPrior, &param);
 	if (!sch->task_queue)
 	{
 		free(sch);
@@ -125,7 +134,11 @@ unique_id_t SchedulerTaskAdd(scheduler_t *scheduler, task_func_t task,
 }
 
 /* remove task from scheduler engine*/
-extern void SchedulerTaskCancel(scheduler_t *scheduler, unique_id_t uid);
+void SchedulerTaskCancel(scheduler_t *scheduler, unique_id_t uid)
+{
+	PriQueueErase(scheduler->task_queue, TaskIsSame, &uid);
+
+}
 
 /* run the scheduler engine */
 int SchedulerRun(scheduler_t *scheduler)
@@ -143,19 +156,24 @@ int SchedulerRun(scheduler_t *scheduler)
 		}
 		
 		next_task = PriQueuePeek(scheduler->task_queue);
-		PriQueueDequeue(scheduler->task_queue);
 		
 		sleep(TaskGetExecTime(next_task) - time(NULL));
+		
+		PriQueueDequeue(scheduler->task_queue);
 		
 		if (next_task->task_func(next_task->params))		/* task continues */
 		{
 			TaskUpdateExecTime(next_task);
+			SchedulerTaskAdd(scheduler, next_task->task_func, 
+						next_task->interval_in_secs, next_task->params);
 			
 		}
 		else
 		{
 			free(next_task);
 		}
+		
+		
 	}
 	
 	return 1;
@@ -184,6 +202,6 @@ int SchedulerIsEmpty(scheduler_t *scheduler)
 }
 
 /*stop the scheduler*/
-extern scheduler_t *SchedulerClear(scheduler_t *scheduler);
+extern void SchedulerClear(scheduler_t *scheduler);
 
 

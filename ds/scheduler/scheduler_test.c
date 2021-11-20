@@ -26,7 +26,7 @@ int main()
 		printf("fail in %d\n", __LINE__);
 	}
 	
-	scheduler = scheduler;
+	
 	SchedulerTaskAdd(scheduler, task1, 5, "Dumbeldore");
 	SchedulerTaskAdd(scheduler, task2, 2, "Voldemort");
 	SchedulerTaskAdd(scheduler, task3, 7, "Harry Potter");
@@ -42,14 +42,14 @@ int main()
 	}
 	
 	uid1 = SchedulerTaskAdd(scheduler, task0, 1, "a Death Eater");
-	/*SchedulerTaskCancel(scheduler, uid1);
+	SchedulerTaskCancel(scheduler, uid1);
 	
 	if(!(SchedulerSize(scheduler) == 3))
 	{
 		printf("fail in %d\n", __LINE__);
 	}
 	
-	SchedulerTaskAdd(scheduler, task_stop, 15, scheduler);
+	/*SchedulerTaskAdd(scheduler, task_stop, 15, scheduler);
 	
 	SchedulerClear(scheduler);
 	

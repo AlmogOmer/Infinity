@@ -36,7 +36,7 @@ extern size_t SchedulerSize(scheduler_t *scheduler);
 extern int SchedulerIsEmpty(scheduler_t *scheduler);
 
 /*stop the scheduler*/
-extern scheduler_t *SchedulerClear(scheduler_t *scheduler);
+extern void SchedulerClear(scheduler_t *scheduler);
 
 #endif
 
