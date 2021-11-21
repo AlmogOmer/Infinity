@@ -166,8 +166,12 @@ int SchedulerRun(scheduler_t *scheduler)
 		if (next_task->task_func(next_task->params))		/* task continues */
 		{
 			TaskUpdateExecTime(next_task);
-			SchedulerTaskAdd(scheduler, next_task->task_func, 
-						next_task->interval_in_secs, next_task->params);
+			
+			/*we want that task uid will remain the same */
+			PriQueueEnqueue(scheduler->task_queue, next_task); 
+			
+			/*SchedulerTaskAdd(scheduler, next_task->task_func, 
+						next_task->interval_in_secs, next_task->params);*/
 			
 		}
 		else
