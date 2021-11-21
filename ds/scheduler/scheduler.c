@@ -2,10 +2,8 @@
 #include <stdlib.h>	/* for malloc */
 #include <assert.h>	/* for assertions */
 #include <unistd.h>	/* for sleep */
-#include <time.h>	/* for time */
-#include "../uid/uid.h"
 #include "../pri_queue/priority_queue.h"
-#include "../sorted_list/sorted_list.h"
+
 
 struct scheduler
 {
@@ -62,10 +60,15 @@ int TaskExecute(task_t *task)
 	return (task->task_func(task->params));
 }
 
-int TaskIsSame(void* task1, void* task2)
+int TaskIsSame(void* task1, void* param)
 {
+	if (UIDIsEqual(((task_t*)task1)->uid, *((unique_id_t*)param)))
+	{
+		free((task_t*)task1);
+		return 1;
+	}
 	
-	return (UIDIsEqual(((task_t*)task1)->uid, ((task_t*)task2)->uid));
+	return 0;
 }
 
 static int IsPrior(const void *data1, const void *data2, const void *param)
@@ -218,7 +221,11 @@ void SchedulerClear(scheduler_t *scheduler)
 {
 	assert(scheduler);
 	
-	PriQueueClear(scheduler->task_queue);
+	while (!SchedulerIsEmpty(scheduler))
+	{
+		free(PriQueuePeek(scheduler->task_queue));
+		PriQueueDequeue(scheduler->task_queue);	
+	}
 
 }
 
