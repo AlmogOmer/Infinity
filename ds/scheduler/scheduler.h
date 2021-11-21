@@ -3,12 +3,11 @@
 
 #include <stddef.h>
 #include "../uid/uid.h"
+#include "task.h"
 
 typedef struct scheduler scheduler_t;
 
-typedef struct task task_t;
 
-typedef int (*task_func_t)(const void* param);
 
 /*creates new scheduler engine*/
 extern scheduler_t *SchedulerCreate();

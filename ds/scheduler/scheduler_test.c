@@ -1,4 +1,5 @@
 #include "scheduler.h"
+#include "task.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>

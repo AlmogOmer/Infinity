@@ -3,7 +3,7 @@ CFLAGS = -ansi -pedantic-errors -Wall -Wextra
 DEBUG = -g
 
 #write here all the c files
-SRC = scheduler.c scheduler_test.c 
+SRC = scheduler.c scheduler_test.c task.c
 #####
 
 #write here all the obj files in the obj directory that you need
@@ -45,8 +45,8 @@ queue.ar: $(OBJ)
 
 #write here the o files that you will be compiled here and its prerequisites
 
-scheduler_test.o: scheduler.h 
-scheduler.o: scheduler.h 
+scheduler_test.o: scheduler.h task.h
+scheduler.o: scheduler.h task.h
 
 
 ######

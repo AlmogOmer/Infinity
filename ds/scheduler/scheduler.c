@@ -1,4 +1,5 @@
 #include "scheduler.h"
+#include "task.h"
 #include <stdlib.h>	/* for malloc */
 #include <assert.h>	/* for assertions */
 #include <unistd.h>	/* for sleep */
@@ -11,65 +12,7 @@ struct scheduler
 	unsigned int stop_flag;
 
 };
-struct task 
-{
-	unique_id_t uid;
-	task_func_t task_func;
-	void *params;
-	time_t interval_in_secs;
-	time_t execute_time;
-};
 
-static task_t *TaskCreate(task_func_t task_func, void *params, time_t interval_in_secs)
-{
-	task_t *task = NULL;
-	
-	
-	task = (task_t *) malloc(sizeof(task_t));
-	if (!task)
-	{
-		return NULL;
-	}
-	
-	task->uid = UIDGenerate();
-	task->task_func = task_func;
-	task->params = params;
-	task->interval_in_secs = interval_in_secs;
-	task->execute_time = time(NULL) + interval_in_secs;
-	
-	return task;
-}
-
-static time_t TaskGetExecTime(const task_t *task)
-{
-	
-	return (task->execute_time);
-}
-
-static void TaskUpdateExecTime(task_t *task)
-{
-	
-	task->execute_time += task->interval_in_secs;
-}
-
-/* return value- 0 abort and 1 for continue looping */
-int TaskExecute(task_t *task)
-{
-	assert(task);
-	
-	return (task->task_func(task->params));
-}
-
-static int TaskIsSame(void* task1, void* param)
-{
-	if (UIDIsEqual(((task_t*)task1)->uid, *((unique_id_t*)param)))
-	{
-		free((task_t*)task1);
-		return 1;
-	}
-	
-	return 0;
-}
 
 static int IsPrior(const void *data1, const void *data2, const void *param)
 {
@@ -138,14 +81,14 @@ unique_id_t SchedulerTaskAdd(scheduler_t *scheduler, task_func_t task,
 	
 	PriQueueEnqueue(scheduler->task_queue, added_task);
 	
-	return (added_task->uid);
+	return TaskGetUID(added_task);
 
 }
 
 /* remove task from scheduler engine*/
 void SchedulerTaskCancel(scheduler_t *scheduler, unique_id_t uid)
 {
-	PriQueueErase(scheduler->task_queue, TaskIsSame, &uid);
+	PriQueueErase(scheduler->task_queue, TaskIsSameUID, &uid);
 
 }
 
@@ -170,11 +113,11 @@ int SchedulerRun(scheduler_t *scheduler)
 		
 		PriQueueDequeue(scheduler->task_queue);
 		
-		if (next_task->task_func(next_task->params)) /* task continues */
+		if (TaskExecute(next_task))	 /* task continues */
 		{
 			TaskUpdateExecTime(next_task);
 			
-			/*we want that task uid will remain the same */
+			/*task uid will remain the same */
 			PriQueueEnqueue(scheduler->task_queue, next_task); 
 			
 			/*SchedulerTaskAdd(scheduler, next_task->task_func, 
@@ -183,7 +126,7 @@ int SchedulerRun(scheduler_t *scheduler)
 		}
 		else
 		{
-			free(next_task);
+			TaskDestroy(next_task);
 		}
 		
 		
