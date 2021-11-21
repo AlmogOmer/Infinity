@@ -49,7 +49,7 @@ int main()
 		printf("fail in %d\n", __LINE__);
 	}
 	
-	/*SchedulerTaskAdd(scheduler, task_stop, 15, scheduler);
+	SchedulerTaskAdd(scheduler, task_stop, 15, scheduler);
 	
 	SchedulerClear(scheduler);
 	
@@ -73,7 +73,7 @@ int main()
 	if(!(SchedulerSize(scheduler) == 4))
 	{
 		printf("fail in %d\n", __LINE__);
-	}*/
+	}
 	
 	SchedulerRun(scheduler);
 	
@@ -105,9 +105,9 @@ static int task0(const void *param)
 	return 1;
 }
 
-/*static int task_stop(const void *param)
+static int task_stop(const void *param)
 {
 	SchedulerStop((scheduler_t*)param);
 	return 0;
-}*/
+}
 

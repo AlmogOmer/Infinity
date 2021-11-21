@@ -10,6 +10,7 @@
 struct scheduler
 {
 	pri_queue_t *task_queue;
+	unsigned int stop_flag;
 
 };
 struct task 
@@ -96,7 +97,7 @@ scheduler_t *SchedulerCreate()
 		return NULL;
 	}
 	
-	
+	sch->stop_flag = 0;
 	return sch;
 
 }
@@ -107,7 +108,8 @@ void SchedulerDestroy(scheduler_t *scheduler)
 	/* free all nodes and tasks stored in them */
 	while (!SchedulerIsEmpty(scheduler))
 	{
-		free(PriQueuePeek(scheduler->task_queue));	
+		free(PriQueuePeek(scheduler->task_queue));
+		PriQueueDequeue(scheduler->task_queue);	
 	}
 	
 	/* free the empty queue */
@@ -148,7 +150,7 @@ int SchedulerRun(scheduler_t *scheduler)
 	assert(scheduler);
 	assert(!SchedulerIsEmpty(scheduler));
 	
-	while (1)
+	while (!(scheduler->stop_flag))
 	{
 		if (SchedulerIsEmpty(scheduler))
 		{
@@ -182,7 +184,13 @@ int SchedulerRun(scheduler_t *scheduler)
 }
 
 /* stop running scheduler */
-extern void SchedulerStop(scheduler_t *scheduler);
+void SchedulerStop(scheduler_t *scheduler)
+{
+	assert(scheduler);
+	
+	scheduler->stop_flag = 1;
+
+}
 
 /* return the size of the scheduler */
 size_t SchedulerSize(scheduler_t *scheduler)
@@ -202,6 +210,12 @@ int SchedulerIsEmpty(scheduler_t *scheduler)
 }
 
 /*stop the scheduler*/
-extern void SchedulerClear(scheduler_t *scheduler);
+void SchedulerClear(scheduler_t *scheduler)
+{
+	assert(scheduler);
+	
+	PriQueueClear(scheduler->task_queue);
+
+}
 
 
