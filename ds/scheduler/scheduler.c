@@ -20,7 +20,7 @@ struct task
 	time_t execute_time;
 };
 
-task_t *TaskCreate(task_func_t task_func, void *params, time_t interval_in_secs)
+static task_t *TaskCreate(task_func_t task_func, void *params, time_t interval_in_secs)
 {
 	task_t *task = NULL;
 	
@@ -40,13 +40,13 @@ task_t *TaskCreate(task_func_t task_func, void *params, time_t interval_in_secs)
 	return task;
 }
 
-time_t TaskGetExecTime(const task_t *task)
+static time_t TaskGetExecTime(const task_t *task)
 {
 	
 	return (task->execute_time);
 }
 
-void TaskUpdateExecTime(task_t *task)
+static void TaskUpdateExecTime(task_t *task)
 {
 	
 	task->execute_time += task->interval_in_secs;
@@ -60,7 +60,7 @@ int TaskExecute(task_t *task)
 	return (task->task_func(task->params));
 }
 
-int TaskIsSame(void* task1, void* param)
+static int TaskIsSame(void* task1, void* param)
 {
 	if (UIDIsEqual(((task_t*)task1)->uid, *((unique_id_t*)param)))
 	{
@@ -131,6 +131,10 @@ unique_id_t SchedulerTaskAdd(scheduler_t *scheduler, task_func_t task,
 	task_t *added_task = NULL;
 	
 	added_task = TaskCreate(task, param, interval_in_secs);
+	if (added_task == NULL)
+	{
+		return uid_null_uid;
+	}
 	
 	PriQueueEnqueue(scheduler->task_queue, added_task);
 	
@@ -166,7 +170,7 @@ int SchedulerRun(scheduler_t *scheduler)
 		
 		PriQueueDequeue(scheduler->task_queue);
 		
-		if (next_task->task_func(next_task->params))		/* task continues */
+		if (next_task->task_func(next_task->params)) /* task continues */
 		{
 			TaskUpdateExecTime(next_task);
 			
