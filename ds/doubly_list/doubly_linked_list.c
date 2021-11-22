@@ -301,13 +301,13 @@ int DListForEach(dlist_iter_t from, dlist_iter_t to, action_func_t action_func, 
    Returns iterator to the last spliced element.
    O(1) */
 
-dlist_iter_t DListSplice(dlist_iter_t where, dlist_iter_t begin,  dlist_iter_t end)
+/*dlist_iter_t DListSplice(dlist_iter_t where, dlist_iter_t begin,  dlist_iter_t end)
 {
 	dnode_t *tmp = NULL;
 	
 	assert(where.node && begin.node && end.node);
 	
-	if (1 == DListIterIsEqual(begin, end)) /* do nothing if from_iter is to_iter */
+	if (1 == DListIterIsEqual(begin, end)) 
 	{
 		return where;
 	}
@@ -322,5 +322,47 @@ dlist_iter_t DListSplice(dlist_iter_t where, dlist_iter_t begin,  dlist_iter_t e
 	end.node->prev = tmp;
 
 	return where;
-}
+}*/
 
+dlist_iter_t DListSplice(dlist_iter_t where, dlist_iter_t begin, dlist_iter_t end)
+{
+    dlist_iter_t iter_flag;
+    int flag_where_prev = 0, flag_begin_prev = 0;
+
+    assert(where.node && begin.node && end.node);
+    /* Check if we in the first node (head)/
+    if(!(where.node -> prev)) /where -> prev pointing to NULL YAANI where is the first node (the head)*/
+    {
+        DListInsert(where, begin.node -> data);
+        where = DListIterNext(where);
+        flag_where_prev = 1;
+
+    }
+    if(!(begin.node -> prev))
+    {
+        iter_flag = begin;
+        DListInsert(begin, end.node -> next -> data);
+        begin = DListIterNext(begin);
+        flag_begin_prev = 1;
+    }
+
+    begin.node -> prev -> next = end.node -> next;
+    end.node -> next -> prev = begin.node -> prev;
+    where.node -> prev -> next = begin.node;
+    end.node -> next = where.node;
+    begin.node -> prev = where.node -> prev;
+    where.node -> prev = end.node;
+
+
+    if(flag_where_prev)
+    {
+        DListRemove(begin);
+    }
+    if(flag_begin_prev)
+    {
+        DListRemove(iter_flag);
+    }
+
+    return end;
+
+}

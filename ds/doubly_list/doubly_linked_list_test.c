@@ -158,11 +158,6 @@ int main()
 	{
 		printf("fail in %d\n", __LINE__);
 	}
-	/*
-	if(!(*(int*)DListIterGetData(DListEnd(list)) == 400))
-	{
-		printf("fail in %d\n", __LINE__);
-	}*/
 	
 	
 	DListPopFront(list);
@@ -210,12 +205,12 @@ void TestSpliceAll()
 {
 	TestSplice1();
 	TestSplice2();
-	/*TestSplice3();*/
-	/*TestSplice4();*/
-	/*TestSplice5();*/
-	/*TestSplice6();*/
-	/*TestSplice7();*/
-	/*TestSplice8();*/
+	TestSplice3();
+	TestSplice4();
+	TestSplice5();
+	TestSplice6();
+	TestSplice7();
+	TestSplice8();
 }
 
 
