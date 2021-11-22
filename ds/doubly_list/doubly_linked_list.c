@@ -341,7 +341,7 @@ dlist_iter_t DListSplice(dlist_iter_t where, dlist_iter_t begin, dlist_iter_t en
     if(!(begin.node -> prev))
     {
         iter_flag = begin;
-        DListInsert(begin, end.node -> next -> data);
+        DListInsert(begin, end.node -> data);
         begin = DListIterNext(begin);
         flag_begin_prev = 1;
     }
