@@ -21,7 +21,7 @@ extern void* FSAllocAlloc(fixed_alloc_t* alloc);
 extern void FSAllocFree(fixed_alloc_t* alloc, void* block);
 
 
-size_t FSAllocCountFree(fixed_alloc_t* alloc);
+extern size_t FSAllocCountFree(fixed_alloc_t* alloc);
 
 
 
