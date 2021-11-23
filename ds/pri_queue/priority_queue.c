@@ -37,6 +37,8 @@ void PriQueueDestroy(pri_queue_t *pri_queue)
 	assert(pri_queue);
 	
 	SortedListDestroy(pri_queue->list);
+	pri_queue->list = NULL;
+	
 	free(pri_queue);
 
 }
