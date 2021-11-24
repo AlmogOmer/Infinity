@@ -7,43 +7,10 @@
 int main()
 {
 
-	/*size_t pool_size = 256;
-	size_t block_size = 6;
-	void *pool = NULL;
-	fixed_alloc_t* fsa = NULL;
-	
-	pool = malloc(pool_size);
-	if (!pool)
-	{
-		printf("malloc failed");
-		exit(1);
-	}
-	
-	fsa = FSAllocInit(pool, pool_size, block_size);
-
-	if(NULL == fsa)
-	{
-		printf("fail in init");
-	}
-	
-	FSAllocAlloc(fsa);
-	FSAllocAlloc(fsa);
-	
-	
-	if ((size_t)(FSAllocAlloc(fsa))%sizeof(size_t))
-	{
-		printf("fail in align");
-	
-	}*/
-	
-	
 	const size_t SIZE = 104;
 	const size_t BLOCK_SIZE = 16;
-	
-	/*type here the size of your FixedAlloc*/
-	const size_t SIZE_STRUCT = 16;
-	/*#########################^#############*/
-	
+	const size_t SIZE_STRUCT = 8;
+
 	size_t init_free_blocks = (SIZE - SIZE_STRUCT)/ BLOCK_SIZE;
 	
 	void *pool = NULL;
@@ -56,11 +23,18 @@ int main()
 	char *test5 = NULL;
 	char *test6 = NULL;
 	char *test7 = NULL;
+	
 	pool = malloc(SIZE);
 	if(!pool)
 	{
 		fprintf(stderr, "MEMORY ERROR");
 		exit(1);
+	}
+	
+	if(!(FSAllocSuggestSize(init_free_blocks,BLOCK_SIZE) == SIZE))
+	{
+		printf("fail in %d\n", __LINE__);
+		
 	}
 	
 	fsa = FSAllocInit(pool, SIZE, BLOCK_SIZE);
@@ -112,12 +86,14 @@ int main()
 	strcpy(test5, "Alibaba");	
 	test6 = FSAllocAlloc(fsa);	
 	strcpy(test6, "Voldemort");
+	test1 = FSAllocAlloc(fsa);
+	strcpy(test1, "Dumbeldore");
 	
 	if(!(FSAllocCountFree(fsa) == 0))
 	{
 		printf("fail in %d\n", __LINE__);
 	}
-	free(pool);	
+	free(pool);
 	return 0;
 	
 

@@ -9,7 +9,7 @@
 /* list of memory... */
 typedef struct FixedAlloc fixed_alloc_t;
 typedef struct Node node_t;
-/*extern size_t SuggestSize();*/
+
 
 /* get the free space in memory */
 extern fixed_alloc_t* FSAllocInit(void* pool, size_t pool_size, size_t block_size);
@@ -23,7 +23,7 @@ extern void FSAllocFree(fixed_alloc_t* alloc, void* block);
 
 extern size_t FSAllocCountFree(fixed_alloc_t* alloc);
 
-
+extern size_t FSAllocSuggestSize(size_t num_blocks, size_t block_size);
 
 
 #endif
