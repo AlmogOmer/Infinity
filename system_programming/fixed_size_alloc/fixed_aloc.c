@@ -28,6 +28,8 @@ fixed_alloc_t* FSAllocInit(void* pool, size_t pool_size, size_t block_size)
 {
 	
 	node_t *temp = NULL;
+	assert(pool && num_blocks > 0 && block_size > 0);
+	
 	fixed_alloc_t *new_alloc = pool;
 	
 	 
@@ -52,6 +54,8 @@ fixed_alloc_t* FSAllocInit(void* pool, size_t pool_size, size_t block_size)
 void* FSAllocAlloc(fixed_alloc_t* alloc)
 {
 	void *ptr = NULL;
+	assert(alloc);
+	
 	if (alloc->head)
 	{
 		ptr = alloc->head;
@@ -68,6 +72,7 @@ void* FSAllocAlloc(fixed_alloc_t* alloc)
 void FSAllocFree(fixed_alloc_t* alloc, void* block)
 {
 	node_t *temp = NULL;
+	assert(alloc && block);
 	
 	temp = block;
 	temp -> next = alloc->head;
