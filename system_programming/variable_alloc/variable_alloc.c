@@ -25,10 +25,11 @@ static int Merge(block_t *block)
 	block_t *next = NULL;
 	
 	
-	next = (block_t *) ((size_t) block + block->block_size);
+	next = (block_t *) ((size_t) block + block->block_size+ sizeof(block_t));
 	
 	if (next->free_flag == 1)
 	{
+		
 		block->block_size += next->block_size;
 		next = NULL;
 		return 1;			
@@ -87,47 +88,48 @@ void* VSAAlloc(var_alloc_t* vsa, size_t block_size)
 		block_size += (sizeof(size_t) - block_size % sizeof(size_t));
 	}
 		
-	block_size += sizeof(block_t);
 	
 	while (i < vsa->pool_size)
 	{
 		
 		if (block->free_flag == 1)
 		{
-
+			
 			if (block->block_size >= block_size)	/* we can fit */
 			{
 				
 				if (block->block_size > (block_size + sizeof(block_t)))
 				{
-					block_t *next_block = (block_t *)((size_t)block + block_size);
+					block_t *next_block = (block_t *)((size_t)block + block_size + sizeof(block_t));
 					
-					next_block->block_size = block->block_size - block_size;
+					next_block->block_size = block->block_size - block_size - sizeof(block_t);
+					next_block->free_flag = 1;
 					
 					block->block_size = block_size;
 					
+					
 				}
-				ptr = block + sizeof(block_t);
+				ptr = (void *)((size_t)block + sizeof(block_t));
 				block->free_flag = 0;
 				return ptr;
 			}
 
-			if (Merge(block))
+			if (Merge(block)==1)
 			{
 				continue;
 			}
 		}
 		
-		i += block->block_size;
+		i = i + block->block_size + sizeof(block_t);
 		block = (block_t *) ((size_t) block + block->block_size + sizeof(block_t));
 	}
 	
-	if (block->block_size >= block_size+ sizeof(block_t))	/* last block */
-	{
+	/*if (block->block_size >= block_size+ sizeof(block_t))	/* last block */
+	/*{
 		
 		ptr = block + sizeof(block_t);
 		block->free_flag = 0;
-	}
+	}*/
 	
 	return ptr;
 }
@@ -147,7 +149,7 @@ void VSAFree(void* block)
 
 
 	free_block->free_flag = 1;
-
+	
 }
 
 /* return the largest free block size */
@@ -163,17 +165,17 @@ size_t LargestChunkAvailable(var_alloc_t* vsa)
 		if (block->free_flag == 1)
 		{
 			
-			if (Merge(block))
+			if (Merge(block)==1)
 			{
 				continue;
 			}
-			
+		
 			max_size = MAX(max_size, block->block_size);
 			
 		}
 		
-		i += block->block_size + sizeof(block_t);
-		block = (block_t *) ((size_t) block + block->block_size + sizeof(block_t));
+		i = i + block->block_size + sizeof(block_t);
+		block = (block_t *) ((size_t) block + block->block_size+ sizeof(block_t));
 	}
 	
 	max_size = MAX(max_size, block->block_size); /*last block*/
