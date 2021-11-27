@@ -20,20 +20,17 @@ struct VaribleAlloc{
 	
 };
 
-static int Merge(block_t *block, size_t pool_size)
+static int Merge(block_t *block)
 {
 	block_t *next = NULL;
 	
-	if (block->block_size >= pool_size)
-	{
-		return 0;
-	}
 	
 	next = (block_t *) ((size_t) block + block->block_size);
 	
 	if (next->free_flag == 1)
 	{
 		block->block_size += next->block_size;
+		next = NULL;
 		return 1;			
 	}
 	
@@ -64,11 +61,12 @@ var_alloc_t* VSAInit(void *pool, size_t pool_size)
 	}
 	
 	
-	vsa->pool_size = pool_size - sizeof(var_alloc_t);
+	vsa->pool_size = pool_size - sizeof(var_alloc_t) - sizeof(block_t) ;
 	
-	block = (block_t *) (vsa + sizeof(var_alloc_t));
+	block = (block_t *) ((size_t)vsa + sizeof(var_alloc_t));
 	block->block_size = vsa->pool_size;
 	block->free_flag = 1;
+	
 	
 	return vsa;
 
@@ -78,42 +76,57 @@ var_alloc_t* VSAInit(void *pool, size_t pool_size)
 void* VSAAlloc(var_alloc_t* vsa, size_t block_size)
 {
 	void *ptr = NULL;
-	block_t *block = (block_t *) (vsa + 1);		/* 1st block */
-	size_t i = sizeof(var_alloc_t);			/* offset of block */
+	block_t *block = (block_t *) ((size_t)vsa + sizeof(var_alloc_t));		
+	size_t i = sizeof(var_alloc_t);	/* offset of block */
 	
 	assert(vsa && block_size > 0);
 
 	
-	/* aligning to sizeof(size_t) boundry the requested block_size */
 	if (0 != block_size % sizeof(size_t))
 	{
 		block_size += (sizeof(size_t) - block_size % sizeof(size_t));
 	}
-	
-	block_size += sizeof(block_t);	/* adding vsa_block size */
+		
+	block_size += sizeof(block_t);
 	
 	while (i < vsa->pool_size)
 	{
 		
-		if (block->block_size > 0 && block->free_flag == 1)
+		if (block->free_flag == 1)
 		{
 
 			if (block->block_size >= block_size)	/* we can fit */
 			{
 				
+				if (block->block_size > (block_size + sizeof(block_t)))
+				{
+					block_t *next_block = (block_t *)((size_t)block + block_size);
+					
+					next_block->block_size = block->block_size - block_size;
+					
+					block->block_size = block_size;
+					
+				}
 				ptr = block + sizeof(block_t);
 				block->free_flag = 0;
-				break;
+				return ptr;
 			}
 
-			if (Merge(block, vsa->pool_size - i))
+			if (Merge(block))
 			{
 				continue;
 			}
 		}
 		
 		i += block->block_size;
-		block = (block_t *) ((size_t) block + block->block_size);
+		block = (block_t *) ((size_t) block + block->block_size + sizeof(block_t));
+	}
+	
+	if (block->block_size >= block_size+ sizeof(block_t))	/* last block */
+	{
+		
+		ptr = block + sizeof(block_t);
+		block->free_flag = 0;
 	}
 	
 	return ptr;
@@ -126,7 +139,11 @@ void* VSAAlloc(var_alloc_t* vsa, size_t block_size)
 /* free the specific block */
 void VSAFree(void* block)
 {
-	block_t *free_block = (block_t *)((size_t)block - sizeof(block_t));
+	
+	block_t *free_block = NULL;
+	assert(block);
+	
+	free_block = (block_t *)((size_t)block - sizeof(block_t));
 
 
 	free_block->free_flag = 1;
@@ -137,27 +154,29 @@ void VSAFree(void* block)
 size_t LargestChunkAvailable(var_alloc_t* vsa)
 {
 	size_t max_size = 0;
-	block_t *block = (block_t *) (vsa + sizeof(block_t));
+	block_t *block = (block_t *) ((size_t)vsa + sizeof(var_alloc_t));
 	size_t i = sizeof(var_alloc_t);
 	
 	while (i < vsa->pool_size)
 	{
 		
-		if (block->block_size > 0 && block->free_flag == 1)
+		if (block->free_flag == 1)
 		{
 			
-			if (Merge(block, vsa->pool_size - i))
+			if (Merge(block))
 			{
 				continue;
 			}
 			
-			max_size = MAX(max_size, block->block_size - sizeof(block_t));
+			max_size = MAX(max_size, block->block_size);
+			
 		}
 		
-		i += block->block_size;
-		block = (block_t *) ((size_t) block + block->block_size);
+		i += block->block_size + sizeof(block_t);
+		block = (block_t *) ((size_t) block + block->block_size + sizeof(block_t));
 	}
 	
+	max_size = MAX(max_size, block->block_size); /*last block*/
 	return max_size;
 }
 
