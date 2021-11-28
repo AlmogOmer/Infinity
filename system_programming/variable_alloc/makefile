@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -ansi -pedantic-errors -Wall -Wextra
+CFLAGS = -ansi -pedantic-errors -Wall -Wextra -g
 DEBUG = -g
 
 #write here all the c files

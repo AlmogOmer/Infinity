@@ -30,8 +30,7 @@ static int Merge(block_t *block)
 	if (next->free_flag == 1)
 	{
 		
-		block->block_size += next->block_size;
-		next = NULL;
+		block->block_size += next->block_size + sizeof(block_t);
 		return 1;			
 	}
 	
@@ -124,12 +123,7 @@ void* VSAAlloc(var_alloc_t* vsa, size_t block_size)
 		block = (block_t *) ((size_t) block + block->block_size + sizeof(block_t));
 	}
 	
-	/*if (block->block_size >= block_size+ sizeof(block_t))	/* last block */
-	/*{
-		
-		ptr = block + sizeof(block_t);
-		block->free_flag = 0;
-	}*/
+	
 	
 	return ptr;
 }
@@ -178,7 +172,7 @@ size_t LargestChunkAvailable(var_alloc_t* vsa)
 		block = (block_t *) ((size_t) block + block->block_size+ sizeof(block_t));
 	}
 	
-	max_size = MAX(max_size, block->block_size); /*last block*/
+	
 	return max_size;
 }
 

@@ -40,19 +40,19 @@ int main()
 
 	VSAFree(data1);
 	printf("Lgest Memory now is: %lu\n", LargestChunkAvailable(vsa));
-	if (260 != LargestChunkAvailable(vsa))
+	if (276 != LargestChunkAvailable(vsa))
 	{
 		puts("Fail 3");
 	}
 	
 	data1 = VSAAlloc(vsa, 15);
 	printf("Lgest Memory now is: %lu\n", LargestChunkAvailable(vsa));
-	if (228 != LargestChunkAvailable(vsa))
+	if (244 != LargestChunkAvailable(vsa))
 	{
 		puts("Fail 4");
 	}
 	data2 = VSAAlloc(vsa, 1118); /* Not Enough memory  */
-	if (228 != LargestChunkAvailable(vsa))
+	if (244 != LargestChunkAvailable(vsa))
 	{
 		puts("Fail 5");
 	}
@@ -62,20 +62,20 @@ int main()
 	}
 	data3 = VSAAlloc(vsa, 45);
 	printf("Lgest Memory now is: %lu\n", LargestChunkAvailable(vsa));
-	if (164 != LargestChunkAvailable(vsa))
+	if (180 != LargestChunkAvailable(vsa))
 	{
 		puts("Fail 7");
 	}
 	data2 = VSAAlloc(vsa, 13);
 	printf("Lgest Memory now is: %lu\n", LargestChunkAvailable(vsa));
-	if (132 != LargestChunkAvailable(vsa))
+	if (148 != LargestChunkAvailable(vsa))
 	{
 		puts("Fail 8");
 	}
 	
 	data4 = VSAAlloc(vsa, 6);
 	printf("Lgest Memory now is: %lu\n", LargestChunkAvailable(vsa));
-	if (108 != LargestChunkAvailable(vsa))
+	if (124 != LargestChunkAvailable(vsa))
 	{
 		puts("Fail 9");
 	}
@@ -83,9 +83,10 @@ int main()
 	VSAFree(data4);
 	VSAFree(data3);
 	VSAFree(data2);
+	VSAFree(data1);
 	printf("Lgest Memory now is: %lu\n", LargestChunkAvailable(vsa));
 	
-	if (116 != LargestChunkAvailable(vsa))
+	if (276 != LargestChunkAvailable(vsa))
 	{
 		puts("Fail 10");
 	}
