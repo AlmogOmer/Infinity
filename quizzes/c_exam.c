@@ -234,6 +234,8 @@ int main()
 
     swap3 (px, py);
 
+    return 0;
+
 }
 
 
