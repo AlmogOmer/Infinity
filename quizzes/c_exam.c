@@ -24,8 +24,7 @@ int FlipDigitsInNum (int num)
 
 int FlipBit (int val, unsigned int n)
 {
-    val = val ^ (1<<n);
-    return val;
+    return (val ^ (1<<(n-1)));
 }
 
 int CountBit (unsigned char x)
@@ -77,7 +76,7 @@ int Strcmp(char *str1, char *str2)
         return 0;
     }
 
-    while (str1[i] == str2[i])
+    while (str1[i] != '\0' && str1[i] == str2[i])
     {
         ++i;
     }
@@ -87,21 +86,56 @@ int Strcmp(char *str1, char *str2)
 
 char *Strcpy (char *dest, char *src)
 {
-    int i = 0;
+    
+    char *dest_ptr = dest ;
+	while ('\0' != *src)
+	{
+		*dest = *src;
+		++dest;
+		++src;
+	}
+	
+	*dest = '\0';
+	return dest_ptr;
+    
+    
+    
+    /*int i = 0;
     for (i = 0; src[i] != '\0'; ++i)
     {
-        dest[i] = src [i];
+        dest[i] = src[i];
     }
 
     dest[i] = '\0';
 
-    return dest;
+    return dest;*/
 }
 
 
 char *Strncpy (char *dest, char *src, int n)
 {
-    int i = 0;
+    char *dest_ptr = dest ;
+	assert(dest && src);
+	while (('\0' != *src) && n)
+	{
+		*dest = *src;
+		++dest;
+		++src;
+		--n;
+	}
+	
+	while (n)
+	{
+		*dest = '\0';
+		++dest;
+		--n;
+	}
+	
+	return dest_ptr;
+    
+    
+    
+    /*int i = 0;
     for (i = 0; i < n && src[i] != '\0'; ++i)
     {
         dest[i] = src [i];
@@ -109,15 +143,20 @@ char *Strncpy (char *dest, char *src, int n)
 
     dest[i] = '\0';
 
-    return dest;
+    return dest;*/
 }
 
 char *Strcat (char *dest, char *src)
 {
-    int len_dest = strlen(dest);
+    size_t len_dest = strlen(dest) ;
+
+	return (strcpy((dest + len_dest), src)- len_dest);
+    
+    
+    /*int len_dest = strlen(dest);
     char *result = strcpy(dest + len_dest, src);
 
-    return (result - len_dest);
+    return (result - len_dest);*/
 }
 
 unsigned long GetNFibonacciElement(unsigned int n)
@@ -182,11 +221,11 @@ void swap3 ( int *x, int *y)
 int main()
 {
     int num = 29;
-    int val = 7;
-    unsigned int n = 2;
+    int val = 1;
+    unsigned int n = 1;
     unsigned char u = 7;
-    char byte = 7;
-    unsigned nbits = 3;
+    char byte = 1;
+    unsigned nbits = 2;
     int y = 4;
     int x = 1234;
     int *px = &x;
@@ -196,43 +235,50 @@ int main()
     char *str = "almog";
     char *str1 = "almog";
     char *str2 = "almog";
-    char dest[10];
+    char dest1[10] ;
+    char dest2[10];
+    char dest[40] = {'a','b'};
     char *src = "aaaaa";
     char string [10];
     int number = 2;
    
 
-    FlipDigitsInNum (num);
+    assert(92 == FlipDigitsInNum (num));
+    
+    assert(0 == FlipBit(val, n));
 
-    FlipBit (val, n);
+    assert(3 == CountBit(u));
 
-    CountBit (u);
+    assert(4 == RotateLeft(byte,  nbits)); 
+  
+    SwapPointers(p1, p2);
+    
+    assert ((**p1 == 4) && (**p2 == 1234));
 
-    RotateLeft (byte,  nbits); 
+    assert(5 == Strlen(str));
 
-    SwapPointers (p1, p2);
+    assert(1 == Strcmp(str1, str2));
 
-    Strlen(str);
+    assert(0 == strcmp("aaaaa",Strcpy(dest1, src)));
 
-    Strcmp(str1, str2);
+    assert(0 == strcmp("aaaa",Strncpy(dest2, src, y)));
 
-    Strcpy (dest, src);
+    assert(0 == strcmp("abaaaaa",Strcat(dest, src)));
 
-    Strncpy (dest, src, y);
+    assert(1 == GetNFibonacciElement(n));
 
-    Strcat (dest, src);
+    assert(0 == strcmp("1234", IntToString(x, string)));
 
-    GetNFibonacciElement(n);
+    assert(16 == multiply8(number));
 
-    IntToString (x, string);
-
-    multiply8(number);
-
-    swap (px, py);
-
-    swap2 (px, py);
-
-    swap3 (px, py);
+    swap(px, py);
+    assert ((*px == y) && (*py == x));
+    
+    swap2(px, py);
+    assert ((*px == y) && (*py == x));
+    
+    swap3(px, py);
+    assert ((*px == y) && (*py == x));
 
     return 0;
 
