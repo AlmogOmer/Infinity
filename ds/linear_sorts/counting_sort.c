@@ -1,73 +1,31 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include "linear.h"
 
-static int my_random(int min, int max){
-   return min + rand() / (RAND_MAX / (max - min + 1) + 1);
-}
-
-static void fill_array(int *arr,int size)
+int max_arr(int *arr, int size)
 {
-  int i = 0;
-  srand(time(0));
+    int i = 0;
+    int max = 0; 
 
-  for (i = 0; i < size; ++i)
-	{
-        arr[i] = my_random(0,100);
-    }
-
-}
-
-static int sort_check(int *arr, int size)
-{
-    int i =0;
-    for (i = 0; i < size-1; ++i)
-	{
-		if (arr[i] > arr[i+1])
+    for (i = 0; i < size; ++i)
+    {
+        if (arr[i] > max)
         {
-            return 0;
+            max = arr[i];
         }
     }
 
-    return 1;
-
+    return max;
 }
 
-void counting_sort(int *arr, int size, int range); 
-
-int main()
-{
-    int size = 5000;
-    int range = 100 + 2;
-    int *arr = NULL;
-    
-    arr = (int *)malloc(size*sizeof(int));
-    if (NULL == arr)
-    {
-        exit(1);
-    }
-
-    fill_array(arr,size);
-    
-    counting_sort(arr, size, range);
-    
-    if (0 == sort_check(arr, size))
-    {
-        printf("failed at counting_sort\n");
-    }
-    
-
-    free(arr);
-    return 0;
-}
-
-void counting_sort(int *arr, int size, int range)
+void counting_sort(int *arr, int size)
 {
     int i;
+    int max;
     int *result_arr = NULL;
     int *idx_arr = NULL;
+    max = max_arr(arr, size) + 2;
     
-    idx_arr = (int*)calloc(range, sizeof(int));
+    idx_arr = (int*)calloc(max, sizeof(int));
     if (NULL == idx_arr)
     {
         exit(1);
@@ -84,7 +42,7 @@ void counting_sort(int *arr, int size, int range)
         ++idx_arr[arr[i]];
     } 
 
-    for(i = 0; i < range-1 ; ++i)
+    for(i = 0; i < max-1 ; ++i)
     {
         idx_arr[i+1] = idx_arr[i] + idx_arr[i+1];
     }
