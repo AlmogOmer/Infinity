@@ -3,16 +3,7 @@
 #include "linear.h"
 
 void counting_for_radix(int *arr, int size, int mask, int counter);
-static void PrintArr(int *arr, size_t size)
-{
-    size_t i = 0;
 
-    for (i = 0; i < size; ++i)
-    {
-        printf("%d ", arr[i]);
-        }
-        printf("\n");
-}
 void radix_sort(int *arr, int size , int bits)
 {
     

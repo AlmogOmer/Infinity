@@ -51,7 +51,8 @@ int main()
 }
 
 static int my_random(int min, int max){
-   return min + rand() / (RAND_MAX / (max - min + 1) + 1);
+   /*return min + rand() / (RAND_MAX / (max - min + 1) + 1);*/
+   return rand() % (max + 1 - min) + min;
 }
 
 static void fill_array(int *arr,int size)
@@ -61,7 +62,7 @@ static void fill_array(int *arr,int size)
 
   for (i = 0; i < size; ++i)
 	{
-        arr[i] = my_random(0,100);
+        arr[i] = my_random(1000000,9999999);
     }
 
 }
