@@ -41,6 +41,25 @@ static int IsLeaf(bst_node_t *node)
     return 0;
 }
 
+static bst_node_t *MinNode(bst_node_t *node)
+{
+    while(node && node->left)
+    {
+        node = node->left;
+    }
+
+    return node;
+}
+
+static void PtrSwap(const void **x, const void **y)
+{
+    void *tmp = NULL;
+    assert(x && y);
+    tmp = *(void **)x;
+    *(void **)x = *(void **)y;
+    *(void **)y = tmp;
+}
+
 bst_t *BstCreate(compare_func_t cmp_func, const void *param)
 {
     bst_t *new_bst = NULL;
@@ -108,7 +127,8 @@ void BstDestroy(bst_t *bst)
        }
    }
 
-	free(bst);
+	free(curr_node);
+    free(bst);
 }
 
 size_t BstSize(bst_t *bst)
@@ -204,7 +224,74 @@ bst_iter_t BstInsert(bst_t *bst, const void *data)
 	return iter;
 }
 
-extern void BstRemove(bst_iter_t iter);
+void BstRemove(bst_iter_t iter)
+{
+
+    bst_node_t *temp;
+    bst_node_t *removed_node = iter.node;
+    int num_of_children;
+
+    num_of_children = (!!removed_node->left) + (!!removed_node->right);
+
+    if (0 == num_of_children)
+    {
+        temp = removed_node->parent;
+        if (temp->right == removed_node)
+        {
+            temp->right = NULL;
+        }
+
+        else
+        {
+            temp->left = NULL;
+        }
+
+        free(removed_node);
+        return;
+    }
+    
+    
+    
+    if (2 == num_of_children && removed_node->right->data !=NULL)
+    {
+		temp = MinNode(iter.node->right);
+        PtrSwap(&removed_node->data, &temp->data);
+        if (temp -> right ->data == NULL)
+        {
+            temp->right->parent = temp->parent;
+            temp->parent->right = temp->right;
+
+        }
+        free(temp);
+        return;
+
+	}
+
+	if (1 == num_of_children || removed_node->right->data == NULL)
+	{
+		if (removed_node->left && removed_node->right->data == NULL)
+        {
+            removed_node->left->parent = removed_node->parent;
+            removed_node->right->parent = removed_node->left;
+        }
+        
+        else if (removed_node->right && removed_node->left == NULL)
+        {
+            removed_node->right->parent = removed_node->parent;
+        }
+        
+        else if (removed_node->left && removed_node->right == NULL)
+        {
+            removed_node->left->parent = removed_node->parent;
+        }
+	
+    
+        free(removed_node);
+        return;
+    
+    }
+    
+}
 
 bst_iter_t BstBegin(bst_t *bst)
 {

@@ -110,13 +110,19 @@ int main()
         from = BstIterNext(from);
     }*/
 
-
+    from = BstBegin(bst);
+    printf("from is %d\n",*(int *)BstIterGetData(from));
+    /*from = BstIterNext(from);
+    printf("from is %d\n",*(int *)BstIterGetData(from));
+    from = BstIterNext(from);
+    printf("from is %d\n",*(int *)BstIterGetData(from));*/
 
 
     
     BstForEach(BstBegin(bst), BstEnd(bst), print, NULL);
-
-
+    BstRemove(from);
+    printf("\n");
+    BstForEach(BstBegin(bst), BstEnd(bst), print, NULL);
 
 
 
