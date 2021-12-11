@@ -35,18 +35,16 @@ static int print(void* data, const void* param)
 
 int main()
 {
-    bst_iter_t iter1, iter2, iter3, iter4, from, to;
-    int a = 20;
+    bst_iter_t iter1, iter2, iter3, iter4, from;
+    int a = 8;
     int b = 10;
-    int c = 30;
-    int d = 15;
-    int e = 5;
+    int c = 3;
+    int d = 6;
+    int e = 1;
     int f = 7;
-    int g = 12;
-    int h = 35;
-    int i = 25;
-    int j = 40;
-    int x = 0;
+    int g = 4;
+    int h = 14;
+   
     
     bst_t *bst = BstCreate(cmp_func, NULL);
     if (0 == BstIsEmpty(bst))
@@ -71,61 +69,100 @@ int main()
         printf("failed in isequal\n");
     }
     BstInsert(bst, &b);
-    if (!(*(int*)BstIterGetData(BstBegin(bst))== 10))
+    if (!(*(int*)BstIterGetData(BstBegin(bst))== 8))
     {
-        printf("failed in getdata\n");
+        printf("failed in getdata begin\n");
     }
+    
+    iter1 = BstFind(bst, &b);
+	
+	if(!(*(int*)BstIterGetData(iter1) == 10))
+	{
+		printf("failed in getdata iter 1\n");
+	}
+
+    
     BstInsert(bst, &c);
 
     iter2 = BstFind(bst, &c);
 	
-	if(!(*(int*)BstIterGetData(iter2) == 30))
+	if(!(*(int*)BstIterGetData(iter2) == 3))
 	{
-		printf("failed in getdata\n");
+		printf("failed in getdata iter 2\n");
 	}
 
-    if (!(*(int*)BstIterGetData(BstIterPrev(BstEnd(bst)))== 30))
+    if (!(*(int*)BstIterGetData(BstIterPrev(BstEnd(bst)))== 10))
     {
-        printf("failed in getdata\n");
+        printf("failed in getdata of end\n");
     }
     
     if ( 3 != BstSize(bst))
     {
-        printf("failed in size\n");
+        printf("failed in size after 3 insertions\n");
     }
-    /*printf("end is %d\n",*(int *)BstIterGetData(BstIterPrev(BstEnd(bst))));
-    from = BstBegin(bst);
-    printf("from is %d\n",*(int *)BstIterGetData(from));
-    from = BstIterNext(from);
-    printf("from is %d\n",*(int *)BstIterGetData(from));
-    from = BstIterNext(from);
-    printf("from is %d\n",*(int *)BstIterGetData(from));
     
-    /*to = BstEnd(bst);
-    
-   /* while(!BstIterIsEqual(from, to))
+    BstInsert(bst, &d);
+    BstInsert(bst, &e);
+    BstInsert(bst, &f);
+    BstInsert(bst, &g);
+    BstInsert(bst, &h);
+
+    if (0 != BstIsEmpty(bst))
     {
-        x = *(int *)BstIterGetData(from);
-        printf("%d ",x);
-        from = BstIterNext(from);
-    }*/
+        printf("failed in isempty after insertions\n");
+    }
+    iter3 = BstFind(bst, &f);
+	
+	if(!(*(int*)BstIterGetData(iter3) == 7))
+	{
+		printf("failed in getdata iter 3\n");
+	}
+
+    if (!(*(int*)BstIterGetData(BstIterPrev(BstEnd(bst)))== 14))
+    {
+        printf("failed in getdata end\n");
+    }
+    
+    if ( 8 != BstSize(bst))
+    {
+        printf("failed in size after all insertions\n");
+    }
+
+    iter4 = BstFind(bst, &g);
+    if(!(*(int*)BstIterGetData(iter4) == 4))
+	{
+		printf("failed in getdata iter 4\n");
+	}
+
+    from = BstIterPrev(BstEnd(bst));
+    from = BstIterPrev(from);
+    if(!(*(int*)BstIterGetData(from) == 10))
+	{
+		printf("failed in getdata from iter\n");
+	}
+
+    printf("tree before removing: \n");
+    BstForEach(BstBegin(bst), BstEnd(bst), print, NULL);
+    
+    BstRemove(from);
+    printf("tree after removing 10: \n");
+    BstForEach(BstBegin(bst), BstEnd(bst), print, NULL);
 
     from = BstBegin(bst);
-    printf("from is %d\n",*(int *)BstIterGetData(from));
-    /*from = BstIterNext(from);
-    printf("from is %d\n",*(int *)BstIterGetData(from));
     from = BstIterNext(from);
-    printf("from is %d\n",*(int *)BstIterGetData(from));*/
-
-
-    
-    BstForEach(BstBegin(bst), BstEnd(bst), print, NULL);
     BstRemove(from);
-    printf("\n");
+    printf("tree after removing 3: \n");
+    BstForEach(BstBegin(bst), BstEnd(bst), print, NULL);
+    
+    from = BstBegin(bst);
+    BstRemove(from);
+    printf("tree after removing 1: \n");
     BstForEach(BstBegin(bst), BstEnd(bst), print, NULL);
 
-
-
+    from = BstIterPrev(BstEnd(bst));
+    BstRemove(from);
+    printf("tree after removing 14: \n");
+    BstForEach(BstBegin(bst), BstEnd(bst), print, NULL);
 
     BstDestroy(bst);
     return 0;

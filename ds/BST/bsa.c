@@ -226,7 +226,6 @@ bst_iter_t BstInsert(bst_t *bst, const void *data)
 
 void BstRemove(bst_iter_t iter)
 {
-
     bst_node_t *temp;
     bst_node_t *removed_node = iter.node;
     int num_of_children;
@@ -250,47 +249,76 @@ void BstRemove(bst_iter_t iter)
         return;
     }
     
-    
-    
     if (2 == num_of_children && removed_node->right->data !=NULL)
     {
 		temp = MinNode(iter.node->right);
         PtrSwap(&removed_node->data, &temp->data);
-        if (temp -> right ->data == NULL)
+        if (temp -> right)
         {
-            temp->right->parent = temp->parent;
-            temp->parent->right = temp->right;
+            if(temp -> right ->data == NULL)
+            {
+                temp->right->parent = temp->parent;
+                temp->parent->right = temp->right;
+            }
 
         }
+        if (temp->parent->right == temp)
+        {
+            temp->parent->right = NULL;
+        }
+        else
+        {
+            temp->parent->left = NULL;
+        }
+
         free(temp);
         return;
-
 	}
 
-	if (1 == num_of_children || removed_node->right->data == NULL)
+	if (1 == num_of_children || removed_node->right->data == NULL) /*1 childen or 2 that one of them is dummy*/
 	{
 		if (removed_node->left && removed_node->right->data == NULL)
         {
             removed_node->left->parent = removed_node->parent;
             removed_node->right->parent = removed_node->left;
+            if (removed_node->parent->right == removed_node)
+            {
+                removed_node->parent->right = NULL;
+            }
+            else
+            {
+                removed_node->parent->left = NULL;
+            }
         }
         
         else if (removed_node->right && removed_node->left == NULL)
         {
             removed_node->right->parent = removed_node->parent;
+            if (removed_node->parent->right == removed_node)
+            {
+                removed_node->parent->right = removed_node->right;
+            }
+            else
+            {
+                removed_node->parent->left = removed_node->right;
+            }
         }
         
         else if (removed_node->left && removed_node->right == NULL)
         {
             removed_node->left->parent = removed_node->parent;
+            if (removed_node->parent->right == removed_node)
+            {
+                removed_node->parent->right = removed_node->left;
+            }
+            else
+            {
+                removed_node->parent->left = removed_node->left;
+            }
         }
-	
-    
         free(removed_node);
         return;
-    
     }
-    
 }
 
 bst_iter_t BstBegin(bst_t *bst)
@@ -355,7 +383,7 @@ bst_iter_t BstIterNext(bst_iter_t iter)
     {
         while(temp->parent)
         {
-            if ( 1 == iter.bst->cmp_func(temp->parent, temp ,iter.bst->param))
+            if ( 1 == iter.bst->cmp_func(temp->parent->data, temp->data ,iter.bst->param))
             {
                 temp = temp->parent;
                 break;
@@ -376,6 +404,11 @@ bst_iter_t BstIterPrev(bst_iter_t iter)
     iter_prev.bst = iter.bst;
     temp = iter.node;
     
+    if (BstIterIsEqual(iter,BstBegin(iter.bst)))
+    {
+        return (BstEnd(iter.bst));
+    }
+    
     if (BstIterIsEqual(iter,BstEnd(iter.bst)))
     {
         iter.node = iter.node->parent;
@@ -384,6 +417,7 @@ bst_iter_t BstIterPrev(bst_iter_t iter)
     
     if (temp->left)
     {
+        temp = temp->left;
         while(temp->left)
         {
             temp = temp->right;
@@ -393,8 +427,13 @@ bst_iter_t BstIterPrev(bst_iter_t iter)
 
     else
     {
-        while(1 == iter.bst->cmp_func(temp,temp->parent, iter.bst->param))
+        while(temp->parent)
         {
+            if ( -1 == iter.bst->cmp_func(temp->parent->data, temp->data ,iter.bst->param))
+            {
+                temp = temp->parent;
+                break;
+            }
             temp = temp->parent;
         }
         
