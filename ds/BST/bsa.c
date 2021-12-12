@@ -51,14 +51,14 @@ static bst_node_t *MinNode(bst_node_t *node)
     return node;
 }
 
-static void PtrSwap(const void **x, const void **y)
+/*static void PtrSwap(const void **x, const void **y)
 {
     void *tmp = NULL;
     assert(x && y);
     tmp = *(void **)x;
     *(void **)x = *(void **)y;
     *(void **)y = tmp;
-}
+}*/
 
 bst_t *BstCreate(compare_func_t cmp_func, const void *param)
 {
@@ -159,6 +159,8 @@ bst_iter_t BstInsert(bst_t *bst, const void *data)
     bst_node_t *curr_node = bst->root;
     iter.bst = bst;
     
+    /*assert(BstIterIsEqual(BstEnd(bst),BstFind(bst, data))); */ /*check if data already in tree*/
+
     new_node = (bst_node_t *) malloc(sizeof(bst_node_t)); 
 	if (NULL == new_node)
 	{
@@ -227,6 +229,7 @@ bst_iter_t BstInsert(bst_t *bst, const void *data)
 void BstRemove(bst_iter_t iter)
 {
     bst_node_t *temp;
+    bst_iter_t iter_next_max;
     bst_node_t *removed_node = iter.node;
     int num_of_children;
 
@@ -252,7 +255,49 @@ void BstRemove(bst_iter_t iter)
     if (2 == num_of_children && removed_node->right->data !=NULL)
     {
 		temp = MinNode(iter.node->right);
-        PtrSwap(&removed_node->data, &temp->data);
+
+        if (temp->parent->left == temp)
+        {
+            if (temp -> right) /*connect successor child to successor parent*/
+            {
+                temp->right->parent = temp->parent;
+                temp->parent->left = temp->right;
+
+            }
+            
+            else
+            {
+                temp->parent->left = NULL;
+            }
+            
+            temp->right = removed_node->right;
+        }
+
+        temp->left = removed_node->left;
+        removed_node->right->parent = temp;
+        removed_node->left->parent = temp;
+
+
+        if (removed_node->parent)
+        {
+            temp->parent = removed_node->parent;
+            if (removed_node->parent->right == removed_node)
+            {
+                removed_node->parent->right = temp;
+            }
+            else
+            {
+                removed_node->parent->left = temp;
+            }
+        }
+
+        else
+        {
+            temp->parent = NULL;
+            iter.bst->root = temp;
+        }
+
+        /*PtrSwap(&removed_node->data, &temp->data);
         if (temp -> right)
         {
             if(temp -> right ->data == NULL)
@@ -271,7 +316,9 @@ void BstRemove(bst_iter_t iter)
             temp->parent->left = NULL;
         }
 
-        free(temp);
+        free(temp);*/
+
+        free(removed_node);
         return;
 	}
 
@@ -279,29 +326,57 @@ void BstRemove(bst_iter_t iter)
 	{
 		if (removed_node->left && removed_node->right->data == NULL)
         {
-            removed_node->left->parent = removed_node->parent;
-            removed_node->right->parent = removed_node->left;
-            if (removed_node->parent->right == removed_node)
+            if(removed_node->parent)
             {
-                removed_node->parent->right = NULL;
+                removed_node->left->parent = removed_node->parent;
+                removed_node->right->parent = removed_node->left;
+                if (removed_node->parent->right == removed_node)
+                {
+                    removed_node->parent->right = NULL;
+                }
+                else
+                {
+                    removed_node->parent->left = NULL;
+                }
             }
+
             else
             {
-                removed_node->parent->left = NULL;
+                iter_next_max.bst = iter.bst;
+                iter_next_max = BstIterPrev(iter);
+                printf("iter_max is %d\n", *(int *)BstIterGetData(iter_next_max));
+
+                iter_next_max.node->right = removed_node->right;
+                removed_node->right->parent = iter_next_max.node;
+
+                removed_node->left->parent = NULL;
+                iter.bst->root = removed_node->left;
+               
             }
         }
         
         else if (removed_node->right && removed_node->left == NULL)
         {
-            removed_node->right->parent = removed_node->parent;
-            if (removed_node->parent->right == removed_node)
+            if (removed_node->parent)
             {
-                removed_node->parent->right = removed_node->right;
+                removed_node->right->parent = removed_node->parent;
+
+                if (removed_node->parent->right == removed_node)
+                {
+                    removed_node->parent->right = removed_node->right;
+                }
+                else
+                {
+                    removed_node->parent->left = removed_node->right;
+                }
             }
+
             else
             {
-                removed_node->parent->left = removed_node->right;
+                iter.bst->root = removed_node->right;
+                iter.bst->root->parent = NULL;
             }
+            
         }
         
         else if (removed_node->left && removed_node->right == NULL)
@@ -418,7 +493,7 @@ bst_iter_t BstIterPrev(bst_iter_t iter)
     if (temp->left)
     {
         temp = temp->left;
-        while(temp->left)
+        while(temp->right)
         {
             temp = temp->right;
         }
@@ -481,15 +556,15 @@ bst_iter_t BstFind(bst_t *bst, const void *data)
             node = node->right;
         }
 
-        else
+        else if (-1 == result)
         {
             node = node->left;
         }
  
     }
 
-    iter_result = BstEnd(bst);
-    return iter_result;     /* data does not exist in tree */
+    iter_result = BstEnd(bst); /* data does not exist in tree */
+    return iter_result;     
 }
    
 

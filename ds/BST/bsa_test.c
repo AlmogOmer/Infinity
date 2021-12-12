@@ -144,12 +144,28 @@ int main()
     printf("tree before removing: \n");
     BstForEach(BstBegin(bst), BstEnd(bst), print, NULL);
     
+    from = BstIterPrev(BstEnd(bst));
+    BstRemove(from);
+    printf("tree after removing 14: \n");
+    BstForEach(BstBegin(bst), BstEnd(bst), print, NULL);
+    
+    from = BstFind(bst, &g);
+    BstRemove(from);
+    printf("tree after removing 4: \n");
+    BstForEach(BstBegin(bst), BstEnd(bst), print, NULL);
+    
+    from = BstFind(bst, &a);
+    BstRemove(from);
+    printf("tree after removing 8(root): \n");
+    BstForEach(BstBegin(bst), BstEnd(bst), print, NULL);
+    
+    from = BstFind(bst, &b);
     BstRemove(from);
     printf("tree after removing 10: \n");
     BstForEach(BstBegin(bst), BstEnd(bst), print, NULL);
 
-    from = BstBegin(bst);
-    from = BstIterNext(from);
+
+    from = BstFind(bst, &c);
     BstRemove(from);
     printf("tree after removing 3: \n");
     BstForEach(BstBegin(bst), BstEnd(bst), print, NULL);
@@ -159,10 +175,16 @@ int main()
     printf("tree after removing 1: \n");
     BstForEach(BstBegin(bst), BstEnd(bst), print, NULL);
 
-    from = BstIterPrev(BstEnd(bst));
+    from = BstFind(bst, &f);
     BstRemove(from);
-    printf("tree after removing 14: \n");
+    printf("tree after removing 7: \n");
     BstForEach(BstBegin(bst), BstEnd(bst), print, NULL);
+    
+    from = BstFind(bst, &d);
+    BstRemove(from);
+    printf("tree after removing 6: \n");
+    BstForEach(BstBegin(bst), BstEnd(bst), print, NULL);
+    
 
     BstDestroy(bst);
     return 0;
