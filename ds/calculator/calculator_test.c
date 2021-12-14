@@ -34,6 +34,9 @@ static void Test(void)
     assert(96 == Calculator("(3+5)*(4 + 8)"));
    
     assert(96 == Calculator("(((3)+5) * ((4 + 8)))"));
+
+    assert(55 == Calculator("30*2- (10+20) / 6"));
+   
    
     printf("SUCCESS");
 }

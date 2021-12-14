@@ -113,7 +113,7 @@ static void CalcOneOp()
 	double *num1 = NULL;
 	double *num2 = NULL;
 	double *num = NULL;
-	int op = 0;
+	char  *op = NULL;
 
 	num = (double *)malloc(sizeof(double));
 	if(NULL == num)
@@ -127,14 +127,15 @@ static void CalcOneOp()
 	num1 = (double *) StackPeek(num_stack);
 	StackPop(num_stack);
 	
-	op = *(char *) StackPeek(op_stack);
+	op = (char *) StackPeek(op_stack);
 	StackPop(op_stack);
 
 	
-	*num = lut[(int)op].calculate_func(*num1, *num2);
+	*num = lut[*op].calculate_func(*num1, *num2);
 	
 	free(num1);
 	free(num2);
+	free(op);
 
 	StackPush(num_stack, num);
 }
@@ -219,13 +220,16 @@ static const char *OpenParHandler(const char *str)
 static const char * CloseParHandler(const char *str)
 {
 
+	char *op = NULL;
 	while ((StackSize(op_stack) > 1) &&
 	('(' != *(char *) StackPeek(op_stack)))
 	{
 		CalcOneOp();
 	}
 
+	op = StackPeek(op_stack);
 	StackPop(op_stack);	/* pop the '(' */
+	free(op);
 
     return (++str);
 }
