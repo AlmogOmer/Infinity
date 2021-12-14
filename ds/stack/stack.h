@@ -5,6 +5,13 @@
 
 typedef struct Stack Stack_t;
 
+struct Stack
+{
+	size_t capacity;
+	size_t top;            /* index of the last variable*/
+	void **array;
+};
+
 
 /* Functions that manage the stack memory.
 
