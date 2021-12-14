@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 
-double Calculator(const char *expression);
+extern double Calculator(const char *expression);
 
 
 
