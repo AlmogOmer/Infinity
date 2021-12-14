@@ -18,9 +18,6 @@ struct op_data
     calculate_t calculate_func;
 };
 
-static op_data_t lut[128];
-
-
 static double Add(double num1, double num2);
 static double Substract(double num1, double num2);
 static double Multiply(double num1, double num2);
@@ -30,9 +27,17 @@ static const char *NumHandler(const char *str);
 static const char *OpHandler(const char *str);
 static const char *OpenParHandler(const char *str);
 static const char * CloseParHandler(const char *str);
+static const char *UnaryHandler(const char *str);
 static void CalcOneOp();
 static void LUTValues(int index ,int precedence, act_func_t handler_func, calculate_t calculate_func);
 static void LUTInit(void);
+
+
+static op_data_t lut[128];
+static act_func_t lut_unary[2] = {OpHandler,NumHandler};
+static int unary_status = 1;
+
+
 
 
 static void LUTInit(void)
@@ -47,11 +52,13 @@ static void LUTInit(void)
 	LUTValues('(',2,OpenParHandler ,NULL);
 	LUTValues(')',3,CloseParHandler ,NULL);
 
-	LUTValues('+',4,OpHandler ,Add);
-	LUTValues('-',4,OpHandler ,Substract);
+	LUTValues('+',4,UnaryHandler ,Add);
+	LUTValues('-',4,UnaryHandler ,Substract);
 	LUTValues('*',5,OpHandler ,Multiply);
 	LUTValues('/',5,OpHandler ,Divide);
 	LUTValues(' ',0,SpaceHandler ,NULL);
+
+	
 }
 
 static void LUTValues(int index ,int precedence, act_func_t handler_func, calculate_t calculate_func)
@@ -61,6 +68,8 @@ static void LUTValues(int index ,int precedence, act_func_t handler_func, calcul
 	lut[index].precedence = precedence;
 
 }
+
+
 static const char *NumHandler(const char *str)
 {
     double *num = NULL;
@@ -77,6 +86,7 @@ static const char *NumHandler(const char *str)
  
     StackPush(num_stack, num);
 
+	unary_status = 0;
     return end;
 }
 
@@ -99,7 +109,7 @@ static const char *OpHandler(const char *str)
 	{
 		CalcOneOp();
 	}
-
+	unary_status = 1;
 	StackPush(op_stack, op);
 
 	str += 1;
@@ -131,7 +141,7 @@ static void CalcOneOp()
 	StackPop(op_stack);
 
 	
-	*num = lut[*op].calculate_func(*num1, *num2);
+	*num = lut[(int)*op].calculate_func(*num1, *num2);
 	
 	free(num1);
 	free(num2);
@@ -149,7 +159,8 @@ double Calculator(const char *expression)
 	op_stack = StackCreate(50);
 
 	LUTInit();
-
+	unary_status = 1;
+	
     while (*expression)
     {
 		expression = lut[(int)*expression].handler_func(expression);
@@ -211,6 +222,7 @@ static const char *OpenParHandler(const char *str)
 	}
 
 	*op = *str;
+	unary_status = 1;
 	StackPush(op_stack, op);
     return (++str);
 }
@@ -230,9 +242,15 @@ static const char * CloseParHandler(const char *str)
 	op = StackPeek(op_stack);
 	StackPop(op_stack);	/* pop the '(' */
 	free(op);
-
+	
+	unary_status = 0;
     return (++str);
 }
 
+
+static const char *UnaryHandler(const char *str)
+{
+	return lut_unary[unary_status](str);
+}
 
 
