@@ -32,7 +32,6 @@ node_t *FlipList(node_t* node)
 
 }
 
-extern void Sort_stack(stack_t stack);
 
 int Strlen_recu(char *str)
 {

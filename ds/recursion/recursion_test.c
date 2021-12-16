@@ -2,6 +2,7 @@
 #include<assert.h>
 #include <string.h>
 #include "recursion.h"
+#include "stack_rec.h"
 
 static void Fibonacci_test();
 static void FlipList_test();
@@ -10,6 +11,7 @@ static void Srtcmp_test();
 static void Strcpy_test();
 /*static void Strcat_test();*/
 static void Strstr_test();
+static void stack_sort_test();
 
 int main()
 {
@@ -21,6 +23,7 @@ int main()
     Strcpy_test();
     /*Strcat_test();*/
     Strstr_test();
+    stack_sort_test();
 
     return 0;
 }
@@ -119,12 +122,34 @@ static void Strcpy_test()
 
 static void Strstr_test()
 {    
-    char *haystack = "hello";
+    char *haystack = "llhello";
     char *needle = "llo";
 	
     assert(0 == strcmp(Strstr_recu(haystack, needle), "llo"));
 
     puts("success StrStr test\n");
 }
+
+static void stack_sort_test()
+{
+    struct Stack *stack = NULL;
+    stack = createStack(7);
+    push(stack, 5);
+    push(stack, 1);
+    push(stack, 6);
+    push(stack, 3);
+    push(stack, 2);
+    push(stack, 7);
+    push(stack, 4);
+
+    printf("Unsorted Stack:\n");
+    Print(stack);
+    Sort_stack(stack);
+
+    printf("Sorted Stack:\n");
+    Print(stack);
+
+}
+
 
 
