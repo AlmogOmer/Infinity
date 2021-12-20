@@ -11,7 +11,7 @@ static void Test1(void);
 int main(void)
 {
 	Test();
-	/*Test1();*/
+	Test1();
 
 	return 0;
 }
@@ -44,7 +44,7 @@ static int PrintInt(const void *data, const void *param)
 
 static void Test(void)
 {
-	static int arr[8] = {8, 3, 10, 14, 6, 1, 4, 7};
+	static int arr[13] = {15 ,6, 3, 9, 7, 8, 2, 4, 14, 12, 13, 11, 10};
 	size_t i = 0;
 	avl_t *tree = AvlCreate(CmpInt, NULL);
 	assert(tree);
@@ -52,18 +52,24 @@ static void Test(void)
 	assert(0 == AvlSize(tree));
 /*	assert(0 == AVLTreeHeight(tree));*/
 
-	for (i = 0; i < 8; i++)
+	for (i = 0; i < 13; i++)
 	{
 		assert(0 == AvlInsert(tree, &arr[i]));
 		assert(i + 1 == AvlSize(tree));
 		assert(!AvlIsEmpty(tree));
 	}
 
+	assert(6 == *(int *)AvlFind(tree, &arr[1]));
+	
 	AvlForEach(tree, PrintInt, NULL, IN_ORDER);
 	puts("*****************");
 	AvlForEach(tree, PrintInt, NULL, PRE_ORDER);
 	puts("*****************");
-	AvlForEach(tree, PrintInt, NULL, POST_ORDER);
+	AvlForEach(tree, PrintInt, NULL, PRE_ORDER);
+	AvlRemove(tree, &arr[3]);
+	puts("********after remove********");
+	AvlForEach(tree, PrintInt, NULL, PRE_ORDER);
+	
 	
 	AvlDestroy(tree);
 
@@ -93,17 +99,21 @@ static void Test1(void)
 	assert(!AvlIsEmpty(tree));
 
 	assert(1 == AvlForEach(tree, PrintInt, NULL,IN_ORDER));
-	puts("*************");
+	puts("*****after removing 18********");
 
 	AvlRemove(tree, &arr9[14]);
 	assert(1 == AvlForEach(tree, PrintInt, NULL,IN_ORDER));
-	puts("*************");
+	printf("after removing 18, tree height is %ld\n", AvlHeight(tree));
+
+	puts("******after removing 12*******");
 	AvlRemove(tree, &arr9[3]);
 	assert(1 == AvlForEach(tree, PrintInt, NULL,IN_ORDER));
-	puts("*************");
+	printf("after removing 12, tree height is %ld\n", AvlHeight(tree));
+
+	puts("******after removing 13*******");
 	AvlRemove(tree, &arr9[0]);
 	assert(1 == AvlForEach(tree, PrintInt, NULL,IN_ORDER));
-	puts("*************");
+	printf("after removing 13, tree height is %ld\n", AvlHeight(tree));
 
 	assert(AvlSize(tree) == (15 - 3));
 
