@@ -23,18 +23,18 @@ struct avl_node
 };
 
 static size_t Height(node_t *node);
-static int GetBF(node_t *root);
-static node_t *RotRight(node_t *root);
-static node_t *RotLeft(node_t *root);
+static int GetBF(node_t *node);
+static node_t *RotRight(node_t *node);
+static node_t *RotLeft(node_t *node);
 static node_t *Balance(node_t *root);
 static node_t *CreateNode(const void *data);
-static void DestroyRec(node_t *root);
+static void DestroyRec(node_t *node);
 static size_t AvlSizeRec(node_t *root);
-static node_t *InsertRec(node_t *root, node_t *new_node, compare_func_t cmp_func, const void *param);
-static node_t *FindMin(node_t *root);
-static node_t *ConnectRight (node_t *root);
-static node_t *RemoveRec(node_t *root, const void *data, compare_func_t cmp_func, const void *param);
-static const void *FindRec(node_t *root, const void *data_to_match, compare_func_t cmp_func, const void *param);
+static node_t *InsertRec(node_t *curr_node, node_t *new_node, compare_func_t cmp_func, const void *param);
+static node_t *FindMin(node_t *node);
+static node_t *ConnectRight (node_t *node);
+static node_t *RemoveRec(node_t *node, const void *data, compare_func_t cmp_func, const void *param);
+static const void *FindRec(node_t *node, const void *data_to_match, compare_func_t cmp_func, const void *param);
 static int InOrderTraverse(node_t *root, action_func_t act_func, const void *param);
 static int PreOrderTraverse(node_t *root, action_func_t act_func, const void *param);
 static int PostOrderTraverse(node_t *root, action_func_t act_func, const void *param);
@@ -51,30 +51,30 @@ static size_t Height(node_t *node)
 }
 
 /* calculate the balance factor */
-static int GetBF(node_t *root)
+static int GetBF(node_t *node)
 {
-	return (Height(root->left) - Height(root->right));
+	return (Height(node->left) - Height(node->right));
 }
 
-static node_t *RotRight(node_t *root)
+static node_t *RotRight(node_t *node)
 {
-	node_t *pivot = root->left;
-	root->left = pivot->right;
-	pivot->right = root;
+	node_t *pivot = node->left;
+	node->left = pivot->right;
+	pivot->right = node;
 
-	root->height = 1 + (MAX(Height(root->left), Height(root->right)));
+	node->height = 1 + (MAX(Height(node->left), Height(node->right)));
 	pivot->height = 1 + (MAX(Height(pivot->left), Height(pivot->right)));
 
 	return pivot;
 }
 
-static node_t *RotLeft(node_t *root)
+static node_t *RotLeft(node_t *node)
 {
-	node_t *pivot = root->right;
-	root->right = pivot->left;
-	pivot->left = root;
+	node_t *pivot = node->right;
+	node->right = pivot->left;
+	pivot->left = node;
 
-	root->height = 1 + (MAX(Height(root->left), Height(root->right)));
+	node->height = 1 + (MAX(Height(node->left), Height(node->right)));
 	pivot->height = 1 + (MAX(Height(pivot->left), Height(pivot->right)));
 	
 	return pivot;
@@ -130,7 +130,8 @@ static node_t *CreateNode(const void *data)
 /* Create new AVL */
 avl_t *AvlCreate(compare_func_t cmp_func, const void *param)
 {
-    avl_t *tree = (avl_t *) malloc(1 *sizeof(avl_t));
+    avl_t *tree = NULL;
+	tree = (avl_t *) malloc(sizeof(avl_t));
 	if(!tree)
 	{
 		return NULL;
@@ -144,16 +145,16 @@ avl_t *AvlCreate(compare_func_t cmp_func, const void *param)
 }
 
 /* recursive post order traversal for freeing all allocated nodes */
-static void DestroyRec(node_t *root)
+static void DestroyRec(node_t *node)
 {
-	if (NULL == root)
+	if (NULL == node)
 	{
 		return;
 	}
 
-	DestroyRec(root->left);
-	DestroyRec(root->right);
-	free(root);
+	DestroyRec(node->left);
+	DestroyRec(node->right);
+	free(node);
 }
 
 /* complexity O(n) */
@@ -202,29 +203,29 @@ int AvlIsEmpty(const avl_t *avl)
 }
 
 /* recursive function for insertion of new node */
-static node_t *InsertRec(node_t *root, node_t *new_node, compare_func_t cmp_func, const void *param)
+static node_t *InsertRec(node_t *curr_node, node_t *new_node, compare_func_t cmp_func, const void *param)
 {
 	int result = 0;
 	
-	if (NULL == root)
+	if (NULL == curr_node)
 	{
 		return new_node;
 	}
 
-	result = cmp_func(root->data, new_node->data, param);
+	result = cmp_func(curr_node->data, new_node->data, param);
 
 	assert(0 != result); /*check if already in tree*/
 
 	if (result < 0)
 	{
-		root->right = InsertRec(root->right, new_node, cmp_func, param);
+		curr_node->right = InsertRec(curr_node->right, new_node, cmp_func, param);
 	}
 	else
 	{
-		root->left = InsertRec(root->left, new_node, cmp_func, param);
+		curr_node->left = InsertRec(curr_node->left, new_node, cmp_func, param);
 	}
 
-	return Balance(root); 
+	return Balance(curr_node); 
 }
 
 /* complexity O(logn) */
@@ -238,63 +239,63 @@ int AvlInsert(avl_t *avl, const void *data)
 	}
 
 	avl->root = InsertRec(avl->root, new_node, avl->cmp_func, avl->param);
-	return 0;	
+	return !avl->root;	
 }
 
 
 /* recursive function that find the minimum */
-static node_t *FindMin(node_t *root)
+static node_t *FindMin(node_t *node)
 {
-	if (root->left)
+	if (node->left)
 	{
-		return FindMin(root->left);
+		return FindMin(node->left);
 	}
 	
-	return root;
+	return node;
 }
 
-static node_t *ConnectRight (node_t *root)
+static node_t *ConnectRight (node_t *node)
 {
-	if (NULL == root->left)
+	if (NULL == node->left)
 	{
-		return root->right;
+		return node->right;
 	}
 
-	root->left = ConnectRight(root->left); /*connecting the right childe of the successor 
+	node->left = ConnectRight(node->left); /*connecting the right child of the successor 
 	                                       to be the left child of the node we sent to the function*/
-	return root;
+	return node;
 }
 
 /* recursive function that find a node and remove it */
-static node_t *RemoveRec(node_t *root, const void *data, compare_func_t cmp_func, const void *param)
+static node_t *RemoveRec(node_t *node, const void *data, compare_func_t cmp_func, const void *param)
 {
 	int cmp_result = 0;
 	node_t *child_left;
 	node_t *child_right;
 	node_t *next = NULL;
 
-	if (NULL == root)
+	if (NULL == node)
 	{
 		return NULL;
 	}
 
-	cmp_result = cmp_func(root->data, data, param);
+	cmp_result = cmp_func(node->data, data, param);
 
 	if (cmp_result < 0)
 	{
-		root->right = RemoveRec(root->right, data, cmp_func, param);
-		return Balance(root); 
+		node->right = RemoveRec(node->right, data, cmp_func, param);
+		return Balance(node); 
 	}
 	if (cmp_result > 0)
 	{
-		root->left = RemoveRec(root->left, data, cmp_func, param);
-		return Balance(root);
+		node->left = RemoveRec(node->left, data, cmp_func, param);
+		return Balance(node);
 	}
 
 
-	child_left = root->left;
-	child_right = root->right;
-	free(root);
+	child_left = node->left;
+	child_right = node->right;
+	free(node);
 
 	if (NULL == child_right)
 	{
@@ -306,7 +307,6 @@ static node_t *RemoveRec(node_t *root, const void *data, compare_func_t cmp_func
 	next->left = child_left;
 
 	return Balance(next);
-	
 
 }
 
@@ -314,34 +314,31 @@ static node_t *RemoveRec(node_t *root, const void *data, compare_func_t cmp_func
 /* Remove a node  */
 void AvlRemove(avl_t *avl, const void *data)
 {
-	
 	avl->root = RemoveRec(avl->root, data, avl->cmp_func, avl->param);
-
-	return;
 } 
 
 /* recursive function that find node */
-static const void *FindRec(node_t *root, const void *data_to_match, compare_func_t cmp_func, const void *param)
+static const void *FindRec(node_t *node, const void *data_to_match, compare_func_t cmp_func, const void *param)
 {
 	int result = 0;
 	
-	if (NULL == root)
+	if (NULL == node)
 	{
 		return NULL;
 	}
 
-	result = cmp_func(root->data, data_to_match, param);
+	result = cmp_func(node->data, data_to_match, param);
 
 	if (result < 0)
 	{
-		return FindRec(root->right, data_to_match, cmp_func, param);
+		return FindRec(node->right, data_to_match, cmp_func, param);
 	}
 	else if (result > 0)
 	{
-		return FindRec(root->left, data_to_match, cmp_func, param);
+		return FindRec(node->left, data_to_match, cmp_func, param);
 	}
 
-	return root->data;
+	return node->data;
 }
 
 /* complexity O(logn) */

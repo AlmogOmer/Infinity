@@ -48,18 +48,40 @@ static void Test(void)
 	size_t i = 0;
 	avl_t *tree = AvlCreate(CmpInt, NULL);
 	assert(tree);
-	assert(AvlIsEmpty(tree));
-	assert(0 == AvlSize(tree));
-/*	assert(0 == AVLTreeHeight(tree));*/
+	if (1 != AvlIsEmpty(tree))
+	{
+		printf("fail in %d\n", __LINE__);
+	}
+	
+	if (0 != AvlSize(tree))
+	{
+		printf("fail in %d\n", __LINE__);
+	}
+
 
 	for (i = 0; i < 13; i++)
 	{
-		assert(0 == AvlInsert(tree, &arr[i]));
-		assert(i + 1 == AvlSize(tree));
-		assert(!AvlIsEmpty(tree));
+		if (0 != AvlInsert(tree, &arr[i]))
+		{
+			printf("fail in %d\n", __LINE__);
+		}
+		
+		if (i + 1 != AvlSize(tree))
+		{
+			printf("fail in %d\n", __LINE__);
+		}
+		
+		if (0 != AvlIsEmpty(tree))
+		{
+			printf("fail in %d\n", __LINE__);
+		}
+
 	}
 
-	assert(6 == *(int *)AvlFind(tree, &arr[1]));
+	if (6 != *(int *)AvlFind(tree, &arr[1]))
+	{
+		printf("fail in %d\n", __LINE__);
+	}
 	
 	AvlForEach(tree, PrintInt, NULL, IN_ORDER);
 	puts("*****************");
@@ -85,18 +107,36 @@ static void Test1(void)
 	static int arr9[15] = {13, 3, 4, 12, 14, 10, 5, 1, 8, 2, 7, 9, 11, 6, 18};
 	size_t i = 0;
 	assert(tree);
-	assert(AvlIsEmpty(tree));
+	if (1 != AvlIsEmpty(tree))
+	{
+		printf("fail in %d\n", __LINE__);
+	}
 
 	for (i = 0; i < 15; i++)
 	{
-		assert(AvlSize(tree) == i);
-		assert(0 == AvlInsert(tree, arr9 + i));
+		if (i != AvlSize(tree))
+		{
+			printf("fail in %d\n", __LINE__);
+		}
+		
+		if (0 != AvlInsert(tree, arr9 + i))
+		{
+			printf("fail in %d\n", __LINE__);
+		}
+		
 		printf("after %ld insertions, tree height is %ld\n", (i + 1), AvlHeight(tree));
 	}
 
-	assert(AvlSize(tree) == 15);
+	if (15 != AvlSize(tree))
+	{
+		printf("fail in %d\n", __LINE__);
+	}
+	
+	if (0 != AvlIsEmpty(tree))
+	{
+		printf("fail in %d\n", __LINE__);
+	}
 
-	assert(!AvlIsEmpty(tree));
 
 	assert(1 == AvlForEach(tree, PrintInt, NULL,IN_ORDER));
 	puts("*****after removing 18********");
@@ -115,7 +155,11 @@ static void Test1(void)
 	assert(1 == AvlForEach(tree, PrintInt, NULL,IN_ORDER));
 	printf("after removing 13, tree height is %ld\n", AvlHeight(tree));
 
-	assert(AvlSize(tree) == (15 - 3));
+
+	if (15-3 != AvlSize(tree))
+	{
+		printf("fail in %d\n", __LINE__);
+	}
 	
 	AvlDestroy(tree);
 
