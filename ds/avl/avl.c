@@ -269,8 +269,8 @@ static node_t *ConnectRight (node_t *root)
 static node_t *RemoveRec(node_t *root, const void *data, compare_func_t cmp_func, const void *param)
 {
 	int cmp_result = 0;
-	node_t *chlid_left;
-	node_t *chlid_right;
+	node_t *child_left;
+	node_t *child_right;
 	node_t *next = NULL;
 
 	if (NULL == root)
@@ -292,18 +292,18 @@ static node_t *RemoveRec(node_t *root, const void *data, compare_func_t cmp_func
 	}
 
 
-	chlid_left = root->left;
-	chlid_right = root->right;
+	child_left = root->left;
+	child_right = root->right;
 	free(root);
 
-	if (NULL == chlid_right)
+	if (NULL == child_right)
 	{
-		return chlid_left;
+		return child_left;
 	}
 
-	next = FindMin(chlid_right);
-	next->right = ConnectRight(chlid_right); 
-	next->left = chlid_left;
+	next = FindMin(child_right);
+	next->right = ConnectRight(child_right); 
+	next->left = child_left;
 
 	return Balance(next);
 	
@@ -314,6 +314,7 @@ static node_t *RemoveRec(node_t *root, const void *data, compare_func_t cmp_func
 /* Remove a node  */
 void AvlRemove(avl_t *avl, const void *data)
 {
+	
 	avl->root = RemoveRec(avl->root, data, avl->cmp_func, avl->param);
 
 	return;

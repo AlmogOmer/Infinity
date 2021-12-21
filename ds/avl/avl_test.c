@@ -116,7 +116,7 @@ static void Test1(void)
 	printf("after removing 13, tree height is %ld\n", AvlHeight(tree));
 
 	assert(AvlSize(tree) == (15 - 3));
-
+	
 	AvlDestroy(tree);
 
 	puts("*****************");
