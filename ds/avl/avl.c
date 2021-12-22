@@ -130,7 +130,7 @@ static node_t *CreateNode(const void *data)
 /* Create new AVL */
 avl_t *AvlCreate(compare_func_t cmp_func, const void *param)
 {
-    avl_t *tree = NULL;
+	avl_t *tree = NULL;
 	tree = (avl_t *) malloc(sizeof(avl_t));
 	if(!tree)
 	{
@@ -270,8 +270,8 @@ static node_t *ConnectRight (node_t *node)
 static node_t *RemoveRec(node_t *node, const void *data, compare_func_t cmp_func, const void *param)
 {
 	int cmp_result = 0;
-	node_t *child_left;
-	node_t *child_right;
+	node_t *child_left = NULL;
+	node_t *child_right = NULL;
 	node_t *next = NULL;
 
 	if (NULL == node)

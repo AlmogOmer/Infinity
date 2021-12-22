@@ -2,6 +2,7 @@
 #include "doubly_linked_list.h"
 #include <assert.h>
 #include <stdio.h>
+#define UNUSED(x) (void)(x)
 
 void TestSplice1();
 void TestSplice2();
@@ -13,7 +14,7 @@ void TestSplice7();
 void TestSplice8();
 void TestSpliceAll();
 
-int PrintAll (void *data, void *param)
+int PrintAll (const void *data, const void *param)
 {
 	if(NULL == data || NULL == param)
 	{
@@ -35,7 +36,7 @@ void DListPrint(dlist_t *list)
 
 
 
-static int print(void* data, void* param)
+static int print(const void* data, const void* param)
 {
 
 	(void)param;
@@ -45,10 +46,12 @@ static int print(void* data, void* param)
 
 
 
-static int is_match_func(void* data, void* param)
+static int cmp_func(const void* curr_data, const void* requested_data ,const void* param)
 {
 
-    if (*(int *)data == *(int*)param)
+    UNUSED(requested_data);
+	
+	if (*(int *)curr_data == *(int*)param)
     {
         return 1;
     }
@@ -123,7 +126,7 @@ int main()
 		printf("fail in %d\n", __LINE__);
 	}
 	
-	iter2 = DListFind(DListBegin(list), DListEnd(list), is_match_func, &c);
+	iter2 = DListFind(DListBegin(list), DListEnd(list), cmp_func, &c, NULL);
 	
 	if(!(*(int*)DListIterGetData(iter2) == 100))
 	{

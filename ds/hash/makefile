@@ -4,13 +4,13 @@
 ROOT_DIR = ../..
 
 #PROJ_SRCS = $(wildcard *.c)
-PROJ_SRCS = $(wildcard *.c)
+PROJ_SRCS = hash_table.c hash_test.c 
 
 # list of directories containing header files
-PROJ_INC_DIR = ../include
+PROJ_INC_DIR = ../doubly_list ../include
 
 # the executable file
-PROJ_OUT = doubly.out
+PROJ_OUT = hash.out
 
 # list of ADDITIONAL compiler flags (prepended with "-" sign)
 #PROJ_CFLAGS = -Wunused-but-set-variable
@@ -21,7 +21,7 @@ PROJ_CPPFLAGS =
 PROJ_MACROS =
 
 # additional object files (created by other projects)
-PROJ_ADD_OBJS = 
+PROJ_ADD_OBJS = doubly_linked_list.o
 
 # additional libraries
 PROJ_LIBS =
@@ -30,9 +30,6 @@ PROJ_LIBS =
 PROJ_LDFLAGS =
 
 # list of projects (makefiles) this project depends on
-PROJ_DEPENDS  =
+PROJ_DEPENDS  = ../doubly_list/makefile
 
 include $(ROOT_DIR)/include/make/Project.mak
-
-
-

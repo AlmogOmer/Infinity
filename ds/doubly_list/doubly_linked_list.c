@@ -259,7 +259,7 @@ void* DListIterGetData(dlist_iter_t iter)
 
 }
 
-dlist_iter_t DListFind(dlist_iter_t from, dlist_iter_t to, match_func_t is_match_func, void *param)
+dlist_iter_t DListFind(dlist_iter_t from, dlist_iter_t to, cmp_func_t cmp_func, const void *param, const void *data)
 {
 	dlist_iter_t match_iter;
 	
@@ -268,7 +268,7 @@ dlist_iter_t DListFind(dlist_iter_t from, dlist_iter_t to, match_func_t is_match
 	
 	while (!DListIterIsEqual(from, to))
 	{
-		if(is_match_func((void *)from.node->data, param))
+		if(cmp_func(from.node->data, data, param))
 		{
 			match_iter = from;
 			break;
@@ -280,13 +280,13 @@ dlist_iter_t DListFind(dlist_iter_t from, dlist_iter_t to, match_func_t is_match
 	return match_iter;
 }
 
-int DListForEach(dlist_iter_t from, dlist_iter_t to, action_func_t action_func, void *param)
+int DListForEach(dlist_iter_t from, dlist_iter_t to, action_func_t action_func, const void *param)
 {
 	assert(from.node && to.node);
 	 
 	while (from.node != to.node)
 	{
-		if(!action_func((void *)from.node->data, param))
+		if(!action_func(from.node->data, param))
 		{
 			return 0;
 		}

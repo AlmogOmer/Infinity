@@ -2,13 +2,11 @@
 #define __SINGLY_LIST_H__
 
 #include <stdlib.h>
-
+#include "common_types.h"
 
 typedef struct DList dlist_t;
 typedef struct DListNode dnode_t;
 
-typedef int (*action_func_t)(void *data, void *param);
-typedef int (*match_func_t)(void *data, void *param);
 
 typedef struct
 {
@@ -33,8 +31,8 @@ extern dlist_iter_t DListIterPrev(dlist_iter_t iter);
 extern int DListIterIsEqual(dlist_iter_t iter1, dlist_iter_t iter2);
 extern void* DListIterGetData(dlist_iter_t iter);
 
-dlist_iter_t DListFind(dlist_iter_t from, dlist_iter_t to, match_func_t is_match_func, void *param);
-int DListForEach(dlist_iter_t from, dlist_iter_t to, action_func_t action_func, void *param);
+dlist_iter_t DListFind(dlist_iter_t from, dlist_iter_t to, cmp_func_t cmp_func, const void *param, const void *data);
+int DListForEach(dlist_iter_t from, dlist_iter_t to, action_func_t action_func, const void *param);
 
 
 

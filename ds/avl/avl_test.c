@@ -103,23 +103,28 @@ static void Test(void)
 
 static void Test1(void)
 {
+	size_t size = 15;
 	avl_t *tree = AvlCreate(CmpInt, NULL);
 	static int arr9[15] = {13, 3, 4, 12, 14, 10, 5, 1, 8, 2, 7, 9, 11, 6, 18};
 	size_t i = 0;
 	assert(tree);
+	for (i = 0; i < size; ++i)
+	{
+		arr9[i] = i;
+	} 
 	if (1 != AvlIsEmpty(tree))
 	{
 		printf("fail in %d\n", __LINE__);
 	}
 
-	for (i = 0; i < 15; i++)
+	for (i = 0; i < size; ++i)
 	{
 		if (i != AvlSize(tree))
 		{
 			printf("fail in %d\n", __LINE__);
 		}
 		
-		if (0 != AvlInsert(tree, arr9 + i))
+		if (0 != AvlInsert(tree, &arr9[i]))
 		{
 			printf("fail in %d\n", __LINE__);
 		}
@@ -127,7 +132,7 @@ static void Test1(void)
 		printf("after %ld insertions, tree height is %ld\n", (i + 1), AvlHeight(tree));
 	}
 
-	if (15 != AvlSize(tree))
+	if (size != AvlSize(tree))
 	{
 		printf("fail in %d\n", __LINE__);
 	}
@@ -156,10 +161,55 @@ static void Test1(void)
 	printf("after removing 13, tree height is %ld\n", AvlHeight(tree));
 
 
-	if (15-3 != AvlSize(tree))
+	if (size-3 != AvlSize(tree))
 	{
 		printf("fail in %d\n", __LINE__);
 	}
+	
+	puts("******after removing *******");
+	AvlRemove(tree, &arr9[1]);
+	assert(1 == AvlForEach(tree, PrintInt, NULL,IN_ORDER));
+	printf("after removing, tree height is %ld\n", AvlHeight(tree));
+
+	puts("******after removing *******");
+	AvlRemove(tree, &arr9[2]);
+	assert(1 == AvlForEach(tree, PrintInt, NULL,IN_ORDER));
+	printf("after removing, tree height is %ld\n", AvlHeight(tree));
+
+	puts("******after removing*******");
+	AvlRemove(tree, &arr9[4]);
+	assert(1 == AvlForEach(tree, PrintInt, NULL,IN_ORDER));
+	printf("after removing, tree height is %ld\n", AvlHeight(tree));
+	
+	puts("******after removing *******");
+	AvlRemove(tree, &arr9[5]);
+	assert(1 == AvlForEach(tree, PrintInt, NULL,IN_ORDER));
+	printf("after removing, tree height is %ld\n", AvlHeight(tree));
+	
+	puts("******after removing *******");
+	AvlRemove(tree, &arr9[6]);
+	assert(1 == AvlForEach(tree, PrintInt, NULL,IN_ORDER));
+	printf("after removing, tree height is %ld\n", AvlHeight(tree));
+	
+	puts("******after removing *******");
+	AvlRemove(tree, &arr9[7]);
+	assert(1 == AvlForEach(tree, PrintInt, NULL,IN_ORDER));
+	printf("after removing, tree height is %ld\n", AvlHeight(tree));
+	
+	puts("******after removing *******");
+	AvlRemove(tree, &arr9[8]);
+	assert(1 == AvlForEach(tree, PrintInt, NULL,IN_ORDER));
+	printf("after removing, tree height is %ld\n", AvlHeight(tree));
+	
+	puts("******after removing *******");
+	AvlRemove(tree, &arr9[9]);
+	assert(1 == AvlForEach(tree, PrintInt, NULL,IN_ORDER));
+	printf("after removing, tree height is %ld\n", AvlHeight(tree));
+
+	puts("******after removing *******");
+	AvlRemove(tree, &arr9[10]);
+	assert(1 == AvlForEach(tree, PrintInt, NULL,IN_ORDER));
+	printf("after removing, tree height is %ld\n", AvlHeight(tree));
 	
 	AvlDestroy(tree);
 
