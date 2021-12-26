@@ -10,7 +10,9 @@ typedef struct DListNode dnode_t;
 
 typedef struct
 {
-	dnode_t* node;
+   dlist_t *list;
+   dnode_t* node;
+  
 } dlist_iter_t;
 
 

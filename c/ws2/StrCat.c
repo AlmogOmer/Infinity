@@ -42,3 +42,5 @@ char *StrCpy(char *dest, const char *src)
 	*dest = '\0';
 	return dest_ptr;
 }
+
+

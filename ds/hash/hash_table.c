@@ -62,6 +62,7 @@ int HashInsert(hash_t *hash, const void *data)
     size_t i = 0;
 
 	assert(hash);
+	assert (!HashFind(hash, data));
 
 	i = (hash->hash_func(data, hash->param)) % hash->hash_size;
 
@@ -85,9 +86,8 @@ void HashRemove(hash_t *hash, const void *data)
 
 	assert(hash);
 
-	i = hash->hash_func(data, hash->param);
-	assert(i < hash->hash_size);
-
+	i = (hash->hash_func(data, hash->param)) % hash->hash_size;
+	
 	if (!hash->hash_table[i])
 	{
 		return;
@@ -145,12 +145,41 @@ int HashIsEmpty(hash_t *hash)
 /* Find a data in the table  */
 void *HashFind(hash_t *hash, const void *data)
 {
+	dlist_iter_t iter;
+	size_t i = 0;
+	assert(hash);
+
+	i = (hash->hash_func(data, hash->param)) % hash->hash_size;
+	if(hash->hash_table[i])
+	{
+		iter = DListFind(DListBegin(hash->hash_table[i]), DListEnd(hash->hash_table[i]), hash->cmp_func, hash->param, data);
+		if (!DListIterIsEqual(iter, DListEnd(hash->hash_table[i])))
+		{
+			return DListIterGetData(iter);
+		}	
+		
+	}
+
+	return NULL;
 
 }
 
 /* Execute operation on each element in table */
 int HashForEach(hash_t *hash, action_func_t action_func, const void *param)
 {
+	size_t i;
+	for (i = 0; i < hash->hash_size; ++i)
+	{
+		if (hash->hash_table[i])
+		{
+			if (!DListForEach(DListBegin(hash->hash_table[i]), DListEnd(hash->hash_table[i]), action_func, param))
+			{
+				return 0;
+			}
+		}
+	}
+
+	return 1;
 
 }
 

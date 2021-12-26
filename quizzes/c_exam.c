@@ -225,7 +225,7 @@ int main()
     unsigned int n = 1;
     unsigned char u = 7;
     char byte = 1;
-    unsigned nbits = 2;
+    unsigned int nbits = 2;
     int y = 4;
     int x = 1234;
     int *px = &x;

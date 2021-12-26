@@ -90,6 +90,7 @@ dlist_iter_t DListBegin(dlist_t *list)
 	dlist_iter_t begin_iter;
 	assert(list);
 	
+	begin_iter.list = list;
 	begin_iter.node = list->head;
 	
 
@@ -111,7 +112,8 @@ dlist_iter_t DListEnd(dlist_t *list)
 	}
 	
 	end_iter.node = temp; 	
-	
+	end_iter.list = list;
+
 	return end_iter;
 
 
@@ -145,7 +147,7 @@ dlist_iter_t DListInsert(dlist_iter_t iter, const void *item)
 	assert(item && iter.node);
 	if (NULL == new_node)
 	{
-		return iter;	
+		return DListEnd(iter.list);	
 	}
 	
 	new_node->data = iter.node->data; /*data allocation to the precedent node*/
@@ -182,9 +184,10 @@ void DListRemove(dlist_iter_t iter)
 
 	if(iter.node -> next != NULL) /*in case of deletion of last element before dummy*/
 	{
-        	iter.node -> next -> prev = iter.node;      	 	
-        }
-        free(temp);
+        iter.node -> next -> prev = iter.node;      	 	
+	}
+        
+	free(temp);
 
 
 }
@@ -271,13 +274,13 @@ dlist_iter_t DListFind(dlist_iter_t from, dlist_iter_t to, cmp_func_t cmp_func, 
 		if(cmp_func(from.node->data, data, param))
 		{
 			match_iter = from;
-			break;
+			return match_iter;
 		}
 		
 		from.node = from.node->next;
 	}
 	
-	return match_iter;
+	return DListEnd(from.list);
 }
 
 int DListForEach(dlist_iter_t from, dlist_iter_t to, action_func_t action_func, const void *param)
