@@ -159,9 +159,8 @@ void *HashFind(hash_t *hash, const void *data)
 		}	
 		
 	}
-
+	
 	return NULL;
-
 }
 
 /* Execute operation on each element in table */

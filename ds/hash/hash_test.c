@@ -1,23 +1,27 @@
 #include<stdio.h>
 #include<string.h>
+#include<assert.h>
 #include "hash_table.h"
 #include "doubly_linked_list.h"
 
 #define UNUSED(x) (void)(x)
 
 
-void Test();
+static void Test();
+static void Test1(void);
 size_t StringHash(const void *data, const void *param);
 static int Strcmp(const void *data1, const void *data2, const void *param);
 static int Print(const void *data, const void *param);
+static int FreeStr(const void *data, const void *param);
 
 int main()
 {
     Test();
+	Test1();
 	return 0;
 }
 
-void Test()
+static void Test()
 {
     hash_t *hash = NULL;
 	size_t size = 10;
@@ -131,7 +135,54 @@ void Test()
     HashDestroy(hash);
 }
 
+static void Test1(void)
+{
+    size_t size = 100;
+	char line[25] = {0};
+    hash_t *dict_hash = HashCreate(StringHash, Strcmp, size, NULL);
+    FILE *dict_file = fopen("/usr/share/dict/words", "r");
+    if (!dict_hash)
+    {
+        puts("no dict hash");
+        return;
+    }
+    if (!dict_file)
+    {
+        puts("no dict found");
+        return;
+    }
 
+    while (fgets(line, 100, dict_file))
+    {
+        char *str = (char *) malloc(strlen(line));
+        if (!str)
+        {
+            puts("string fail");
+            return;
+        }
+		line[strlen(line) - 1] = '\0'; /*for removing the "/n"*/
+        strcpy(str, line);
+        assert(0 == HashInsert(dict_hash, str));
+    }
+
+	printf("pleas enter your word: ");
+	scanf("%s", line);
+
+	if (NULL == HashFind(dict_hash, line))
+	{
+		printf("no such word %s\n", line);
+	}
+	else
+	{
+		printf("word in dic: %s\n", line);
+	}
+
+	HashForEach(dict_hash, FreeStr, NULL);
+
+    HashDestroy(dict_hash);
+    fclose(dict_file);
+    puts("SUCCESS");
+}
 
 size_t StringHash(const void *data, const void *param)
 {
@@ -165,6 +216,12 @@ static int Print(const void *data, const void *param)
 	return 1;
 }
 
+static int FreeStr(const void *data, const void *param)
+{
+    free((void*)data);
+    UNUSED(param);
+    return 1;
+}
 
 
 
