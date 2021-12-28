@@ -1,53 +1,35 @@
-CC = gcc
-CFLAGS = -ansi -pedantic-errors -Wall -Wextra
-DEBUG = -g
+# make clean/all CONFIG=Debug/Release ARCH=linux64/raspi ECHO=0/1
 
-#write here all the c files
-SRC = bubble.c insertion.c selection.c comparison_test.c 
-#####
+# the parrent dir of "arch" dir
+ROOT_DIR = ../..
 
-#write here all the obj files in the obj directory that you need
-PROTECTEDOBJ = 
-##########
+#PROJ_SRCS = $(wildcard *.c)
+PROJ_SRCS = bubble.c insertion.c selection.c quick_sort.c merge_sort.c binary_search.c comparison_test.c
 
-OBJ = $(filter %.o, $(SRC:%.c=../obj/%.o))
-OBJ_DEBUG = $(SRC:.c=.dbg.o)
+# list of directories containing header files
+PROJ_INC_DIR =
 
-#write here the target name
-TARGET = comparison.out
-######
+# the executable file
+PROJ_OUT = comparison.out
 
-$(TARGET) :$(OBJ) 
-	@$(CC) $(CFLAGS) $(OBJ) $(PROTECTEDOBJ) -o $(TARGET)
+# list of ADDITIONAL compiler flags (prepended with "-" sign)
+#PROJ_CFLAGS = -Wunused-but-set-variable
+PROJ_CFLAGS =
+PROJ_CPPFLAGS =
 
-../obj/%.o: %.c 
-	@$(CC) $(CFLAGS) -c -o $(@D)/$(*F).o $< 
+#PROJ_MACROS = _BSD_SOURCE
+PROJ_MACROS =
 
-%.dbg.o: %.c 
-	@$(CC) $(CFLAGS) $(DEBUG) $< -c 
+# additional object files (created by other projects)
+PROJ_ADD_OBJS = 
 
+# additional libraries
+PROJ_LIBS =
 
+# linker flags
+PROJ_LDFLAGS =
 
-.PHONY: clean
-clean:
-	rm -f $(OBJ) $(TARGET)
+# list of projects (makefiles) this project depends on
+PROJ_DEPENDS  =
 
-.PHONY: all
-all: $(SRC) $(PROTECTEDOBJ)
-	@$(CC) $(CFLAGS) $(DEBUG) $(SRC) 
-
-debug :$(OBJ_DEBUG) 
-	@$(CC) $(CFLAGS) $(DEBUG) $(OBJ) $(PROTECTEDOBJ) -o  debug.out
-
-
-queue.ar: $(OBJ)
-	ar -r archive $(OBJ) $(PROTECTEDOBJ)
-
-#write here the o files that you will be compiled here and its prerequisites
-
-comparison_test.o: comparison.h
-bubble.o: comparison.h
-insertion.o: comparison.h
-selection.o: comparison.h
-
-######
+include $(ROOT_DIR)/include/make/Project.mak
