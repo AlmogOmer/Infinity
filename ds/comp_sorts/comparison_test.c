@@ -17,7 +17,7 @@ static void test(sort_func func, char *str);
 static int compare_int(const void *x, const void *y);
 static int compare_str(const void *x, const void *y);
 static void marge_and_quick_test(void);
-static void stability_check_quick(void);
+static void stability_check_merge(void);
 int PrintElement(const void *data);
 static void SearchTest(void);
 
@@ -29,7 +29,7 @@ int main()
     test(selection, "selection");
     
     marge_and_quick_test();
-    stability_check_quick();
+    stability_check_merge();
     SearchTest();
     
     return 0;
@@ -100,10 +100,10 @@ static int compare_int(const void *x, const void *y)
 
 static int compare_str(const void *x, const void *y)
 {
-	person_t *newP = (person_t*)x;
-	person_t *currP = (person_t*)y;
+	person_t *newP = (person_t*)y;
+	person_t *currP = (person_t*)x;
 
-    return (strcmp(newP->name, currP->name));
+    return (strcmp(newP->name,currP->name));
 
 }
 
@@ -171,7 +171,7 @@ static void marge_and_quick_test(void)
     }
 }
 
-static void stability_check_quick(void)
+static void stability_check_merge(void)
 {
     size_t size = 5;
     size_t i;
@@ -195,7 +195,7 @@ static void stability_check_quick(void)
         PrintElement(p_arr[i]);
     }
     
-    qsort(p_arr, size, sizeof(p_arr[0]), compare_str);
+    MergeSort(p_arr, size, sizeof(p_arr[0]), compare_str);
     
     printf("*****after sorting*****\n");
     for (i = 0; i < size; ++i)
