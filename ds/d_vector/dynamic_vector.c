@@ -76,8 +76,8 @@ void VectorPopBack(Vector_t *vector)
 void* VectorGetAccessToElement(Vector_t *vector, size_t idx)
 {
 	
-	assert(vector && idx<=vector->capacity);
-	return ((char *) vector->array + idx*vector->type_size);
+	assert(vector);
+	return ((void *) ((size_t)vector->array + idx*vector->type_size));
 }
 
 void VectorReserve(Vector_t *vector, size_t num)

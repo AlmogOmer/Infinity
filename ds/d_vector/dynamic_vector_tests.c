@@ -2,56 +2,112 @@
 #include<stdlib.h>
 #include<assert.h>
 #include "dynamic_vector.h"
+void test(void);
 
 int main()
 {
-	
-	size_t initial_capacity, type_size, num;
-	Vector_t *Vector = NULL;
-	int element_value = 8;
-	int *element = NULL;
-	element = &element_value;
-	*element = element_value;
-	initial_capacity = 1;
-	type_size = 4;
-	num = 10; 
-	
-	
-	Vector  = VectorCreate(initial_capacity, type_size);
-	assert(Vector->top==0 && Vector->capacity==1 && Vector->array!=NULL);
-	
-	VectorPushBack(Vector, element);
-	assert(Vector->top==1 && Vector->capacity==1) ;
-	
-	VectorPushBack(Vector, element);
-	assert(Vector->top==2 && Vector->capacity==2) ;
-	
-	assert(*element==*(int *)VectorGetAccessToElement(Vector, 1));
-	
-	VectorPushBack(Vector, element);
-	assert(Vector->top==3 && Vector->capacity==4);
-	
-	VectorPushBack(Vector, element);
-	assert(Vector->top==4 && Vector->capacity==4);
-	
-	VectorPopBack(Vector);
-	assert(Vector->top==3 && Vector->capacity==4);
-	
-	assert(3==VectorSize(Vector));
-	
-	assert(4==VectorCapacity(Vector));
-	
-	VectorPopBack(Vector);
-	assert(Vector->top==2 && Vector->capacity==4);
-	
-	VectorPopBack(Vector);
-	assert(Vector->top==1 && Vector->capacity==2);
-	
-	VectorReserve(Vector, num);
-	assert(Vector->top==1 && Vector->capacity==10);
-	
-	VectorDestroy(Vector);
-	
+	test();
 	return 0;
 }
 
+void test()
+{
+    Vector_t *vector = VectorCreate(10, sizeof(long));
+    long a = 4;
+    long b = 50;
+    long c = -23;
+    
+    VectorPushBack(vector, &a);
+    if(!(4 == *(long*)VectorGetAccessToElement(vector, 0)))
+    {
+    	printf("fail in %d\n", __LINE__);
+    }
+    
+    if(!(10 == VectorCapacity(vector)))
+    {
+    	printf("fail in %d\n", __LINE__);
+    }
+    
+    if(!(1 == VectorSize(vector)))
+    {
+    	printf("fail in %d\n", __LINE__);
+    }
+    
+    VectorPushBack(vector, &b);
+    
+    if(!(2 == VectorSize(vector)))
+    {
+    	printf("fail in %d\n", __LINE__);
+    }
+
+    if(!(50 == *(long*)VectorGetAccessToElement(vector, 1)))
+    {
+    	printf("fail in %d\n", __LINE__);
+    }
+    
+        VectorPushBack(vector, &c);
+        
+       if(!(3 == VectorSize(vector)))
+    {
+    	printf("fail in %d\n", __LINE__);
+    }
+    
+     if(!(-23 == *(long*)VectorGetAccessToElement(vector, 2)))
+    {
+    	printf("fail in %d\n", __LINE__);
+    }
+    
+    if(!(50 == *(long*)VectorGetAccessToElement(vector, 1)))
+    {
+    	printf("fail in %d\n", __LINE__);
+    }
+    
+    if(!(4 == *(long*)VectorGetAccessToElement(vector, 0)))
+    {
+    	printf("fail in %d\n", __LINE__);
+    }
+    
+    VectorPopBack(vector);
+    
+    if(!(2 == VectorSize(vector)))
+    {
+    	printf("fail in %d\n", __LINE__);
+    }
+    
+    if(!(5 == VectorCapacity(vector)))
+    {
+    	printf("fail in %d\n", __LINE__);
+    }
+    
+    VectorReserve(vector, 5);
+    
+    if(!(5 == VectorCapacity(vector)))
+    {
+    	printf("fail in %d\n", __LINE__);
+    }
+    
+    VectorPushBack(vector, &c);
+    
+     if(!(-23 == *(long*)VectorGetAccessToElement(vector, 2)))
+    {
+    	printf("fail in %d\n", __LINE__);
+    }
+    
+    VectorReserve(vector, 100);
+        
+    if(!(100 == VectorCapacity(vector)))
+    {
+    	printf("fail in %d\n", __LINE__);
+    }
+    
+    VectorPopBack(vector);
+    
+    if(!(2 == VectorSize(vector)))
+    {
+    	printf("fail in %d\n", __LINE__);
+    }
+    
+    
+    VectorDestroy(vector);
+    
+}
