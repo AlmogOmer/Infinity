@@ -1,16 +1,17 @@
 #include "priority_queue.h"
-#include "../sorted_list/sorted_list.h"
+#include "heap.h"
+#include "dynamic_vector.h"
 #include <stdlib.h>
 #include <assert.h>
 
 struct Pri_Queue
 {
-	sorted_list_t *list;
+	heap_t *heap;
 };
 
 
 /*creat new pri_queue*/
-pri_queue_t *PriQueueCreate(compare_func_t cmp_func, void *param)
+pri_queue_t *PriQueueCreate(cmp_func_t cmp_func, void *param)
 {
 	pri_queue_t *new_pq = NULL;
 	
@@ -20,8 +21,8 @@ pri_queue_t *PriQueueCreate(compare_func_t cmp_func, void *param)
 		return NULL;
 	}
 	
-	new_pq->list = SortedListCreate(cmp_func, param);
-	if (NULL == new_pq->list)
+	new_pq->heap = HeapCreate(cmp_func, param);
+	if (NULL == new_pq->heap)
 	{
 		free(new_pq);
 		return NULL;
@@ -36,8 +37,8 @@ void PriQueueDestroy(pri_queue_t *pri_queue)
 
 	assert(pri_queue);
 	
-	SortedListDestroy(pri_queue->list);
-	pri_queue->list = NULL;
+	HeapDestroy(pri_queue->heap);
+	pri_queue->heap = NULL;
 	
 	free(pri_queue);
 
@@ -48,9 +49,8 @@ int PriQueueEnqueue(pri_queue_t *pri_queue, const void *data)
 {
 
 	assert(pri_queue);
-	SortedListInsert(pri_queue->list, data);
 	
-	return 1;
+	return HeapPush(pri_queue->heap, data);
 
 
 }
@@ -61,7 +61,7 @@ void PriQueueDequeue(pri_queue_t *pri_queue)
 	
 	assert(pri_queue && !PriQueueIsEmpty(pri_queue));
 
-	SortedListRemove(SortedListIterPrev(SortedListEnd(pri_queue->list)));
+	HeapPop(pri_queue->heap);
 	
 
 }
@@ -71,7 +71,7 @@ void *PriQueuePeek(const pri_queue_t *pri_queue)
 { 
 	assert(pri_queue && !PriQueueIsEmpty(pri_queue));
 	
-	return SortedListIterGetData(SortedListIterPrev(SortedListEnd(pri_queue->list)));
+	return HeapPeek(pri_queue->heap);
 
 }
 /*return the sizeof pri_queue*/
@@ -79,7 +79,7 @@ size_t PriQueueSize(const pri_queue_t *pri_queue)
 {
 	assert(pri_queue);
 	
-	return SortedListSize(pri_queue->list);
+	return HeapSize(pri_queue->heap);
 
 }
 
@@ -87,7 +87,7 @@ size_t PriQueueSize(const pri_queue_t *pri_queue)
 int PriQueueIsEmpty(const pri_queue_t *pri_queue)	/* return value empty - 1, not empty - 0 */
 {
 
-	return (SortedListIterIsEqual(SortedListBegin(pri_queue->list), SortedListEnd(pri_queue->list)));
+	return (HeapSize(pri_queue->heap)==0);
 
 }
 
@@ -106,13 +106,12 @@ void PriQueueClear(pri_queue_t *pri_queue)
 
 
 /*remove elements with a certain UID*/
-void PriQueueErase(pri_queue_t *pri_queue, is_match_t is_match_func, void *param)
+void PriQueueErase(pri_queue_t *pri_queue, const void *data ,match_func_t is_match_func, void *param)
 {
 
 	assert(pri_queue && !PriQueueIsEmpty(pri_queue));
-	
-	SortedListRemove(SortedListFindIf(SortedListBegin(pri_queue->list), SortedListEnd(pri_queue->list), is_match_func, param));
-	
+
+	HeapRemove(pri_queue->heap, data, is_match_func, param);
 	
 
 }
