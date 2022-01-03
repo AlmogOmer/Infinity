@@ -31,8 +31,12 @@ static void PtrSwap(void **x, void **y)
 static void HeapifyUp(heap_t *heap, size_t index)
 {
 	void **data1_ptr = (void **) VectorGetAccessToElement(heap->dynvec, index);
-	void **data2_ptr = (void **) VectorGetAccessToElement(heap->dynvec, PARENT_INDX(index));
-
+	void **data2_ptr;
+	if(HAS_PARENT(index))
+	{
+		data2_ptr = (void **) VectorGetAccessToElement(heap->dynvec, PARENT_INDX(index));
+	}
+	
 	if (HAS_PARENT(index) && (heap->cmp_func(*data1_ptr, *data2_ptr, heap->param) > 0))
 	{
 		PtrSwap(data1_ptr, data2_ptr);
