@@ -13,7 +13,7 @@ static void test2();
 int main(void)
 {
 	Test();
-    /*test1();*/
+    test1();
 	test2();
 	return 0;
 }
@@ -43,7 +43,6 @@ static void Test(void)
 	{
 		arr[i] = i + 1;
 		assert(0 == HeapPush(heap, &arr[i]));
-		printf("%d\n", *(int *) HeapPeek(heap));
 		assert(i + 1 == HeapSize(heap));
 		assert(!HeapIsEmpty(heap));
 	}
@@ -51,39 +50,12 @@ static void Test(void)
 	printf("after removing 1: %d\n", *(int *) HeapRemove(heap,&arr[0], IntIsEqual, NULL));
 	printf("finding 2: %d\n", *(int *)HeapFind(heap, &arr[1], IntIsEqual, NULL));
 
-	printf("peek: %d\n", *(int *) HeapPeek(heap));
-    /*printf("size: %lu\n", HeapSize(heap));*/
-        /*assert(i+1 == HeapSize(heap));*/
-		/*assert(arr[i] == *(int *) HeapPeek(heap));*/
-	HeapPop(heap);
-    printf("peek: %d\n", *(int *) HeapPeek(heap));
-    /*printf("size: %lu\n", HeapSize(heap));*/
-    
-    HeapPop(heap);
-	printf("peek: %d\n", *(int *) HeapPeek(heap));
-    /*printf("size: %lu\n", HeapSize(heap));*/
-    
-    HeapPop(heap);
-    printf("peek: %d\n", *(int *) HeapPeek(heap));
-    /*printf("size: %lu\n", HeapSize(heap));*/
-
-    HeapPop(heap);
-    printf("peek: %d\n", *(int *) HeapPeek(heap));
-    /*printf("size: %lu\n", HeapSize(heap));*/
-
-    HeapPop(heap);
-    printf("peek: %d\n", *(int *) HeapPeek(heap));
-    /*printf("size: %lu\n", HeapSize(heap));*/
-
-    HeapPop(heap);
-    printf("peek: %d\n", *(int *) HeapPeek(heap));
-    /*printf("size: %lu\n", HeapSize(heap));*/
-
-    HeapPop(heap);
-    printf("peek: %d\n", *(int *) HeapPeek(heap));
-    
-    HeapPop(heap);
-    printf("peek: %d\n", *(int *) HeapPeek(heap));
+	for (i = HeapSize(heap); i > 0; i--)
+	{
+		assert(i == HeapSize(heap));
+		assert(arr[i] == *(int *) HeapPeek(heap));
+		HeapPop(heap);
+	}
 
 	HeapDestroy(heap);
 
@@ -118,6 +90,7 @@ static void test1()
 		printf("fail in %d\n", __LINE__);
 	}
 	
+	puts("SUCCESS - 1");
 	HeapDestroy(heap);
 
 }
@@ -135,42 +108,82 @@ static void test2()
 	int test8 = 1;
 
 	heap = HeapCreate(MaxInt, NULL);
-	printf("***after push***\n");
+	
 	HeapPush(heap, &test1);
-	printf("%d\n", *(int *)HeapPeek(heap));
-	HeapPush(heap, &test2);
-	printf("%d\n", *(int *)HeapPeek(heap));
-	HeapPush(heap, &test3);
-	printf("%d\n", *(int *)HeapPeek(heap));
-	HeapPush(heap, &test4);
-	printf("%d\n", *(int *)HeapPeek(heap));
-	HeapPush(heap, &test5);
-	printf("%d\n", *(int *)HeapPeek(heap));
-	HeapPush(heap, &test6);
-	printf("%d\n", *(int *)HeapPeek(heap));
-	HeapPush(heap, &test7);
-	printf("%d\n", *(int *)HeapPeek(heap));
-	HeapPush(heap, &test8);
-	printf("%d\n", *(int *)HeapPeek(heap));
+	if (50 != *(int *)HeapPeek(heap))
+	{
+		printf("fail in %d\n", __LINE__);
+	}
 
+	HeapPush(heap, &test2);
+	if (50 != *(int *)HeapPeek(heap))
+	{
+		printf("fail in %d\n", __LINE__);
+	}
+	
+	HeapPush(heap, &test3);
+	if (50 != *(int *)HeapPeek(heap))
+	{
+		printf("fail in %d\n", __LINE__);
+	}
+
+	HeapPush(heap, &test4);
+	if (50 != *(int *)HeapPeek(heap))
+	{
+		printf("fail in %d\n", __LINE__);
+	}
+
+	HeapPush(heap, &test5);
+	if (50 != *(int *)HeapPeek(heap))
+	{
+		printf("fail in %d\n", __LINE__);
+	}
+
+	HeapPush(heap, &test6);
+	if (50 != *(int *)HeapPeek(heap))
+	{
+		printf("fail in %d\n", __LINE__);
+	}
+
+	HeapPush(heap, &test7);
 	if (70 != *(int *)HeapPeek(heap))
 	{
 		printf("fail in %d\n", __LINE__);
 	}
-	printf("***after pop***\n");
-	HeapPop(heap);
-	printf("%d\n", *(int *)HeapPeek(heap));
+
+	HeapPush(heap, &test8);
+	if (70 != *(int *)HeapPeek(heap))
+	{
+		printf("fail in %d\n", __LINE__);
+	}
 
 	HeapPop(heap);
-	printf("%d\n", *(int *)HeapPeek(heap));
+	if (50 != *(int *)HeapPeek(heap))
+	{
+		printf("fail in %d\n", __LINE__);
+	}
+
+	HeapPop(heap);
+	if (30 != *(int *)HeapPeek(heap))
+	{
+		printf("fail in %d\n", __LINE__);
+	}
 	
 	HeapPop(heap);
-	printf("%d\n", *(int *)HeapPeek(heap));
+	if (9 != *(int *)HeapPeek(heap))
+	{
+		printf("fail in %d\n", __LINE__);
+	}
 	
 	HeapPop(heap);
-	printf("%d\n", *(int *)HeapPeek(heap));
+	if (7 != *(int *)HeapPeek(heap))
+	{
+		printf("fail in %d\n", __LINE__);
+	}
 
 	HeapDestroy(heap);
+
+	puts("SUCCESS - 2");
 }
 
 
