@@ -1,53 +1,36 @@
-CC = gcc
-CFLAGS = -ansi -pedantic-errors -Wall -Wextra
-DEBUG = -g
 
-#write here all the c files
-SRC = scheduler.c scheduler_test.c task.c
-#####
+# make clean/all CONFIG=Debug/Release ARCH=linux64/raspi ECHO=0/1
 
-#write here all the obj files in the obj directory that you need
-PROTECTEDOBJ = ../obj/sorted_list.o ../obj/doubly_linked_list.o ../obj/priority_queue.o ../obj/uid.o
-##########
+# the parrent dir of "arch" dir
+ROOT_DIR = ../..
 
-OBJ = $(filter %.o, $(SRC:%.c=../obj/%.o))
-OBJ_DEBUG = $(SRC:.c=.dbg.o)
+#PROJ_SRCS = $(wildcard *.c)
+PROJ_SRCS = scheduler.c scheduler_test.c task.c
 
-#write here the target name
-TARGET = scheduler.out
-######
+# list of directories containing header files
+PROJ_INC_DIR = ../pri_queue ../heap ../include ../d_vector ../uid
 
-$(TARGET) :$(OBJ) 
-	@$(CC) $(CFLAGS) $(OBJ) $(PROTECTEDOBJ) -o $(TARGET)
+# the executable file
+PROJ_OUT = scheduler.out
 
-../obj/%.o: %.c 
-	@$(CC) $(CFLAGS) -c -o $(@D)/$(*F).o $< 
+# list of ADDITIONAL compiler flags (prepended with "-" sign)
+#PROJ_CFLAGS = -Wunused-but-set-variable
+PROJ_CFLAGS =
+PROJ_CPPFLAGS =
 
-%.dbg.o: %.c 
-	@$(CC) $(CFLAGS) $(DEBUG) $< -c 
+#PROJ_MACROS = _BSD_SOURCE
+PROJ_MACROS =
 
+# additional object files (created by other projects)
+PROJ_ADD_OBJS = priority_queue.o heap.o dynamic_vector.o uid.o
 
+# additional libraries
+PROJ_LIBS =
 
-.PHONY: clean
-clean:
-	rm -f $(OBJ) $(TARGET)
+# linker flags
+PROJ_LDFLAGS =
 
-.PHONY: all
-all: $(SRC) $(PROTECTEDOBJ)
-	@$(CC) $(CFLAGS) $(DEBUG) $(SRC) 
+# list of projects (makefiles) this project depends on
+PROJ_DEPENDS  = ../pri_queue/makefile ../heap/makefile ../d_vector/makefile ../uid/makefile
 
-debug :$(OBJ_DEBUG) 
-	@$(CC) $(CFLAGS) $(DEBUG) $(OBJ) $(PROTECTEDOBJ) -o  debug.out
-
-
-queue.ar: $(OBJ)
-	ar -r archive $(OBJ) $(PROTECTEDOBJ)
-
-#write here the o files that you will be compiled here and its prerequisites
-
-scheduler_test.o: scheduler.h task.h
-scheduler.o: scheduler.h task.h
-
-
-######
-
+include $(ROOT_DIR)/include/make/Project.mak

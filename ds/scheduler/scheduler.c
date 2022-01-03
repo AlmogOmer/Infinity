@@ -3,8 +3,10 @@
 #include <stdlib.h>	/* for malloc */
 #include <assert.h>	/* for assertions */
 #include <unistd.h>	/* for sleep */
-#include "../pri_queue/priority_queue.h"
+#include "priority_queue.h"
 
+
+#define UNUSED(x) (void)(x)
 
 struct scheduler
 {
@@ -17,14 +19,9 @@ struct scheduler
 static int IsPrior(const void *data1, const void *data2, const void *param)
 {
 	assert(data1 && data2);
-
+	UNUSED(param);
 	
-	if(*(int*)param == 1)
-	{
-		return TaskGetExecTime(data1) < TaskGetExecTime(data2);
-	}
-	return TaskGetExecTime(data1) > TaskGetExecTime(data2);
-
+	return TaskGetExecTime(data2) - TaskGetExecTime(data1);
 }
 /*creates new scheduler engine*/
 scheduler_t *SchedulerCreate()
@@ -88,7 +85,7 @@ unique_id_t SchedulerTaskAdd(scheduler_t *scheduler, task_func_t task,
 /* remove task from scheduler engine*/
 void SchedulerTaskCancel(scheduler_t *scheduler, unique_id_t uid)
 {
-	PriQueueErase(scheduler->task_queue, TaskIsSameUID, &uid);
+	PriQueueErase(scheduler->task_queue, &uid, TaskIsSameUID, NULL);
 
 }
 

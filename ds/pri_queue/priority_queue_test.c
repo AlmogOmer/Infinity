@@ -27,17 +27,12 @@ static int is_match_func(const void* data1,const void* data2, const void* param)
 static int IsBefore(const void *new_elem, const void *curr_elem, const void *param)
 {
 	int newP, currP;
+	UNUSED(param);
 	newP = ((person_t*)new_elem)->id_num;
 	currP = ((person_t*)curr_elem)->id_num;
 
-	if (*(int*)param == 1)
-	{
-		return (newP < currP);
-	}
-	else
-	{
-		return (newP > currP);
-	}
+	return (newP - currP);
+
 }
 
 int main(void)

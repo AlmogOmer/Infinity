@@ -23,7 +23,7 @@ extern void TaskUpdateExecTime(task_t *task);
 /* return value- 0 abort and 1 for continue looping */
 extern int TaskExecute(task_t *task);
 
-extern int TaskIsSameUID(void* task1, void* param);
+extern int TaskIsSameUID(const void* task1, const void* task2, const void* param);
 
 extern unique_id_t TaskGetUID(const task_t *task);
 

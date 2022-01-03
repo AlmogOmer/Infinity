@@ -5,7 +5,7 @@
 
 /* typedef int (*cmp_func_t)(const void *new_elem, const void *curr_elem, const void *param); */ 
 /* is in common_types  */
-typedef int (*match_func_t)(const void *data1, const void *data2, const void *param);
+
 typedef struct Heap heap_t;
 
 extern heap_t *HeapCreate(cmp_func_t compare, const void *param);

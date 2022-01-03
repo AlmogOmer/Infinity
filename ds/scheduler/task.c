@@ -2,7 +2,7 @@
 #include "../uid/uid.h"
 #include <time.h>	/* for time() */
 #include <assert.h>	/* for assertions */
-
+#define UNUSED(x) (void)(x)
 
 struct task 
 {
@@ -65,9 +65,11 @@ int TaskExecute(task_t *task)
 }
 
 
-int TaskIsSameUID(void* task1, void* param)
+int TaskIsSameUID(const void* task1, const void* task2, const void* param)
 {
-	if (UIDIsEqual(((task_t*)task1)->uid, *((unique_id_t*)param)))
+	UNUSED(param);
+	
+	if (UIDIsEqual(((task_t*)task1)->uid, *((unique_id_t*)task2)))
 	{
 		free((task_t*)task1);
 		return 1;

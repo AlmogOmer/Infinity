@@ -46,14 +46,15 @@ static void HeapifyDown(heap_t *heap, size_t index)
 	size_t right_index = RIGHT_CHILD_INDX(index);
 	size_t largest_index = index;
 
+	/*check if left child bigger than parent*/
 	if (left_index <= HeapSize(heap)-1 &&
-	(heap->cmp_func(VectorGetAccessToElement(heap->dynvec, left_index), VectorGetAccessToElement(heap->dynvec, index), heap->param) >= 0))
+	(heap->cmp_func(*(void**)VectorGetAccessToElement(heap->dynvec, left_index), *(void**)VectorGetAccessToElement(heap->dynvec, index), heap->param) >= 0))
 	{
 		largest_index = left_index;
 	}
 
 	if (right_index <= HeapSize(heap)-1 &&
-	(heap->cmp_func(VectorGetAccessToElement(heap->dynvec, right_index), VectorGetAccessToElement(heap->dynvec, largest_index), heap->param) >= 0))
+	(heap->cmp_func(*(void**)VectorGetAccessToElement(heap->dynvec, right_index), *(void**)VectorGetAccessToElement(heap->dynvec, largest_index), heap->param) >= 0))
 	{
 		largest_index = right_index;
 	}
@@ -116,13 +117,11 @@ int HeapPush(heap_t *heap, const void *data)
 
 void HeapPop(heap_t *heap)
 {
-	
+	assert(heap);
 	if (HeapIsEmpty(heap))
     {
         return;
     }
-
-	assert(heap);
 
 	/* swap the root and the last index */
 	PtrSwap(VectorGetAccessToElement(heap->dynvec, 0), VectorGetAccessToElement(heap->dynvec, HeapSize(heap)-1));

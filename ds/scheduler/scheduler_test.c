@@ -5,6 +5,29 @@
 #include <assert.h>
 #include <time.h>
 
+/*output should be 
+
+hello i am task2, Voldemort
+hello i am task2, Voldemort
+hello i am task1, Dumbeldore
+hello i am task2, Voldemort
+hello i am task3, Harry Potter
+hello i am task2, Voldemort
+hello i am task1, Dumbeldore
+hello i am task2, Voldemort
+hello i am task2, Voldemort
+hello i am task3, Harry Potter
+hello i am task2, Voldemort
+
+it takes 15 seconds for it to fully be printed
+without any valgrin leaks!
+
+any problem contact me on discord, Dolev
+*/
+
+#include <stdio.h>
+#include "scheduler.h"
+#include <stdlib.h>
 
 static int task0(const void *param);
 static int task1(const void *param);
@@ -26,7 +49,6 @@ int main()
 	{
 		printf("fail in %d\n", __LINE__);
 	}
-	
 	
 	SchedulerTaskAdd(scheduler, task1, 5, "Dumbeldore");
 	SchedulerTaskAdd(scheduler, task2, 2, "Voldemort");

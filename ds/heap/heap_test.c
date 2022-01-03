@@ -13,7 +13,7 @@ static void test2();
 int main(void)
 {
 	Test();
-    test1();
+    /*test1();*/
 	test2();
 	return 0;
 }
@@ -125,8 +125,8 @@ static void test1()
 static void test2()
 {
 	heap_t *heap = NULL;
-	int test2 = 30;
 	int test1 = 50;
+	int test2 = 30;
 	int test3 = 0;
 	int test4 = 4;
 	int test5 = 7;
