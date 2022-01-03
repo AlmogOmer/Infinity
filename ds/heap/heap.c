@@ -110,7 +110,7 @@ int HeapPush(heap_t *heap, const void *data)
 
 	size_after = HeapSize(heap);
     
-    HeapifyUp(heap, HeapSize(heap)-1);
+	HeapifyUp(heap, HeapSize(heap)-1);
 
 	return (size_after == size_before);
 }
@@ -138,7 +138,13 @@ void HeapPop(heap_t *heap)
 
 void *HeapPeek(heap_t *heap)
 {
-    return *(void **)VectorGetAccessToElement(heap->dynvec, 0);
+    assert(heap);
+	if (HeapIsEmpty(heap))
+    {
+        return NULL;
+    }
+
+	return *(void **)VectorGetAccessToElement(heap->dynvec, 0);
 }
 
 /* 1 if empty, 0 if not*/
@@ -179,6 +185,8 @@ void *HeapRemove(heap_t *heap, const void *data, match_func_t is_match, void *pa
 void *HeapFind(const heap_t *heap, const void *data, match_func_t is_match, void *param)
 {
     size_t i;
+	assert(heap);
+	
     for (i = 0; i < HeapSize(heap); ++i)
     {
         if (is_match(*(void **)VectorGetAccessToElement(heap->dynvec, i), data, param))
