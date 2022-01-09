@@ -82,6 +82,8 @@ static dhcp_node_t *CreateNode(dhcp_node_t *parent)
 
 void DHCPDestroy(dhcp_t *dhcp)
 {
+	assert(dhcp);
+	
 	DestroyRec(dhcp->root);
 	dhcp->root = NULL;
 	free(dhcp);
@@ -122,7 +124,10 @@ static ip_t StringToIP(char *ip)
 
 ip_t DHCPAllocIP(dhcp_t *dhcp)
 {
-	int height = 32 - dhcp->net_mask;
+	int height; 
+	assert(dhcp);
+	
+	height = 32 - dhcp->net_mask;
 
 	if (dhcp->root->is_full)
 	{	
@@ -188,7 +193,10 @@ static void UpdateFull(dhcp_node_t *node)
 
 void DHCPFreeIP(dhcp_t *dhcp, ip_t ip_add)
 {
-	int height = 32 - dhcp->net_mask;
+	int height; 
+	assert(dhcp);
+	
+	height = 32 - dhcp->net_mask;
 
 	if (ip_add == dhcp->net_addr ||
 	ip_add == dhcp->broadcast_addr ||
@@ -225,8 +233,12 @@ static void FreeRec(dhcp_node_t *node, int height, ip_t ip_add)
 
 size_t DHCPCountFree(const dhcp_t *dhcp)
 {
-	int height = 32 - dhcp->net_mask;
-	size_t max_num_of_ip = POWER2(height);
+	int height; 
+	size_t max_num_of_ip;
+	assert(dhcp);
+	
+	height = 32 - dhcp->net_mask;
+	max_num_of_ip = POWER2(height);
 	
 	if (dhcp->root->is_full)
 	{	
