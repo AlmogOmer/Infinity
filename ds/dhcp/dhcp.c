@@ -83,7 +83,7 @@ static dhcp_node_t *CreateNode(dhcp_node_t *parent)
 void DHCPDestroy(dhcp_t *dhcp)
 {
 	assert(dhcp);
-	
+
 	DestroyRec(dhcp->root);
 	dhcp->root = NULL;
 	free(dhcp);
@@ -285,6 +285,10 @@ static void ReserveIPs(dhcp_t *dhcp, ip_t ip)
 			if (!node->child_right)
 			{
 				node->child_right = CreateNode(node);
+				if (!node->child_right)
+				{
+					return;
+				}
 			}
 			node = node->child_right;
 
@@ -294,6 +298,10 @@ static void ReserveIPs(dhcp_t *dhcp, ip_t ip)
 			if (!node->child_left)
 			{
 				node->child_left = CreateNode(node);
+				if (!node->child_left)
+				{
+					return;
+				}
 			}
 			node = node->child_left;
 		}
