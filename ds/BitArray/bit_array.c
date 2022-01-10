@@ -2,28 +2,8 @@
 #include <assert.h>
 #include<string.h>
 #include "bit_array.h"
-/*int main()
-{
-	size_t idx = 2;
-	size_t steps = 2;
-	bitstate_t value = 1;
-	bitarray_t array = 5;
-	char dest[64] ={0};
-	
-	assert(7==BitArraySetOn(array, idx));
-	assert(5==BitArraySetOff(array, idx));
-	assert(7==BitArraySetBit(array, idx, value));
-	assert(0==BitArrayGetValue(array, idx));
-	assert(0xFFFFFFFFFFFFFFFA==BitArrayFlip(array));
-	assert(0xA000000000000000==BitArrayMirror(array));
-	assert(2==BitArrayCountOn(array));
-	assert(62==BitArrayCountOff(array));
-	assert(0x4000000000000001==BitArrayRotR(array, steps));
-	assert(20==BitArrayRotL(array, steps));
-	assert(0==strcmp("0000000000000000000000000000000000000000000000000000000000000101", BitArrayToString(array, dest)));
-	assert(7==BitArrayToggleBit(array, idx));
-	return 0;
-}*/
+
+static void RevStr(char *str);
 
 bitarray_t BitArraySetAll()
 {
@@ -116,15 +96,27 @@ bitarray_t BitArrayRotL(bitarray_t array, size_t steps)
 
 char *BitArrayToString(bitarray_t array, char *dest)
 {
-	int i = 0;
-	for (i = 63; i>=0 ; --i)
+
+	char *temp = dest;
+	assert(array);
+	while (array)
 	{
-		dest[i] = (char) BitArrayGetValue(array, 64-i) + '0';
-		
+		if (array & 1)
+		{
+			*dest = '1';
+			++dest;
+			array >>= 1;
+		}
+		else
+		{
+			*dest = '0';
+			++dest;
+			array >>= 1;
+		}
 	}
-	dest[64] = '\0';  
-		
-	return dest;
+	*(dest+1) = '\0';
+	RevStr(temp);
+	return temp;
 
 }
 
@@ -135,6 +127,21 @@ bitarray_t BitArrayToggleBit(bitarray_t array, size_t idx)
 
 }
 
+
+static void RevStr(char *str)
+{
+	int i = 0, len = 0, temp = 0;
+	while (str[len])
+  	{
+		++len;
+	}
+	for (i = 0; i < len/2; ++i)
+	{
+		temp = str[i];  
+        	str[i] = str[len - i - 1];  
+        	str[len - i - 1] = temp;  
+	}  
+}
 
 
 
