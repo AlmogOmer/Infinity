@@ -28,6 +28,8 @@ int main()
 			token = strtok(NULL, s);
 			++i;
 		}
+
+		argv[i] = NULL;
 		
 		if (0 == strcmp("exit", argv[0]))
 		{
@@ -36,9 +38,16 @@ int main()
 		
 		pid = fork();
 
-		if (0 == pid)
+		if (-1 == pid)
+		{
+			printf ("forking faild\n");
+			exit(1);
+		}
+		
+		else if (0 == pid)
 		{
 			execvp(argv[0], argv);
+			exit(1);
 		}
 		
 		else
@@ -48,6 +57,7 @@ int main()
 		}
 	}
 
+	free(buf);
 	return 0;
 }
 
