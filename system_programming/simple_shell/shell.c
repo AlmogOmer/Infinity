@@ -1,5 +1,5 @@
 #include <unistd.h>		/* for fork, exec.. */
-#include <stdlib.h>		/* for EXIT_SUCCESS */
+#include <stdlib.h>		
 #include <sys/wait.h>	/* for wait */
 #include <sys/types.h>
 #include <stdio.h>
