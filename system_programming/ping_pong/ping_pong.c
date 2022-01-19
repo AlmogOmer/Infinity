@@ -39,12 +39,14 @@ int main(void)
 
 static void handler1(int signal)
 {
+	(void)signal;
 	printf("Ping, my pid: %d\n", getpid());
 	kill(pid_parent, SIGUSR2);
 }
 
 static void handler2(int signal)
 {
+	(void)signal;
 	printf("Pong, my pid: %d\n", getpid());
 	kill(pid_child, SIGUSR1);
 }
