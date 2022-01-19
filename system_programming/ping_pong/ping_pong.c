@@ -5,8 +5,8 @@
 #include <sys/types.h>	/* for pid_t	 	*/
 #include <stdio.h>		
 
-
-static pid_t pid = 0;
+static pid_t pid_child = 0;
+static pid_t pid_parent = 0;
 static void handler1(int signal);
 static void handler2(int signal);
 
@@ -16,33 +16,37 @@ int main(void)
     struct sigaction act2 = {0};
     
 	act1.sa_handler = handler1;
+	sigemptyset(&act1.sa_mask);
 	sigaction(SIGUSR1, &act1, NULL);
 
-	act1.sa_handler = handler2;
+	act2.sa_handler = handler2;
+	sigemptyset(&act2.sa_mask);
 	sigaction(SIGUSR2, &act2, NULL);
 	
-	pid = fork();
+	pid_parent = getpid();
+	pid_child = fork();
 
-	if (0 != pid)	/* parent process */
+	if (0 < pid_child) /* parent process */
 	{
-		kill(pid, SIGUSR1);
+		kill(pid_child, SIGUSR1);
+		wait(NULL);
 	}
 
+	while(1);
+	
 	return 0;
 }
 
 static void handler1(int signal)
 {
-    pid_t pid_to_send = getppid();
 	printf("Ping, my pid: %d\n", getpid());
-	kill(pid_to_send, SIGUSR2);
+	kill(pid_parent, SIGUSR2);
 }
 
 static void handler2(int signal)
 {
-    pid_t pid_to_send = 0;
 	printf("Pong, my pid: %d\n", getpid());
-	kill(pid_to_send, SIGUSR1);
+	kill(pid_child, SIGUSR1);
 }
 
 
