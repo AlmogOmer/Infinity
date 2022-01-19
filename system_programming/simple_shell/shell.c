@@ -54,6 +54,7 @@ int main()
 		{
 			child_status = 0;
 			wait(&child_status);
+			
 		}
 	}
 

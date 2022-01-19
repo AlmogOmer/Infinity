@@ -25,10 +25,6 @@ without any valgrin leaks!
 any problem contact me on discord, Dolev
 */
 
-#include <stdio.h>
-#include "scheduler.h"
-#include <stdlib.h>
-
 static int task0(const void *param);
 static int task1(const void *param);
 static int task2(const void *param);
