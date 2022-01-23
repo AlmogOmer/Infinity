@@ -4,13 +4,13 @@
 ROOT_DIR = ../..
 
 #PROJ_SRCS = $(wildcard *.c)
-PROJ_SRCS = two_threads.c 
+PROJ_SRCS = semaphore.c 
 
 # list of directories containing header files
 PROJ_INC_DIR = 
 
 # the executable file
-PROJ_OUT = two_threads.out
+PROJ_OUT = semaphore.out
 
 # list of ADDITIONAL compiler flags (prepended with "-" sign)
 #PROJ_CFLAGS = -Wunused-but-set-variable
