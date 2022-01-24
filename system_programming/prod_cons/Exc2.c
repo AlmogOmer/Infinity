@@ -36,8 +36,6 @@ void Exc2(void)
 	}
 
 	SListDestroy(list);
-    pthread_mutex_destroy(&lock);
-
 }
 
 static void *Producer(void *param)
@@ -46,7 +44,7 @@ static void *Producer(void *param)
 	{
 		pthread_mutex_lock(&lock);
 		
-        SListInsert(SListEnd(param), &counter); 
+        SListInsert(SListEnd(param),&counter); 
 		++counter;
 
 		pthread_mutex_unlock(&lock);
@@ -69,13 +67,9 @@ static void *Consumer(void *param)
 			
 			SListRemove(SListBegin(param));
 
-			pthread_mutex_unlock(&lock);
 		}
 		
-        else
-		{
-			pthread_mutex_unlock(&lock);
-		}
+		pthread_mutex_unlock(&lock);
 	}
 
 	return NULL;
