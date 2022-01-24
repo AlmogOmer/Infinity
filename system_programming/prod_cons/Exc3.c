@@ -1,18 +1,20 @@
-#include "pro_con.h"
-#include "singly_list.h"
 #include <stdlib.h>
 #include <pthread.h>
+#include <semaphore.h>
 #include <stdio.h>
+#include "pro_con.h"
+#include "singly_list.h"
 
 #define NUM_OF_THREADS 5
 
 static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+static sem_t semaphore;
 static size_t counter = 0;
 
 static void *Producer(void *param);
 static void *Consumer(void *param);
 
-void Exc2(void)
+void Exc3(void)
 {
 	pthread_t prod_tid[NUM_OF_THREADS] = {0};
 	pthread_t cons_tid[NUM_OF_THREADS] = {0};
@@ -22,6 +24,8 @@ void Exc2(void)
 	{
 		exit(1);
 	}
+
+	sem_init(&semaphore, 0, 0);
 
 	for (i = 0; i < NUM_OF_THREADS; i++)
 	{
@@ -36,18 +40,21 @@ void Exc2(void)
 	}
 
 	SListDestroy(list);
+
 }
 
 static void *Producer(void *param)
 {
-    while (counter < 50)
+	while (counter < 50)
 	{
 		pthread_mutex_lock(&lock);
 		
-        SListInsert(SListEnd(param),&counter); 
+		SListInsert(SListEnd(param),&counter); 
+		
+        sem_post(&semaphore);
 		++counter;
-
-		pthread_mutex_unlock(&lock);
+		
+        pthread_mutex_unlock(&lock);
 	}
 
 	return NULL;
@@ -55,7 +62,7 @@ static void *Producer(void *param)
 
 static void *Consumer(void *param)
 {   
-
+	
 	while (1)
 	{
 		pthread_mutex_lock(&lock);
@@ -71,8 +78,8 @@ static void *Consumer(void *param)
 				exit(1);
 			}
 		}
-		
-		pthread_mutex_unlock(&lock);
+
+        pthread_mutex_unlock(&lock);
 	}
 
 	return NULL;

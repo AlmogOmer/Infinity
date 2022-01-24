@@ -4,7 +4,7 @@
 ROOT_DIR = ../..
 
 #PROJ_SRCS = $(wildcard *.c)
-PROJ_SRCS = pro_con.c Exc1.c Exc2.c
+PROJ_SRCS = pro_con.c Exc1.c Exc2.c Exc3.c
 
 # list of directories containing header files
 PROJ_INC_DIR = ../../ds/s_list
