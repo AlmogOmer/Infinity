@@ -5,7 +5,7 @@
       "type": "lldb",
       "request": "launch",
       "name": "Launch",
-      "program": "${workspaceFolder}/one_one.out",
+      "program": "${workspaceFolder}/pro_con.out",
       "args": [],
       "cwd": "${workspaceFolder}"
     },
@@ -20,7 +20,7 @@
       "name": "(gdb) Launch",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/one_one.out",
+      "program": "${workspaceFolder}/pro_con.out",
       "args": [
         "---arg1---",
         "---arg2---",

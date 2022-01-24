@@ -4,13 +4,13 @@
 ROOT_DIR = ../..
 
 #PROJ_SRCS = $(wildcard *.c)
-PROJ_SRCS = one_one.c 
+PROJ_SRCS = pro_con.c Exc1.c Exc2.c
 
 # list of directories containing header files
-PROJ_INC_DIR = 
+PROJ_INC_DIR = ../../ds/s_list
 
 # the executable file
-PROJ_OUT = one_one.out
+PROJ_OUT = pro_con.out
 
 # list of ADDITIONAL compiler flags (prepended with "-" sign)
 #PROJ_CFLAGS = -Wunused-but-set-variable
@@ -21,7 +21,7 @@ PROJ_CPPFLAGS =
 PROJ_MACROS =
 
 # additional object files (created by other projects)
-PROJ_ADD_OBJS = 
+PROJ_ADD_OBJS = singly_list.o
 
 # additional libraries
 PROJ_LIBS = pthread
@@ -30,6 +30,6 @@ PROJ_LIBS = pthread
 PROJ_LDFLAGS =
 
 # list of projects (makefiles) this project depends on
-PROJ_DEPENDS  = 
+PROJ_DEPENDS  = ../../ds/s_list/makefile
 
 include $(ROOT_DIR)/include/make/Project.mak

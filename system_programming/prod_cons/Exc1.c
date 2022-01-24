@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <stdio.h>
+#include "pro_con.h"
 
 #define SIZE 30
 #define UNUSED(x) (void)(x)
@@ -8,11 +9,10 @@
 static volatile int is_busy = 0;
 static int buf = 0;
 
-
 static void *Producer(void *arg);
 static void *Consumer(void *arg);
 
-int main(void)
+void Exc1(void)
 {
     pthread_t prod_tid = 0;
     pthread_t cons_tid = 0;
@@ -22,8 +22,6 @@ int main(void)
 
 	pthread_join(prod_tid, NULL);
 	pthread_join(cons_tid, NULL);
-
-    return 0;
 }
 
 static void *Producer(void *arg)
