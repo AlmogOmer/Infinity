@@ -1,14 +1,13 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <stdio.h>
-#include <stdatomic.h>
 
-#define ARR_SIZE 50
+#define SIZE 30
 #define UNUSED(x) (void)(x)
 
-static atomic_int is_busy = 0;
-static int arr[ARR_SIZE] = {0};
-static int counter = 0;
+static volatile int is_busy = 0;
+static int buf = 0;
+
 
 static void *Producer(void *arg);
 static void *Consumer(void *arg);
@@ -30,23 +29,21 @@ int main(void)
 static void *Producer(void *arg)
 {
     int i = 0;
+    int write; 
     UNUSED(arg);
     
-	while (counter < ARR_SIZE)
+	while(i < SIZE)
 	{
-		while (is_busy);
+		write = rand() % SIZE;
+        while (__atomic_load_n(&is_busy, __ATOMIC_SEQ_CST) != 0);
 
-		is_busy = 1;
-        printf("in producer\n");
+        printf("producer wrote : %d\n", write);
 
-		for (i = 0; i < ARR_SIZE; ++i)
-		{
-			arr[i] = counter;
-		}
+		__atomic_store_n(&buf,write,__ATOMIC_SEQ_CST);
 
-		++counter;
+        is_busy = 1;
 
-		is_busy = 0;
+        ++i;
 	}
 
     return NULL;
@@ -54,28 +51,18 @@ static void *Producer(void *arg)
 
 static void *Consumer(void *arg)
 {
-    int value = 0;
-    int i = 1;
+    int i = 0;
     UNUSED(arg);
     
-	while (counter < ARR_SIZE)
+	while(i < SIZE)
 	{
-		while (is_busy);
+        while (__atomic_load_n(&is_busy, __ATOMIC_SEQ_CST) != 1);
 
-		is_busy = 1;
-        printf("in consumer\n");
+        printf("producer read : %d\n", buf);
 
-		value = arr[0];
-		for (i = 1; i < ARR_SIZE; ++i)
-		{
-            if (arr[i] != value)
-			{
-				printf("failed for value %d in index %d\n", value, i);
-				break;
-			}
-		}
+        is_busy = 0;
 
-		is_busy = 0;
+        ++i;
 	}
 
     return NULL;
