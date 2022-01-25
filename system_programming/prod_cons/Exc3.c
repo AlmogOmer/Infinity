@@ -65,18 +65,16 @@ static void *Consumer(void *param)
 	
 	while (1)
 	{
+		sem_wait(&semaphore);
 		pthread_mutex_lock(&lock);
 		
-		if (!SListIterIsEqual(SListBegin(param), SListEnd(param)))
+		if (SListCount(param))
 		{
 			int value = *(int*) SListIterGetData(SListBegin(param));
-            printf("%d\n", value);
+            printf("VALUE : %d\n", value);
 			
 			SListRemove(SListBegin(param));
-			if (50 == value)
-			{
-				exit(1);
-			}
+			printf("LIST SIZE : %lu\n", SListCount(param));
 		}
 
         pthread_mutex_unlock(&lock);
