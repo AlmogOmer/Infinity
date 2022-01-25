@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "pro_con.h"
 
 #define SIZE 30
@@ -42,6 +43,7 @@ static void *Producer(void *arg)
         is_busy = 1;
 
         ++i;
+        sleep(2);
 	}
 
     return NULL;

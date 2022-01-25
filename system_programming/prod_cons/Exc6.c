@@ -11,19 +11,18 @@
 typedef struct fsq
 {
 	int queue[QUEUE_SIZE];
-	size_t read;
-	size_t write;
-	pthread_mutex_t prod_lock;
-	pthread_mutex_t cons_lock;
-	sem_t is_full;
-	sem_t is_empty;
+	size_t read; /*consumer index*/
+	size_t write; /*producer index*/
+	pthread_mutex_t lock;
+	sem_t semaphore;
+	pthread_cond_t cond;
 	size_t counter;
 } fsq_t;
 
 static void *Producer(void *param);
 static void *Consumer(void *param);
 
-void Exc5(void)
+void Exc6(void)
 {
 	pthread_t prod_tid[NUM_OF_THREADS] = {0};
 	pthread_t cons_tid[NUM_OF_THREADS] = {0};
@@ -38,22 +37,20 @@ void Exc5(void)
 
 	fsq->read = 0;
 	fsq->write = 0;
-	pthread_mutex_init(&fsq->prod_lock, NULL);
-	pthread_mutex_init(&fsq->cons_lock, NULL);
-	
-    sem_init(&fsq->is_full, 0, QUEUE_SIZE);
-	sem_init(&fsq->is_empty, 0, 0);
+    pthread_mutex_init(&fsq->lock, NULL);
+	sem_init(&fsq->semaphore, 0, 0);
+	pthread_cond_init(&fsq->cond, NULL);
 	fsq->counter = 0;
 
+    pthread_create(&prod_tid[i], NULL, Producer, fsq);
 	for (i = 0; i < NUM_OF_THREADS; i++)
 	{
-		pthread_create(&prod_tid[i], NULL, Producer, fsq);
 		pthread_create(&cons_tid[i], NULL, Consumer, fsq);
 	}
 
+    pthread_join(prod_tid[i], NULL);
 	for (i = 0; i < NUM_OF_THREADS; i++)
 	{
-		pthread_join(prod_tid[i], NULL);
 		pthread_join(cons_tid[i], NULL);
 	}
 
@@ -67,16 +64,18 @@ static void *Producer(void *param)
 
 	while (fsq->counter < 50)
 	{
-		sem_wait(&fsq->is_full);
-		
-		pthread_mutex_lock(&fsq->prod_lock);
+        pthread_mutex_lock(&fsq->lock);
 		fsq->queue[fsq->write] = fsq->counter;
 		fsq->write = (fsq->write + 1) % QUEUE_SIZE;
-        pthread_mutex_unlock(&fsq->prod_lock);
+        pthread_mutex_unlock(&fsq->lock);
+        
+        fsq->counter += 1;
+        
+        sem_post(&fsq->semaphore);
+        pthread_cond_broadcast(&fsq->cond);
 
-		sem_post(&fsq->is_empty);
-		fsq->counter += 1;
-		sleep(2);
+        
+        sleep(2);
 	}
 
 	return NULL;
@@ -89,18 +88,17 @@ static void *Consumer(void *param)
 	while (1)
 	{
 		int value = 0;
-		sem_wait(&fsq->is_empty);
+		sem_wait(&fsq->semaphore);
 		
-        pthread_mutex_lock(&fsq->cons_lock);
+        pthread_mutex_lock(&fsq->lock);
+        pthread_cond_wait(&fsq->cond,&fsq->lock); 
 		value = fsq->queue[fsq->read];
 		fsq->read = (fsq->read + 1) % QUEUE_SIZE;
-        pthread_mutex_unlock(&fsq->cons_lock);
+		pthread_mutex_unlock(&fsq->lock);
 
-		sem_post(&fsq->is_full);
 		printf("value is %d\n", value);
+
 	}
 
 	return NULL;
 }
-
-

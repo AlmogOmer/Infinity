@@ -67,13 +67,13 @@ static void *Producer(void *param)
 		sem_wait(&fsq->is_full);
 		
         pthread_mutex_lock(&fsq->lock);
-		
 		fsq->queue[fsq->write] = fsq->counter;
 		fsq->write = (fsq->write + 1) % QUEUE_SIZE;
-    
-		fsq->counter += 1;
+        pthread_mutex_unlock(&fsq->lock);
+		
 		sem_post(&fsq->is_empty);
-		pthread_mutex_unlock(&fsq->lock);
+		fsq->counter += 1;
+        sleep(2);
 	}
 
 	return NULL;
@@ -89,12 +89,11 @@ static void *Consumer(void *param)
 		sem_wait(&fsq->is_empty);
 		
 		pthread_mutex_lock(&fsq->lock);
-		
 		value = fsq->queue[fsq->read];
 		fsq->read = (fsq->read + 1) % QUEUE_SIZE;
-
-		sem_post(&fsq->is_full);
 		pthread_mutex_unlock(&fsq->lock);
+
+        sem_post(&fsq->is_full);
 
 		printf("value is %d\n", value);
 	}

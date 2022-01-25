@@ -2,6 +2,7 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "pro_con.h"
 #include "singly_list.h"
 
@@ -48,13 +49,12 @@ static void *Producer(void *param)
 	while (counter < 50)
 	{
 		pthread_mutex_lock(&lock);
-		
 		SListInsert(SListEnd(param),&counter); 
-		
+		pthread_mutex_unlock(&lock);
+
         sem_post(&semaphore);
 		++counter;
-		
-        pthread_mutex_unlock(&lock);
+		sleep(2);
 	}
 
 	return NULL;

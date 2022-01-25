@@ -3,11 +3,13 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <stdio.h>
+#include <unistd.h>
 
 #define NUM_OF_THREADS 5
 
 static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 static size_t counter = 0;
+static volatile int data_ready = 0;
 
 static void *Producer(void *param);
 static void *Consumer(void *param);
@@ -43,11 +45,12 @@ static void *Producer(void *param)
     while (counter < 50)
 	{
 		pthread_mutex_lock(&lock);
-		
         SListInsert(SListEnd(param),&counter); 
-		++counter;
-
 		pthread_mutex_unlock(&lock);
+
+		++counter;
+		__atomic_store_n(&data_ready,1,__ATOMIC_SEQ_CST);
+		sleep(2);
 	}
 
 	return NULL;
@@ -58,19 +61,21 @@ static void *Consumer(void *param)
 
 	while (1)
 	{
-		pthread_mutex_lock(&lock);
+		while (!__atomic_load_n(&data_ready, __ATOMIC_SEQ_CST));
 		
-		if (SListCount(param))
+		pthread_mutex_lock(&lock);
+
+		while (SListCount(param))
 		{
 			int value = *(int*) SListIterGetData(SListBegin(param));
-            printf("VALUE : %d\n", value);
+			printf("VALUE : %d\n", value);
 			
 			SListRemove(SListBegin(param));
 			printf("LIST SIZE : %lu\n", SListCount(param));
 			
 		}
-		
 		pthread_mutex_unlock(&lock);
+		__atomic_store_n(&data_ready,0,__ATOMIC_SEQ_CST);
 	}
 
 	return NULL;
