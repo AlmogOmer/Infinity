@@ -24,7 +24,7 @@ static void *Consumer(void *param);
 
 void Exc6(void)
 {
-	pthread_t prod_tid[NUM_OF_THREADS] = {0};
+	pthread_t prod_tid = {0};
 	pthread_t cons_tid[NUM_OF_THREADS] = {0};
 	size_t i = 0;
 	fsq_t *fsq = NULL;
@@ -42,13 +42,13 @@ void Exc6(void)
 	pthread_cond_init(&fsq->cond, NULL);
 	fsq->counter = 0;
 
-    pthread_create(&prod_tid[i], NULL, Producer, fsq);
+    pthread_create(&prod_tid, NULL, Producer, fsq);
 	for (i = 0; i < NUM_OF_THREADS; i++)
 	{
 		pthread_create(&cons_tid[i], NULL, Consumer, fsq);
 	}
 
-    pthread_join(prod_tid[i], NULL);
+    pthread_join(prod_tid, NULL);
 	for (i = 0; i < NUM_OF_THREADS; i++)
 	{
 		pthread_join(cons_tid[i], NULL);
