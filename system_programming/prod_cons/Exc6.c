@@ -60,7 +60,8 @@ void Exc6(void)
 
 static void *Producer(void *param)
 {
-	fsq_t *fsq = (fsq_t *) param;
+	size_t i = 0;
+    fsq_t *fsq = (fsq_t *) param;
 
 	while (fsq->counter < 50)
 	{
@@ -71,10 +72,13 @@ static void *Producer(void *param)
         
         fsq->counter += 1;
         
-        sem_post(&fsq->semaphore);
+        for (i = 0; i < NUM_OF_THREADS; ++i)
+        {
+            sem_post(&fsq->semaphore);
+        }
+        
         pthread_cond_broadcast(&fsq->cond);
 
-        
         sleep(2);
 	}
 
