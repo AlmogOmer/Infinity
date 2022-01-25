@@ -81,7 +81,6 @@ void SListDestroy(slist_t *list)
 slist_iter_t SListInsert(slist_iter_t iter, const void *item)
 {
 	
-	
 	snode_t *new_node = (snode_t *) malloc(sizeof(snode_t));
 	assert(item && iter.node);
 	
