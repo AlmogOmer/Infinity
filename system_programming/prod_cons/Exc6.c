@@ -5,7 +5,6 @@
 #include <unistd.h>
 #include "pro_con.h"
 
-#define QUEUE_SIZE 50
 #define NUM_OF_THREADS 5
 
 typedef struct exc6
