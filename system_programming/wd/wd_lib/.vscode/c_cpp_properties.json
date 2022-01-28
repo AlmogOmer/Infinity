@@ -1,0 +1,25 @@
+{
+  "configurations": [
+    {
+      "name": "macos-clang-arm64",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "../../../ds/scheduler",
+        "../../../ds/uid",
+        "../../../ds/d_vector",
+        "../../../ds/heap",
+        "../../../ds/pri_queue"
+      ],
+      "compilerPath": "/usr/bin/clang",
+      "cStandard": "${default}",
+      "cppStandard": "${default}",
+      "intelliSenseMode": "macos-clang-arm64",
+      "compilerArgs": [
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic"
+      ]
+    }
+  ],
+  "version": 4
+}
