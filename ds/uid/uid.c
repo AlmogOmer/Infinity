@@ -21,12 +21,12 @@ unique_id_t UIDGenerate(void)
 	new_uid.pid = getpid();
 	new_uid.timestamp = time(NULL);
 	
-	if (NULL == &new_uid.timestamp)
+	if (new_uid.timestamp)
 	{
-		return uid_null_uid;
+		return new_uid;
 	}
 	
-	return new_uid;
+	return uid_null_uid;
 }
 
 
