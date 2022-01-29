@@ -7,7 +7,7 @@
 
 void WD(void);
 
-int main(int argc ,const char *argv[])
+int main(int argc ,char *argv[])
 {
 	MMI(argc, argv);
 	WD();

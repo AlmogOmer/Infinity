@@ -24,7 +24,7 @@ PROJ_MACROS =
 PROJ_ADD_OBJS = priority_queue.o heap.o dynamic_vector.o uid.o scheduler.o task.o
 
 # additional libraries
-PROJ_LIBS = wd
+PROJ_LIBS = pthread wd
 
 # linker flags
 PROJ_LDFLAGS = 

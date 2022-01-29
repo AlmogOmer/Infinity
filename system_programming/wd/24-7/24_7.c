@@ -8,11 +8,11 @@
 
 void ATM(void);
 
-int main(int argc ,const char *argv[])
+int main(int argc ,char *argv[])
 {
 	MMI(argc, argv);
 	ATM();
-	/*DNR();*/
+	DNR();
 
 	return 0;
 }
@@ -21,7 +21,7 @@ void ATM()
 {
 	int i = 0;
 	printf("24/7 running\n");
-	while (i<10)
+	while (i < 10)
 	{
 		printf("24/7 still running\n");
 		sleep(5);

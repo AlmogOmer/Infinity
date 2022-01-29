@@ -8,9 +8,10 @@
 #include <string.h>
 #include <semaphore.h>
 
+#define _GNU_SOURCE
+
 static int flag = 0;
 static pid_t pid = 0;
-volatile sig_atomic_t wd_running = 0;
 static scheduler_t *scheduler = NULL;
 static sem_t *ready = NULL;
 
@@ -21,7 +22,7 @@ static int SendSignalTask(const void *param);
 static int CheckSignalTask(const void *param);
 void DNR(void);
 
-void MMI(int argc, const char *argv[])
+void MMI(int argc, char *argv[])
 {
     pthread_t tid = 0;
     char *args[2] = {"../wd/wd.out", NULL};
@@ -40,34 +41,25 @@ void MMI(int argc, const char *argv[])
     sigemptyset(&act2.sa_mask);
     sigaction(SIGUSR2, &act2, NULL);
 
-    if (NULL == getenv("en_wd"))
+	if (NULL == getenv("en_wd"))
     {
-        setenv("en_wd", argv[0], 1);
+        setenv("en_wd", args[0], 1);
         pid = fork();
 
         if (pid == 0)
         {	/* child process */
-            execvp(args[0],args);
+            setenv("en_wd", argv[0], 1);
+			execv(args[0],args);
         }
 
-		else
+		else if (pid > 0)
 		{
 			sem_wait(ready);
-		}
-    }
-
-	if (0 == strcmp(argv[0], "../wd/wd.out"))
-	{
-		wd_running = 1;
-	}
-
-	else
-	{
-		wd_running = 0;
+		}	
 	}
     
 	sem_post(ready);
-    pthread_create(&tid, NULL, StartRoutine, NULL);
+    pthread_create(&tid, NULL, StartRoutine, argv[0]);
 	
 }
 
@@ -77,7 +69,6 @@ void DNR(void)
 	kill(pid, SIGUSR2);
 	
 }
-
 
 static void SIGUSR1Handler(int signal, siginfo_t *info, void *context)
 {
@@ -102,11 +93,11 @@ static void SIGUSR2Handler(int signal, siginfo_t *info, void *context)
 void *StartRoutine(void *param)
 {
 	scheduler = SchedulerCreate();
-	(void)param;
 
 	SchedulerTaskAdd(scheduler, SendSignalTask, 1, NULL);
-	SchedulerTaskAdd(scheduler, CheckSignalTask, 3, NULL);
+	SchedulerTaskAdd(scheduler, CheckSignalTask, 3, param);
 
+	
 	SchedulerRun(scheduler);
 
 	return NULL;
@@ -121,8 +112,8 @@ static int SendSignalTask(const void *param)
 
 static int CheckSignalTask(const void *param)
 {
-	char *args[2] = {"../wd/wd.out", NULL};
-	(void)param;
+	char *recover = getenv("en_wd");
+	char *args[2] = {0};
 	
 	if (flag)
 	{
@@ -136,16 +127,9 @@ static int CheckSignalTask(const void *param)
 
 	if (pid == 0)
 	{	
-		if (wd_running) /*247 is dead*/
-		{
-			args[0] = getenv("en_wd");
-			execvp(args[0],args);
-		}
-
-		else /*wd is dead*/
-		{
-			execvp(args[0],args);
-		}
+		setenv("en_wd", param, 1);
+		args[0] = recover;
+		execv(args[0],args);
 		
 	}
 
