@@ -12,7 +12,7 @@ int main(int argc ,const char *argv[])
 {
 	MMI(argc, argv);
 	ATM();
-	DNR();
+	/*DNR();*/
 
 	return 0;
 }
@@ -27,6 +27,7 @@ void ATM()
 		sleep(5);
 		++i;
 	}
+
 }
 
 

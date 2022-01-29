@@ -4,16 +4,16 @@
 ROOT_DIR = ../../..
 
 #PROJ_SRCS = $(wildcard *.c)
-PROJ_SRCS = wd.c wd_lib.c 
+PROJ_SRCS = wd_lib.c  
 
 # list of directories containing header files
 PROJ_INC_DIR = ../../../ds/scheduler ../../../ds/uid
 # the executable file
-PROJ_OUT = wd.out
+PROJ_OUT = libwd.so
 
 # list of ADDITIONAL compiler flags (prepended with "-" sign)
 #PROJ_CFLAGS = -Wunused-but-set-variable
-PROJ_CFLAGS =
+PROJ_CFLAGS = 
 PROJ_CPPFLAGS =
 
 #PROJ_MACROS = _BSD_SOURCE

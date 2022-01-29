@@ -24,7 +24,7 @@ void DNR(void);
 void MMI(int argc, const char *argv[])
 {
     pthread_t tid = 0;
-    char *args[2] = {"../wd_lib/wd.out", NULL};
+    char *args[2] = {"../wd/wd.out", NULL};
     struct sigaction act1 = {0};
 	struct sigaction act2 = {0};
 	ready = sem_open("ready", O_CREAT, 0666, 0);
@@ -56,7 +56,7 @@ void MMI(int argc, const char *argv[])
 		}
     }
 
-	if (0 == strcmp(argv[0], "../wd_lib/wd.out"))
+	if (0 == strcmp(argv[0], "../wd/wd.out"))
 	{
 		wd_running = 1;
 	}
@@ -73,17 +73,9 @@ void MMI(int argc, const char *argv[])
 
 void DNR(void)
 {
-	if (wd_running)
-    {
-        kill(pid, SIGUSR2);
-        wd_running = 0;
-    }
-
-	else
-	{
-		kill(pid, SIGUSR2);
-	}
-
+	kill(getpid(), SIGUSR2);
+	kill(pid, SIGUSR2);
+	
 }
 
 
@@ -99,14 +91,11 @@ static void SIGUSR1Handler(int signal, siginfo_t *info, void *context)
 static void SIGUSR2Handler(int signal, siginfo_t *info, void *context)
 {
     (void)signal;
-	(void)info;
 	(void)context;
-	
-	kill(pid, SIGUSR2);
+	(void)info;
 
 	SchedulerStop(scheduler);
 	SchedulerDestroy(scheduler);
-	abort();
 
 }
 
@@ -120,8 +109,6 @@ void *StartRoutine(void *param)
 
 	SchedulerRun(scheduler);
 
-	atexit(DNR);
-
 	return NULL;
 }
 
@@ -134,7 +121,7 @@ static int SendSignalTask(const void *param)
 
 static int CheckSignalTask(const void *param)
 {
-	char *args[2] = {"../wd_lib/wd.out", NULL};
+	char *args[2] = {"../wd/wd.out", NULL};
 	(void)param;
 	
 	if (flag)
@@ -143,8 +130,8 @@ static int CheckSignalTask(const void *param)
 		return 1;
 	}
 
-	printf ("process: %d is dead, resuscitating.. \n", pid);
-
+	printf("process: %d is dead, resuscitating.. \n", pid);
+	
 	pid = fork();
 
 	if (pid == 0)
@@ -153,14 +140,11 @@ static int CheckSignalTask(const void *param)
 		{
 			args[0] = getenv("en_wd");
 			execvp(args[0],args);
-			sem_post(ready);
 		}
 
 		else /*wd is dead*/
 		{
-			wd_running = 1;
 			execvp(args[0],args);
-			sem_post(ready);
 		}
 		
 	}

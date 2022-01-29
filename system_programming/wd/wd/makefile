@@ -4,13 +4,12 @@
 ROOT_DIR = ../../..
 
 #PROJ_SRCS = $(wildcard *.c)
-PROJ_SRCS = 24_7.c wd_lib.c
+PROJ_SRCS = wd.c wd_lib.c
 
 # list of directories containing header files
-PROJ_INC_DIR =  ../../../ds/scheduler ../wd_lib
-
+PROJ_INC_DIR = ../../../ds/scheduler ../../../ds/uid ../wd_lib
 # the executable file
-PROJ_OUT = 247.out
+PROJ_OUT = wd.out
 
 # list of ADDITIONAL compiler flags (prepended with "-" sign)
 #PROJ_CFLAGS = -Wunused-but-set-variable
@@ -24,10 +23,10 @@ PROJ_MACROS =
 PROJ_ADD_OBJS = priority_queue.o heap.o dynamic_vector.o uid.o scheduler.o task.o
 
 # additional libraries
-PROJ_LIBS = wd
+PROJ_LIBS = pthread wd
 
 # linker flags
-PROJ_LDFLAGS = 
+PROJ_LDFLAGS =
 
 # list of projects (makefiles) this project depends on
 PROJ_DEPENDS  = ../wd_lib/makefile ../../../ds/scheduler/makefile 
