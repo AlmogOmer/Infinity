@@ -58,17 +58,17 @@ static void *Producer(void *param)
     exc6_t *exc6 = (exc6_t *) param;
 
 	while (1)
-	{		
+	{
+		for (i = 0; i < NUM_OF_THREADS; ++i)
+        {
+            sem_wait(&exc6->semaphore);
+        }
+		
 		pthread_mutex_lock(&exc6->lock);
 		exc6->write = rand() % 50;
         pthread_mutex_unlock(&exc6->lock);
         
         pthread_cond_broadcast(&exc6->cond);
-
-		for (i = 0; i < NUM_OF_THREADS; ++i)
-        {
-            sem_wait(&exc6->semaphore);
-        }
 
 		printf("producer write is %lu\n", exc6->write);
 
@@ -85,12 +85,14 @@ static void *Consumer(void *param)
 	while (1)
 	{
 		size_t value = 0;
+		sem_post(&exc6->semaphore);
 		
         pthread_mutex_lock(&exc6->lock);
         pthread_cond_wait(&exc6->cond,&exc6->lock); 
 		value = exc6->write;
+		pthread_mutex_unlock(&exc6->lock);
 		
-		sem_post(&exc6->semaphore);
+
 		printf("consumer read is %lu\n", value);
 
 	}
