@@ -4,7 +4,7 @@
 ROOT_DIR = ../../..
 
 #PROJ_SRCS = $(wildcard *.c)
-PROJ_SRCS = wd.c wd_lib.c
+PROJ_SRCS = wd.c 
 
 # list of directories containing header files
 PROJ_INC_DIR = ../../../ds/scheduler ../../../ds/uid ../wd_lib

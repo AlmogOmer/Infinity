@@ -1,17 +1,18 @@
-#include <pthread.h>
-#include <signal.h>			
 #include <unistd.h> 
-#include <stdio.h> 
-#include <sys/types.h>        
+#include <stdio.h>       
 #include "wd_lib.h"
 
 void WD(void);
 
 int main(int argc ,char *argv[])
 {
-	MMI(argc, argv);
+	if ( -1 == MMI(argc, argv))
+	{
+		return 1;
+	}
+	
 	WD();
-
+	
 	return 0;
 }
 

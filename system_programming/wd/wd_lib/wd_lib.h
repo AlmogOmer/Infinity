@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-void MMI(int argc, char *argv[]);
+int MMI(int argc, char *argv[]);
 
 void DNR(void);
 
