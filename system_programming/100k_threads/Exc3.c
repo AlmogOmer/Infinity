@@ -1,0 +1,42 @@
+#include <pthread.h>		/* for threads 		*/
+#include <stdlib.h>			
+#include <unistd.h>			/* for sleep		*/
+#include <stdio.h>			
+#include "th_100k.h"	
+
+#define ARR_SIZE 100000
+#define NUM_OH_THREADS ARR_SIZE
+
+static int arr[ARR_SIZE] = {0};
+
+static void *FillArr(void *arg)
+{
+	arr[(size_t) arg] = (size_t) arg;
+
+	return NULL;
+}
+
+void Exc3(void)
+{
+	size_t i = 0;
+	static pthread_t tid[NUM_OH_THREADS] = {0};
+	pthread_attr_t attr;
+	pthread_attr_init(&attr);
+	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+
+	for (i = 0; i < NUM_OH_THREADS; i++)
+	{
+		if (pthread_create(tid + i, &attr, FillArr, (void *) i))
+		{
+			printf("thread no: %ld failed\n", i+1);
+		}
+	}
+
+	sleep(10);
+
+	for (i = 0; i < ARR_SIZE; i++)
+	{
+		printf("%d\n", arr[i]);
+	}
+
+}
