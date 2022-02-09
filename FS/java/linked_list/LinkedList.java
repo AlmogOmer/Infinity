@@ -7,12 +7,19 @@ public class LinkedList {
         Node next;
  
         // Constructor
+        private Node(Object data){
+
+        }
     }
 
     class IterList implements Iter{
+        
+        Node node;
+        
         // Constructor
-        
-        
+        private IterList(){
+
+        }
         
         public Iter Next(){
 
@@ -23,17 +30,29 @@ public class LinkedList {
 
     }
 
-    public static void PushFront(Object data)
+    public static void PushFront(Object data){
 
-    public static void PopFront()
+    }
 
-    public static boolean IsEmpty()
+    public static void PopFront(){
 
-    public static int Size()
+    }
 
-    public static Iter Find(Object data)
+    public static boolean IsEmpty(){
 
-    public static Iter Begin()
+    }
+
+    public static int Size(){
+
+    }
+
+    public static Iter Find(Object data){
+
+    }
+
+    public static Iter Begin(){
+
+    }
 
 
 }
