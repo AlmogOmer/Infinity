@@ -1,4 +1,4 @@
 public interface Iter {
-    public object Next();
+    public Object Next();
     public boolean HasNext();
   }
