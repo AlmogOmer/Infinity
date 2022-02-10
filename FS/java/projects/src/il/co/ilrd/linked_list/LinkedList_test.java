@@ -51,16 +51,14 @@ public class LinkedList_test {
             System.out.println("size failed");
         }
 
-        iter = list.Find(x3);
-        if(!iter.HasNext())
+        if (list.Find(x3).Next() != x3)
         {
-            System.out.println("hasNext failed");
+            System.out.println("find x3 failed");
         }
 
-        iter.Next();
-        if(iter.HasNext())
+        if (list.Find(x1).Next() != x1)
         {
-            System.out.println("hasNext failed");
+            System.out.println("find x1 failed");
         }
 
         System.out.println("test done!");

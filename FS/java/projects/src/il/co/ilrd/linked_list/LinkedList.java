@@ -25,14 +25,13 @@ public class LinkedList {
         
         @Override
         public Object Next(){
+            Object nodeData = this.node.data;
             if(this.HasNext())
             {
                 this.node = this.node.next;
-                return this.node.data;
             }
 
-            return null;
-
+            return nodeData;
         }
 
         @Override
@@ -72,7 +71,7 @@ public class LinkedList {
             return 0;
         }
         int counter = 1;
-        Iter runner = new IterList(head);
+        Iter runner = new IterList(this.head);
         while(runner.HasNext())
         {
             ++counter;
@@ -88,20 +87,20 @@ public class LinkedList {
             return null;
         }
         
-        Iter runner = new IterList(head);
-        if(this.head.data == data)
-        {
-            return runner;
-        }
+        IterList runner = new IterList(this.head);
 
         while(runner.HasNext())
         {
-            if(runner.Next() == data)
+            if(runner.node.data == data)
             {
-                runner.Next();
-                return runner;
+                return (Iter)runner;
             }
             runner.Next();
+        }
+
+        if(runner.node.data == data)
+        {
+            return (Iter)runner;
         }
 
         return null;
@@ -109,7 +108,7 @@ public class LinkedList {
     }
 
     public Iter Begin(){
-        Iter begin = new IterList(head);
+        Iter begin = new IterList(this.head);
         return begin;
     }
 
