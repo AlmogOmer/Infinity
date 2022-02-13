@@ -1,8 +1,9 @@
+//package il.co.ilrd.linked_list;
 
 public class LinkedList {
     private Node head; 
  
-    private class Node {
+    private static class Node {
         private Object data;
         private Node next;
  
@@ -11,7 +12,6 @@ public class LinkedList {
             data = newData;
             next = newNext;
         }
-
     }
 
     private class IterList implements Iter{
@@ -26,17 +26,14 @@ public class LinkedList {
         @Override
         public Object Next(){
             Object nodeData = this.node.data;
-            if(this.HasNext())
-            {
-                this.node = this.node.next;
-            }
+            node = node.next;
 
             return nodeData;
         }
 
         @Override
         public boolean HasNext(){
-            return null != this.node.next;
+            return null != this.node;
         }
 
     }
@@ -70,8 +67,8 @@ public class LinkedList {
         {
             return 0;
         }
-        int counter = 1;
-        Iter runner = new IterList(this.head);
+        int counter = 0;
+        Iter runner = Begin();
         while(runner.HasNext())
         {
             ++counter;
@@ -87,7 +84,7 @@ public class LinkedList {
             return null;
         }
         
-        IterList runner = new IterList(this.head);
+        IterList runner = (IterList)Begin();
 
         while(runner.HasNext())
         {
@@ -98,16 +95,15 @@ public class LinkedList {
             runner.Next();
         }
 
-        if(runner.node.data == data)
-        {
-            return (Iter)runner;
-        }
-
         return null;
-
     }
 
     public Iter Begin(){
+        if (IsEmpty())
+        {
+            return null;
+        }
+
         Iter begin = new IterList(this.head);
         return begin;
     }
