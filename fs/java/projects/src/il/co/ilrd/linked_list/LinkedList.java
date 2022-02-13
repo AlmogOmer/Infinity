@@ -8,9 +8,9 @@ public class LinkedList {
         private Node next;
  
         // Constructor
-        private Node(Object newData, Node newNext){
-            data = newData;
-            next = newNext;
+        private Node(Object data, Node next){
+            this.data = data;
+            this.next = next;
         }
     }
 
@@ -19,8 +19,8 @@ public class LinkedList {
         private Node node;
         
         // Constructor
-        private IterList(Node newnode){
-            node = newnode;
+        private IterList(Node node){
+            this.node = node;
         }
         
         @Override
@@ -84,18 +84,15 @@ public class LinkedList {
             return null;
         }
         
-        IterList runner = (IterList)Begin();
+        Iter runner = Begin();
+        Iter returnRunner = Begin();
 
-        while(runner.HasNext())
+        while(runner.HasNext() && !runner.Next().equals(data))
         {
-            if(runner.node.data == data)
-            {
-                return (Iter)runner;
-            }
-            runner.Next();
+            returnRunner.Next();
         }
 
-        return null;
+        return returnRunner;
     }
 
     public Iter Begin(){
