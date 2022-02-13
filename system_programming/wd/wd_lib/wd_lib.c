@@ -12,6 +12,7 @@
 
 static int flag = 0;
 static pid_t other_pid = 0;
+static pthread_t tid = 0;
 static scheduler_t *scheduler = NULL;
 static sem_t *ready = NULL;
 
@@ -25,7 +26,6 @@ void DNR(void);
 int MMI(int argc, char *argv[])
 {
     unique_id_t uid = uid_null_uid;
-	pthread_t tid = 0;
 	char *args[2] = {"../wd/wd.out", NULL};
     struct sigaction act = {0};
     (void)argc;
@@ -33,12 +33,18 @@ int MMI(int argc, char *argv[])
     act.sa_sigaction = SIGUSR1Handler;
     act.sa_flags = SA_SIGINFO;
     sigemptyset(&act.sa_mask);
-    sigaction(SIGUSR1, &act, NULL);
+    if (-1 == sigaction(SIGUSR1, &act, NULL))
+	{
+		return -1;
+	}
 
 	act.sa_sigaction = SIGUSR2Handler;
     act.sa_flags = SA_SIGINFO;
     sigemptyset(&act.sa_mask);
-    sigaction(SIGUSR2, &act, NULL);
+    if (-1 == sigaction(SIGUSR2, &act, NULL))
+	{
+		return -1;
+	}
 
 	if (NULL == getenv("en_wd"))
     {
@@ -55,19 +61,15 @@ int MMI(int argc, char *argv[])
             setenv("en_wd", argv[0], 1);
 			if (-1 == execv(args[0],args))
 			{
-				/*kill(other_pid, SIGTERM);*/
+				kill(getpid(), SIGTERM);
 			}
         }
-	}
-
-	else if (other_pid > 0)
-	{
-		sem_wait(ready);
 	}
 
     scheduler = SchedulerCreate();
 	if(!scheduler)
 	{
+		kill(other_pid, SIGUSR2);
 		return -1;
 	}
 
@@ -85,7 +87,17 @@ int MMI(int argc, char *argv[])
 		return -1;
 	}
 
-	sem_post(ready);
+	ready = sem_open("ready", O_CREAT, 0666, 0);
+	if (other_pid)
+	{
+		sem_wait(ready);
+	}
+
+	else
+	{
+		sem_post(ready);
+	}
+	
     pthread_create(&tid, NULL, StartRoutine, argv[0]);
 
 	return 1;
@@ -96,8 +108,9 @@ void DNR(void)
 {
 	kill(getpid(), SIGUSR2);
 	kill(other_pid, SIGUSR2);
-
-	sem_unlink("ready");
+	
+	SchedulerDestroy(scheduler);
+	
 }
 
 static void SIGUSR1Handler(int signal, siginfo_t *info, void *context)
@@ -116,15 +129,15 @@ static void SIGUSR2Handler(int signal, siginfo_t *info, void *context)
 	(void)info;
 
 	SchedulerStop(scheduler);
+	
 }
 
 void *StartRoutine(void *param)
 {
 	(void)param;
 	SchedulerRun(scheduler);
-
-	SchedulerDestroy(scheduler);
 	
+	SchedulerDestroy(scheduler);
 	sem_close(ready);
 
 	return NULL;
@@ -163,7 +176,7 @@ static int CheckSignalTask(const void *param)
 		args[0] = recover;
 		if (-1 == execv(args[0],args))
 		{
-			/*kill(other_pid, SIGTERM);*/
+			kill(getpid(), SIGTERM);
 		}
 		
 	}

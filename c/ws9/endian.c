@@ -3,6 +3,8 @@
 
 #define IS_LIT_END(x) (*(char *)&x == x)
 
+/*#define IS_LITTLE (*(short*)("X\0\0X" + ((size_t)"X\0\0X" % 2) * 3) < 256)*/
+
 int IsLitEnd(void);
 
 int main()

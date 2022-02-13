@@ -11,7 +11,6 @@ public class LinkedList_test {
         Integer x2 = 2;
         Integer x3 = 3;
         Integer x4 = 4;
-        Iter iter = list.Begin();
 
         list.PushFront(x1);
         if(list.IsEmpty())

@@ -21,13 +21,19 @@ void ATM()
 {
 	int i = 0;
 	printf("24/7 running\n");
-	while (i < 10)
+	while (1)
 	{
 		printf("24/7 still running\n");
 		sleep(5);
 		++i;
 	}
-	/*DNR();*/
+	
+	DNR();
+
+	for(i=0; i<10; ++i)
+	{
+		printf("24/7 still running but wants to die\n");
+	}
 }
 
 

@@ -1,4 +1,4 @@
-# this will exclude all the files
+\# this will exclude all the files
 # so we need to include the types that we want to upload (exclude them from this rule)
 *
 
@@ -16,6 +16,9 @@ node_modules
 !*.hpp
 !*.mak
 !*.md
+!*.json
+!*.java
+
 
 # Specific files
 !.gitignore

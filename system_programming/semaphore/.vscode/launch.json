@@ -49,7 +49,7 @@
       "stopAtEntry": true,
       "cwd": "/Users/almogomer/Desktop/infinity/almog-omer/system_programming/semaphore",
       "environment": [],
-      "program": "/Users/almogomer/Desktop/infinity/almog-omer/system_programming/pthreads_intro/build/Debug/outDebug",
+      "program": "/Users/almogomer/Desktop/infinity/almog-omer/system_programming/semaphore/build/Debug/outDebug",
       "internalConsoleOptions": "openOnSessionStart",
       "MIMode": "lldb",
       "externalConsole": false
