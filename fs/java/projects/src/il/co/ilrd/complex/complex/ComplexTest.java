@@ -44,14 +44,14 @@ public class ComplexTest {
 
     @Test
     public void testIsImag() {
-        assertFalse(n1.isImag(n1));
-        assertFalse(n2.isImag(n2));
+        assertFalse(n1.isImag());
+        assertFalse(n2.isImag());
     }
 
     @Test
     public void testIsReal() {
-        assertFalse(n1.isReal(n1));
-        assertFalse(n2.isReal(n2));
+        assertFalse(n1.isReal());
+        assertFalse(n2.isReal());
 
     }
 

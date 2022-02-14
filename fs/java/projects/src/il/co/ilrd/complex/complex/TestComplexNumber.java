@@ -28,11 +28,11 @@ public class TestComplexNumber{
             System.out.println("failed in equals");
         }
 
-        if (n1.isImag(n1)){
+        if (n1.isImag()){
             System.out.println("failed in isimag");
         }
 
-        if (n2.isReal(n2)){
+        if (n2.isReal()){
             System.out.println("failed in isreal");
         }
 

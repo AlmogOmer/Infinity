@@ -69,12 +69,12 @@ public class ComplexNumber implements Comparable<ComplexNumber> {
     }
 
     
-    public boolean isReal(ComplexNumber n){
-        return this.imag == 0;
+    public boolean isReal(){
+        return imag == 0;
     }
 
-    public boolean isImag(ComplexNumber n){
-        return this.real == 0;
+    public boolean isImag(){
+        return real == 0;
     }
 
     @Override
