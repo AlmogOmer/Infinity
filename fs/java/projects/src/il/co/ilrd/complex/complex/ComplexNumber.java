@@ -126,20 +126,81 @@ public class ComplexNumber implements Comparable<ComplexNumber> {
         
         ComplexNumber result = new ComplexNumber(0,0);
         int i = 0;
-        while(str.charAt(i) > '0' && str.charAt(i) < '9' && i < str.length())
+        int startNegFlag = 0;
+        int midNegFlag = 0;
+        double temp1 = 0;
+        double temp2 = 0;
+        if(i < str.length() && str.charAt(i) == '-')
         {
-            result.real = result.real*10 + (double)(str.charAt(i)- '0');
+            startNegFlag = 1;
+            ++i;
+        }
+        while(i < str.length() && str.charAt(i) >= '0' && str.charAt(i) <= '9')
+        {
+            temp1 = temp1*10 + (double)(str.charAt(i) - '0');
+            ++i;
+        }
+        
+        if (i < str.length() && str.charAt(i) == '+'){
+            result.real = temp1;
+            if(startNegFlag == 1){
+                result.real *= -1;
+            }
+            ++i;
+        }
+        else if(i < str.length() && str.charAt(i) == '-')
+        {
+            result.real = temp1;
+            if(startNegFlag == 1){
+                result.real *= -1;
+            }
+            midNegFlag = 1;
             ++i;
         }
 
-        ++i;
+        else if (i < str.length() && str.charAt(i) == 'i'){
+            result.imag = temp1;
+            if(startNegFlag == 1){
+                result.imag *= -1;
+            }
+            ++i;
+            
+            if (i < str.length() && str.charAt(i) == '-'){
+                midNegFlag = 1;
+                ++i;
+            }
+            else if (i < str.length() && str.charAt(i) == '+'){
+                ++i;
+            }
+        }
 
-        while(str.charAt(i) > '0' && str.charAt(i) < '9' && i < str.length())
+        else if (i == str.length()){
+            result.real = temp1;
+            if(startNegFlag == 1){
+                result.real *= -1;
+            }
+            return result;
+        }
+
+        while(i < str.length() && str.charAt(i) >= '0' && str.charAt(i) <= '9')
         {
-            result.imag = result.imag*10 + (double)(str.charAt(i)-'0');
+            temp2 = temp2*10 + (double)(str.charAt(i) -'0');
             ++i;
         }
 
+        if (i < str.length() && str.charAt(i) == 'i'){
+            result.imag = temp2;
+            if(midNegFlag == 1){
+                result.imag *= -1;
+            }
+        }
+
+        else{
+            result.real = temp2;
+            if(midNegFlag == 1){
+                result.real *= -1;
+            }
+        }
 
         return result;
 

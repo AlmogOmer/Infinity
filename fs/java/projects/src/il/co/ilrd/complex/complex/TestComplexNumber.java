@@ -40,8 +40,20 @@ public class TestComplexNumber{
             System.out.println("failed in compareTo");
         }
 
-        ComplexNumber parsingResult = ComplexNumber.parsing("3+8i");
-        System.out.println(parsingResult.toString());
+        ComplexNumber parsingResult1 = ComplexNumber.parsing("3+8i");
+        System.out.println(parsingResult1.toString());
+
+        ComplexNumber parsingResult2 = ComplexNumber.parsing("3i");
+        System.out.println(parsingResult2.toString());
+
+        ComplexNumber parsingResult3 = ComplexNumber.parsing("-3i+9");
+        System.out.println(parsingResult3.toString());
+
+        ComplexNumber parsingResult4 = ComplexNumber.parsing("-3i-9");
+        System.out.println(parsingResult4.toString());
+
+        ComplexNumber parsingResult5 = ComplexNumber.parsing("92");
+        System.out.println(parsingResult5.toString());
 
 
         System.out.println("test done!");
