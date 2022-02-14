@@ -204,9 +204,7 @@ public class ComplexNumber implements Comparable<ComplexNumber> {
         }
 
         return result;
-
     }
 
-
-    
  }
+ 
