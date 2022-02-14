@@ -122,7 +122,20 @@ public class ComplexNumber implements Comparable<ComplexNumber> {
 
     }
 
-    public static ComplexNumber parsing(String str){
+    public static ComplexNumber parsing(String str) {
+        ComplexNumber result = new ComplexNumber(0,0);
+        String[] s1 = str.split(" ", 2);
+        String[] s2 = s1[1].split("i", 2);
+
+        result.real = Double.parseDouble(s1[0]);
+        result.imag = Double.parseDouble(s2[0]);
+
+        return result;
+
+    }
+
+
+    /*public static ComplexNumber parsing(String str){
         
         ComplexNumber result = new ComplexNumber(0,0);
         int i = 0;
@@ -204,7 +217,6 @@ public class ComplexNumber implements Comparable<ComplexNumber> {
         }
 
         return result;
-    }
+    }*/
 
  }
- 

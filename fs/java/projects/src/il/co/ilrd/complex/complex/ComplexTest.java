@@ -65,7 +65,7 @@ public class ComplexTest {
 
     @Test
     public void testParsing() {
-        ComplexNumber parsingResult = ComplexNumber.parsing("3+8i");
+        ComplexNumber parsingResult = ComplexNumber.parsing("3 +8i");
         assertEquals(3, parsingResult.getReal());
         assertEquals(8, parsingResult.getImg());
 
