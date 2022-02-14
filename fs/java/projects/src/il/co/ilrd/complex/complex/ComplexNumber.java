@@ -140,8 +140,16 @@ public class ComplexNumber implements Comparable<ComplexNumber> {
             temp1 = temp1*10 + (double)(str.charAt(i) - '0');
             ++i;
         }
+
+        if (i == str.length()){
+            result.real = temp1;
+            if(startNegFlag == 1){
+                result.real *= -1;
+            }
+            return result;
+        }
         
-        if (i < str.length() && str.charAt(i) == '+'){
+        else if (i < str.length() && str.charAt(i) == '+'){
             result.real = temp1;
             if(startNegFlag == 1){
                 result.real *= -1;
@@ -164,7 +172,7 @@ public class ComplexNumber implements Comparable<ComplexNumber> {
                 result.imag *= -1;
             }
             ++i;
-            
+
             if (i < str.length() && str.charAt(i) == '-'){
                 midNegFlag = 1;
                 ++i;
@@ -174,13 +182,6 @@ public class ComplexNumber implements Comparable<ComplexNumber> {
             }
         }
 
-        else if (i == str.length()){
-            result.real = temp1;
-            if(startNegFlag == 1){
-                result.real *= -1;
-            }
-            return result;
-        }
 
         while(i < str.length() && str.charAt(i) >= '0' && str.charAt(i) <= '9')
         {
