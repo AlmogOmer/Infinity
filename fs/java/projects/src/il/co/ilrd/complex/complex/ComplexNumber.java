@@ -128,7 +128,7 @@ public class ComplexNumber implements Comparable<ComplexNumber> {
         int i = 0;
         while(str.charAt(i) > '0' && str.charAt(i) < '9' && i < str.length())
         {
-            result.real = result.real*10 + (double)str.charAt(i);
+            result.real = result.real*10 + (double)(str.charAt(i)- '0');
             ++i;
         }
 
@@ -136,7 +136,7 @@ public class ComplexNumber implements Comparable<ComplexNumber> {
 
         while(str.charAt(i) > '0' && str.charAt(i) < '9' && i < str.length())
         {
-            result.imag = result.imag*10 + (double)str.charAt(i);
+            result.imag = result.imag*10 + (double)(str.charAt(i)-'0');
             ++i;
         }
 
