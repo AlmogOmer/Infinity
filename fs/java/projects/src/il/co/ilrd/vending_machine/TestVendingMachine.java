@@ -54,6 +54,10 @@ public class TestVendingMachine {
         vm.payment(17);
         vm.chooseProduct("sprite");
         vm.cancel();
+        vm.payment(5);
+        vm.chooseProduct("orange");
+        vm.chooseProduct("sprite");
+        vm.cancel();
     }
 
     
