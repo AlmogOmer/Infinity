@@ -60,6 +60,13 @@ public class TestVendingMachine {
         vm.chooseProduct("orange");
         vm.chooseProduct("sprite");
         vm.cancel();
+        
+        vm.turnOffmachine();
+        vm.chooseProduct("coke");
+        
+        vm.turnOnMachine();
+        vm.payment(17);
+        vm.chooseProduct("coke");
         vm.turnOffmachine();
     }
 

@@ -21,7 +21,6 @@ public class VendingMachine {
         moneyIn = 0;
         currState = VMstate.OFF;
         isRunning = false;
-        thread = new VMThread();
     }
 
     private class VMThread extends Thread {
@@ -75,7 +74,9 @@ public class VendingMachine {
             public void turnOnMachine(VendingMachine vm){
                 vm.isRunning = true;
                 vm.currState = VMstate.WFP;
+                vm.thread = vm.new VMThread();
                 vm.thread.start();
+                vm.output.PrintToMachine("Hello, machine is on!");
             }
 
             @Override 
