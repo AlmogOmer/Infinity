@@ -2,6 +2,7 @@ package vending_machine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class TestVendingMachine {
 
@@ -30,7 +31,7 @@ public class TestVendingMachine {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         
         TestVendingMachine.PrintScreen output = new TestVendingMachine().new PrintScreen();
         List <Product> list_prod = new ArrayList<Product>();
@@ -49,15 +50,17 @@ public class TestVendingMachine {
         vm.payment(5);
         vm.chooseProduct("coke");
         vm.chooseProduct("coke");
+        vm.turnOnMachine();
         vm.payment(17);
-        vm.cancel();
-        vm.payment(17);
+        
+        TimeUnit.SECONDS.sleep(15);
+       
         vm.chooseProduct("sprite");
-        vm.cancel();
         vm.payment(5);
         vm.chooseProduct("orange");
         vm.chooseProduct("sprite");
         vm.cancel();
+        vm.turnOffmachine();
     }
 
     
