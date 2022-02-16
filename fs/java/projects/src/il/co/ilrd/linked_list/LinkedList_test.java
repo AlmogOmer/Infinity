@@ -1,3 +1,5 @@
+package linked_list;
+
 public class LinkedList_test {
     public static void main(String[] args) {
 

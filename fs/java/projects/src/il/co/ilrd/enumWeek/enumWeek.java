@@ -1,3 +1,5 @@
+package enumWeek;
+
 public class enumWeek {
     public enum EWeekDay{
         SUNDAY,

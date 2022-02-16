@@ -1,4 +1,4 @@
-//package il.co.ilrd.linked_list;
+package linked_list;
 
 public class LinkedList {
     private Node head; 

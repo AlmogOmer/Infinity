@@ -79,7 +79,7 @@ public class ComplexNumber implements Comparable<ComplexNumber> {
 
     @Override
     public int compareTo(ComplexNumber n){
-
+        
         if ( 0 > this.real- n.real){
             return -1;
         } 
