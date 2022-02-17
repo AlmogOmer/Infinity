@@ -1,4 +1,4 @@
-package vending_machine;
+package il.co.ilrd.vending_machine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +60,7 @@ public class TestVendingMachine {
         vm.chooseProduct("orange");
         vm.chooseProduct("sprite");
         vm.cancel();
+        vm.payment(5);
         
         vm.turnOffmachine();
         vm.chooseProduct("coke");

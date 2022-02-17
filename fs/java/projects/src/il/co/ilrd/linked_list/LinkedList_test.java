@@ -1,4 +1,4 @@
-package linked_list;
+package il.co.ilrd.linked_list;
 
 public class LinkedList_test {
     public static void main(String[] args) {

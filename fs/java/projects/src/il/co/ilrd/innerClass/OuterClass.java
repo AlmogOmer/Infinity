@@ -1,4 +1,4 @@
-package innerClass;
+package il.co.ilrd.innerClass;
 
 public class OuterClass {
     int myouter;
@@ -11,6 +11,8 @@ public class OuterClass {
     } 
 
     public class innerClass{
+        
+        //OuterClass.PrintMe(myouter);
    
     }
 

@@ -1,4 +1,4 @@
-package complex;
+package il.co.ilrd.complex;
 
 public class TestComplexNumber{
     public static void main(String[] args){

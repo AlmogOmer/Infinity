@@ -1,6 +1,6 @@
 /*Reviewer: Shiraz*/
 
-package vending_machine;
+package il.co.ilrd.vending_machine;
 
 import java.util.List;
 import java.util.ListIterator;
@@ -139,6 +139,11 @@ public class VendingMachine {
         public void turnOnMachine(VendingMachine vm){}
         
         public void turnOffMachine(VendingMachine vm) throws InterruptedException{
+            vm.output.PrintToMachine("Machine is turnning off");
+            if (vm.moneyIn > 0){
+                vm.output.PrintToMachine("The deal was cancled, please take your money " + vm.moneyIn);
+                vm.moneyIn = 0;
+            }    
             vm.isRunning = false;
             vm.currState = VMstate.OFF;
             vm.thread.join();

@@ -1,4 +1,4 @@
-package complex;
+package il.co.ilrd.complex;
 
 public class ComplexNumber implements Comparable<ComplexNumber> {
     private double real;

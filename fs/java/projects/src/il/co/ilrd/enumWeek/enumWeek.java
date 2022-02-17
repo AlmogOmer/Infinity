@@ -1,4 +1,4 @@
-package enumWeek;
+package il.co.ilrd.enumWeek;
 
 public class enumWeek {
     public enum EWeekDay{
