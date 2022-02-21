@@ -4,8 +4,8 @@ package il.co.ilrd.singleton;
 public class TestSingleton {
 
     public static void TestLazyNotSafe() {	
-        LazyNotSafe t1 = LazyNotSafe.getInstance();
-        LazyNotSafe t2 = LazyNotSafe.getInstance();
+        SingletonLazyNotSafe t1 = SingletonLazyNotSafe.getInstance();
+        SingletonLazyNotSafe t2 = SingletonLazyNotSafe.getInstance();
         if (t1 != t2){
             System.out.println("TestLazyNotSafe failed\n\n");
         }
@@ -14,8 +14,8 @@ public class TestSingleton {
 	
 	public static void TestLazyDoublCheckedSafe() {
         
-        LazyDoublCheckedSafe t1 = LazyDoublCheckedSafe.getInstance();
-        LazyDoublCheckedSafe t2 = LazyDoublCheckedSafe.getInstance();
+        SingletonLazyDoublCheckedSafe t1 = SingletonLazyDoublCheckedSafe.getInstance();
+        SingletonLazyDoublCheckedSafe t2 = SingletonLazyDoublCheckedSafe.getInstance();
         if (t1 != t2){
             System.out.println("LazyDoublCheckedSafe failed\n\n");
         }
@@ -24,8 +24,8 @@ public class TestSingleton {
 	
 	public static void TestEagerInitialization() {
         
-        EagerInitialization t1 = EagerInitialization.getInstance();
-        EagerInitialization t2 = EagerInitialization.getInstance();
+        SingletonEagerInitialization t1 = SingletonEagerInitialization.getInstance();
+        SingletonEagerInitialization t2 = SingletonEagerInitialization.getInstance();
         if (t1 != t2){
             System.out.println("EagerInitialization failed\n\n");
         }
@@ -34,8 +34,8 @@ public class TestSingleton {
 	
 	public static void TestHolderNestedClass() {
         
-        HolderNestedClass t1 = HolderNestedClass.getInstance();
-        HolderNestedClass t2 = HolderNestedClass.getInstance();
+        SingletonHolderNestedClass t1 = SingletonHolderNestedClass.getInstance();
+        SingletonHolderNestedClass t2 = SingletonHolderNestedClass.getInstance();
         if (t1 != t2){
             System.out.println("HolderNestedClass failed\n\n");
         }
@@ -44,8 +44,8 @@ public class TestSingleton {
 	
 	public static void TestEnumSingleton() {
         
-        EnumSingleton t1 = EnumSingleton.getInstance();
-        EnumSingleton t2 = EnumSingleton.getInstance();
+        SingletonEnumSingleton t1 = SingletonEnumSingleton.getInstance();
+        SingletonEnumSingleton t2 = SingletonEnumSingleton.getInstance();
         if (t1 != t2){
             System.out.println("EnumSingleton failed\n\n");
         }
