@@ -18,7 +18,7 @@ void AnimalCtor1(Animal_t *this);
 void AnimalCtor2(Animal_t *this, int num_masters);
 void AnimalsayHello(Animal_t *this);
 void AnimalshowCounter(Animal_t *this);
-int *AnimalgetNumMasters(Animal_t *this);
+int AnimalgetNumMasters(Animal_t *this);
 char *AnimalToString(Animal_t *this);
 void AnimalFinalize(Animal_t *this);
 
@@ -182,10 +182,10 @@ void AnimalshowCounter(Animal_t *this){
 	printf("%d\n", AnimalCounter);
 }
 
-int *AnimalgetNumMasters(Animal_t *this){
-	int ret = this->num_masters;
-    int *p_ret = &ret;
-    return p_ret;
+int AnimalgetNumMasters(Animal_t *this){
+	/*int ret = this->num_masters;
+    int *p_ret = &ret;*/
+    return this->num_masters;
 }
     
 
@@ -322,7 +322,7 @@ int main(void){
 
     for (i = 0; i < 5; ++i){
         (*array[i]->Object.mata->VTable)[2](array[i]);
-        printf("%d\n",*(int *)(*array[i]->Object.mata->VTable)[4](array[i]));
+        printf("%d\n",(int)(*array[i]->Object.mata->VTable)[4](array[i]));
     }
 
     for (i = 0; i < 5; ++i){
