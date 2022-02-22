@@ -1,3 +1,5 @@
+/*reviewer: Rona */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -139,7 +141,7 @@ void LegendaryAnimalInitializer(LegendaryAnimal_t *this){
 }
 
 char *ObjectToString(Object_t *this){
-    snprintf(str, str_buffer, "%s@%p", this->mata->Name, (void *)this);
+    snprintf(str, str_buffer, "%s@%lu", this->mata->Name, (size_t)this);
 	return str;
 }
 
