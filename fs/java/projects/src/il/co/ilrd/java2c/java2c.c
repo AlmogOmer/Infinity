@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#define SIZE 40 
 typedef struct Object Object_t;
 typedef struct Class Class_t;
 typedef struct Animal Animal_t;
@@ -17,7 +19,7 @@ void ObjectFinalize(Object_t *this);
 void AnimalCtor1(Animal_t *this);
 void AnimalCtor2(Animal_t *this, int num_masters);
 void AnimalsayHello(Animal_t *this);
-void AnimalshowCounter(Animal_t *this);
+void AnimalshowCounter();
 int AnimalgetNumMasters(Animal_t *this);
 char *AnimalToString(Animal_t *this);
 void AnimalFinalize(Animal_t *this);
@@ -38,8 +40,8 @@ void LegendaryAnimalFinalize(LegendaryAnimal_t *this);
 char *LegendaryAnimalToString(LegendaryAnimal_t *this);
 
 static int AnimalCounter = 0;
-char str[40];
-int str_buffer = 40;
+char str[SIZE];
+int str_buffer = SIZE;
 
 struct Class{
     char *Name;
@@ -75,7 +77,7 @@ Class_t DogClass = {"Dog", sizeof(Dog_t), &AnimalClass, &Dog_vt};
 
 struct Cat{
     Animal_t Animal;
-    char *colors;
+    char colors[SIZE];
     int num_masters;
 };
 
@@ -102,8 +104,6 @@ void AnimalInitializer(){
         printf("Static block Animal 2\n");
         flag = 1;
     }
-
-    printf("Instance initialization block Animal\n");
 }
 
 void DogInitializer(Dog_t *this){
@@ -152,6 +152,7 @@ void ObjectFinalize(Object_t *this){
 void AnimalCtor1(Animal_t *this){
     Class_t *temp = this->Object.mata;
     AnimalInitializer();
+    printf("Instance initialization block Animal\n");
     printf("Animal Ctor\n");
     this->num_legs = 5;
     this->num_masters = 1;
@@ -167,6 +168,7 @@ void AnimalCtor1(Animal_t *this){
 
 void AnimalCtor2(Animal_t *this, int num_masters){
     AnimalInitializer();
+    printf("Instance initialization block Animal\n");
     printf("Animal Ctor int\n");
     this->num_legs = 5;
     this->num_masters = num_masters;
@@ -178,13 +180,11 @@ void AnimalsayHello(Animal_t *this){
 	printf("I have %d legs\n", this->num_legs);
 }
 
-void AnimalshowCounter(Animal_t *this){
+void AnimalshowCounter(){
 	printf("%d\n", AnimalCounter);
 }
 
 int AnimalgetNumMasters(Animal_t *this){
-	/*int ret = this->num_masters;
-    int *p_ret = &ret;*/
     return this->num_masters;
 }
     
@@ -229,7 +229,7 @@ void CatCtor1(Cat_t *this){
 
 void CatCtor2(Cat_t *this, char *colors){
     CatInitializer(this);
-    this->colors = colors;
+    strcpy(this->colors,colors);
     this->num_masters = 5;
     printf("Cat Ctor with color: %s\n" ,colors);
 }
@@ -293,7 +293,7 @@ int main(void){
     la = (LegendaryAnimal_t *)Alloc(&LegendaryAnimalClass);
     LegendaryAnimalCtor(la);
 
-    AnimalshowCounter(animal);
+    AnimalshowCounter();
     printf("%d\n",animal->ID);
     printf("%d\n",dog->Animal.ID);
     printf("%d\n",cat->Animal.ID);

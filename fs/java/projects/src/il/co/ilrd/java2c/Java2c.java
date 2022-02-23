@@ -154,6 +154,7 @@ public class Java2c {
 	}
 	//@SuppressWarnings("deprecation")
 	public static void main(String[] args){
+		
 		Object obj;
 		Animal animal = new Animal();
 		Dog dog = new Dog();
