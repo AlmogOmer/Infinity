@@ -16,6 +16,7 @@ typedef void* (*vf_t) (void*);
 char *ObjectToString(Object_t *this);
 void ObjectFinalize(Object_t *this);
 
+void AnimalInitializer();
 void AnimalCtor1(Animal_t *this);
 void AnimalCtor2(Animal_t *this, int num_masters);
 void AnimalsayHello(Animal_t *this);
@@ -24,16 +25,19 @@ int AnimalgetNumMasters(Animal_t *this);
 char *AnimalToString(Animal_t *this);
 void AnimalFinalize(Animal_t *this);
 
+void DogInitializer();
 void DogCtor(Dog_t *this);
 void DogsayHello(Dog_t *this);
 char *DogToString(Dog_t *this);
 void DogFinalize(Dog_t *this);
 
+void CatInitializer();
 void CatCtor1(Cat_t *this);
 void CatCtor2(Cat_t *this, char *colors);
 char *CatToString(Cat_t *this);
 void CatFinalize(Cat_t *this);
 
+void LegendaryAnimalInitializer();
 void LegendaryAnimalCtor(LegendaryAnimal_t *this);
 void LegendaryAnimalsayHello(LegendaryAnimal_t *this);
 void LegendaryAnimalFinalize(LegendaryAnimal_t *this);
@@ -106,38 +110,28 @@ void AnimalInitializer(){
     }
 }
 
-void DogInitializer(Dog_t *this){
+void DogInitializer(){
     static int flag = 0;
     if(flag == 0){
         printf("Static block Dog\n");
         flag = 1;
     }
-
-    AnimalCtor2(&this->Animal, 2);
-
-    printf("Instance initialization block Dog\n");
 }
 
-void CatInitializer(Cat_t *this){
+void CatInitializer(){
     static int flag = 0;
     if(flag == 0){
         printf("Static block Cat\n");
         flag = 1;
     }
-
-    AnimalCtor1(&this->Animal);
-
 }
 
-void LegendaryAnimalInitializer(LegendaryAnimal_t *this){
+void LegendaryAnimalInitializer(){
     static int flag = 0;
     if(flag == 0){
         printf("Static block Legendary Animal\n");
         flag = 1;
     }
-
-    CatCtor1(&this->Cat);
-
 }
 
 char *ObjectToString(Object_t *this){
@@ -180,15 +174,16 @@ void AnimalsayHello(Animal_t *this){
 	printf("I have %d legs\n", this->num_legs);
 }
 
+/*static function*/
 void AnimalshowCounter(){
-	printf("%d\n", AnimalCounter);
+	AnimalInitializer();
+    printf("%d\n", AnimalCounter);
 }
 
 int AnimalgetNumMasters(Animal_t *this){
     return this->num_masters;
 }
     
-
 char *AnimalToString(Animal_t *this){
     snprintf(str,str_buffer, "Animal with ID: %d", this->ID);
     return str;
@@ -200,7 +195,9 @@ void AnimalFinalize(Animal_t *this){
 }
 
 void DogCtor(Dog_t *this){
-    DogInitializer(this);
+    DogInitializer();
+    AnimalCtor2(&this->Animal, 2);
+    printf("Instance initialization block Dog\n");
     this->num_legs = 4;
     printf("Dog Ctor\n");
 }
@@ -228,7 +225,8 @@ void CatCtor1(Cat_t *this){
 }
 
 void CatCtor2(Cat_t *this, char *colors){
-    CatInitializer(this);
+    CatInitializer();
+    AnimalCtor1(&this->Animal);
     strcpy(this->colors,colors);
     this->num_masters = 5;
     printf("Cat Ctor with color: %s\n" ,colors);
@@ -245,7 +243,8 @@ void CatFinalize(Cat_t *this){
 }
 
 void LegendaryAnimalCtor(LegendaryAnimal_t *this){
-    LegendaryAnimalInitializer(this);
+    LegendaryAnimalInitializer();
+    CatCtor1(&this->Cat);
     printf("Legendary Ctor\n");
 }
 
