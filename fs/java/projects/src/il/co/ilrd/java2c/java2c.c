@@ -45,7 +45,6 @@ char *LegendaryAnimalToString(LegendaryAnimal_t *this);
 
 static int AnimalCounter = 0;
 char str[SIZE];
-int str_buffer = SIZE;
 
 struct Class{
     char *Name;
@@ -68,7 +67,7 @@ struct Animal{
 	int ID; 
 };
 
-vf_t Animal_vt[] = {(vf_t)AnimalToString, (vf_t)AnimalFinalize, (vf_t)AnimalsayHello, (vf_t)AnimalshowCounter, (vf_t)AnimalgetNumMasters};
+vf_t Animal_vt[] = {(vf_t)AnimalToString, (vf_t)AnimalFinalize, (vf_t)AnimalsayHello};
 Class_t AnimalClass = {"Animal", sizeof(Animal_t), &ObjectClass, &Animal_vt};
 
 struct Dog{
@@ -76,7 +75,7 @@ struct Dog{
     int num_legs;
 };
 
-vf_t Dog_vt[] = {(vf_t)DogToString, (vf_t)DogFinalize,(vf_t)DogsayHello, (vf_t)AnimalshowCounter, (vf_t)AnimalgetNumMasters};
+vf_t Dog_vt[] = {(vf_t)DogToString, (vf_t)DogFinalize,(vf_t)DogsayHello};
 Class_t DogClass = {"Dog", sizeof(Dog_t), &AnimalClass, &Dog_vt};
 
 struct Cat{
@@ -85,14 +84,14 @@ struct Cat{
     int num_masters;
 };
 
-vf_t Cat_vt[] = {(vf_t)CatToString, (vf_t)CatFinalize, (vf_t)AnimalsayHello, (vf_t)AnimalshowCounter, (vf_t)AnimalgetNumMasters};
+vf_t Cat_vt[] = {(vf_t)CatToString, (vf_t)CatFinalize, (vf_t)AnimalsayHello};
 Class_t CatClass = {"Cat", sizeof(Cat_t), &AnimalClass, &Cat_vt};
 
 struct LegendaryAnimal{
     Cat_t Cat;
 };
 
-vf_t LegendaryAnimal_vt[] = {(vf_t)LegendaryAnimalToString, (vf_t)LegendaryAnimalFinalize, (vf_t)LegendaryAnimalsayHello, (vf_t)AnimalshowCounter, (vf_t)AnimalgetNumMasters};
+vf_t LegendaryAnimal_vt[] = {(vf_t)LegendaryAnimalToString, (vf_t)LegendaryAnimalFinalize, (vf_t)LegendaryAnimalsayHello};
 Class_t LegendaryAnimalClass = {"LegendaryAnimal", sizeof(LegendaryAnimal_t), &CatClass, &LegendaryAnimal_vt};
 
 Object_t *Alloc(Class_t *meta){
@@ -135,7 +134,7 @@ void LegendaryAnimalInitializer(){
 }
 
 char *ObjectToString(Object_t *this){
-    snprintf(str, str_buffer, "%s@%lu", this->mata->Name, (size_t)this);
+    snprintf(str, SIZE, "%s@%lu", this->mata->Name, (size_t)this);
 	return str;
 }
 
@@ -144,7 +143,6 @@ void ObjectFinalize(Object_t *this){
 }
 
 void AnimalCtor1(Animal_t *this){
-    Class_t *temp = this->Object.mata;
     AnimalInitializer();
     printf("Instance initialization block Animal\n");
     printf("Animal Ctor\n");
@@ -152,12 +150,9 @@ void AnimalCtor1(Animal_t *this){
     this->num_masters = 1;
     this->ID = ++AnimalCounter;
     (*this->Object.mata->VTable)[2](this);
-    (*this->Object.mata->VTable)[3](this);
+    AnimalshowCounter();
 	printf("%s\n", (char *)(*this->Object.mata->VTable)[0](this));
-    while(0 != strcmp(temp->Name, "Animal")){
-        temp = temp->parent;
-    }
-	printf("%s\n", (char *)(*temp->parent->VTable)[0](this));
+	printf("%s\n", ObjectToString((Object_t *)this));
 }
 
 void AnimalCtor2(Animal_t *this, int num_masters){
@@ -185,13 +180,13 @@ int AnimalgetNumMasters(Animal_t *this){
 }
     
 char *AnimalToString(Animal_t *this){
-    snprintf(str,str_buffer, "Animal with ID: %d", this->ID);
+    snprintf(str,SIZE, "Animal with ID: %d", this->ID);
     return str;
 }
 
 void AnimalFinalize(Animal_t *this){
 	printf("finalize Animal with ID: %d\n" ,this->ID);
-    (*this->Object.mata->parent->VTable)[1](this);
+    ObjectFinalize((Object_t *)this);
 }
 
 void DogCtor(Dog_t *this){
@@ -208,13 +203,13 @@ void DogsayHello(Dog_t *this){
 }
 
 char *DogToString(Dog_t *this){
-    snprintf(str,str_buffer, "Dog with ID: %d", this->Animal.ID);
+    snprintf(str,SIZE, "Dog with ID: %d", this->Animal.ID);
     return str;
 }
 
 void DogFinalize(Dog_t *this){
 	printf("finalize Dog with ID: %d\n" ,this->Animal.ID);
-    (*this->Animal.Object.mata->parent->VTable)[1](this);
+    AnimalFinalize((Animal_t *)this);
 }
 
 
@@ -233,13 +228,13 @@ void CatCtor2(Cat_t *this, char *colors){
 }
 
 char *CatToString(Cat_t *this){
-    snprintf(str,str_buffer, "Cat with ID: %d", this->Animal.ID);
+    snprintf(str,SIZE, "Cat with ID: %d", this->Animal.ID);
     return str;
 }
 
 void CatFinalize(Cat_t *this){
 	printf("finalize Cat with ID: %d\n", this->Animal.ID);
-    (*this->Animal.Object.mata->parent->VTable)[1](this);
+    AnimalFinalize((Animal_t *)this);
 }
 
 void LegendaryAnimalCtor(LegendaryAnimal_t *this){
@@ -254,11 +249,11 @@ void LegendaryAnimalsayHello(LegendaryAnimal_t *this){
 
 void LegendaryAnimalFinalize(LegendaryAnimal_t *this){
 	printf("finalize LegendaryAnimal with ID: %d\n", this->Cat.Animal.ID);
-    (*this->Cat.Animal.Object.mata->parent->VTable)[1](this);
+    CatFinalize((Cat_t *)this);
 }
 
 char *LegendaryAnimalToString(LegendaryAnimal_t *this){
-    snprintf(str,str_buffer, "LegendaryAnimal with ID: %d", this->Cat.Animal.ID);
+    snprintf(str,SIZE, "LegendaryAnimal with ID: %d", this->Cat.Animal.ID);
     return str;
 }
 
@@ -321,7 +316,7 @@ int main(void){
 
     for (i = 0; i < 5; ++i){
         (*array[i]->Object.mata->VTable)[2](array[i]);
-        printf("%d\n",(int)(*array[i]->Object.mata->VTable)[4](array[i]));
+        printf("%d\n",AnimalgetNumMasters(array[i]));
     }
 
     for (i = 0; i < 5; ++i){
