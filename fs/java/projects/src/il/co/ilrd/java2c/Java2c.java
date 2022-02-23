@@ -1,3 +1,5 @@
+package il.co.ilrd.java2c;
+
 
 class Animal{
 	
