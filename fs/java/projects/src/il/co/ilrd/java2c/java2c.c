@@ -222,8 +222,8 @@ void CatCtor1(Cat_t *this){
 void CatCtor2(Cat_t *this, char *colors){
     CatInitializer();
     AnimalCtor1(&this->Animal);
-    strcpy(this->colors,colors);
     this->num_masters = 5;
+    strcpy(this->colors,colors);
     printf("Cat Ctor with color: %s\n" ,colors);
 }
 
