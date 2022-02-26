@@ -3,6 +3,13 @@
     "configurations": [
       {
         "type": "java",
+        "name": "Launch exam",
+        "request": "launch",
+        "mainClass": "exam",
+        "projectName": "projects_40722b42"
+      },
+      {
+        "type": "java",
         "name": "Launch Foo",
         "request": "launch",
         "mainClass": "il.co.ilrd.exceptions.Foo",
