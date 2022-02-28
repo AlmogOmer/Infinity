@@ -1,4 +1,4 @@
-package il.co.ilrd.genericlist;
+package il.co.ilrd.genericList;
 
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
