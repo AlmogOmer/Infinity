@@ -37,11 +37,7 @@ public class Foo {
         
         func2();
 
-        try {
-            func3();
-        } catch (MyException1 e) {
-            e.printStackTrace();
-        }
+        func3();
 
         try {
             func4();

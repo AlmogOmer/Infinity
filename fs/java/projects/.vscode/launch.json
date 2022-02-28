@@ -3,6 +3,20 @@
     "configurations": [
       {
         "type": "java",
+        "name": "Launch GenericListTest",
+        "request": "launch",
+        "mainClass": "il.co.ilrd.genericlist.GenericListTest",
+        "projectName": "projects_40722b42"
+      },
+      {
+        "type": "java",
+        "name": "Launch Foo",
+        "request": "launch",
+        "mainClass": "Foo",
+        "projectName": "projects_40722b42"
+      },
+      {
+        "type": "java",
         "name": "Launch exam",
         "request": "launch",
         "mainClass": "exam",
