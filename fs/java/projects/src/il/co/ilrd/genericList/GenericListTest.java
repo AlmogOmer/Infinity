@@ -45,7 +45,7 @@ public class GenericListTest {
         {
             System.out.println("size failed");
         }
-        if(list.find(1) != null)
+        if(list.find(1).hasNext())
         {
             System.out.println("find failed");
         }
@@ -71,12 +71,12 @@ public class GenericListTest {
         }
 
         list1.pushFront(y1);
-        Iterator<Integer> iter = list1.iterator();
+        /*Iterator<Integer> iter = list1.iterator();
         while (iter.hasNext()) {
             System.out.println(iter.next());    //should throw exception //
             list1.pushFront(y2);
-        }
-        
+        }*/
+        list1.pushFront(y2);
         list1.pushFront(y3);
         list1.pushFront(y4);
 

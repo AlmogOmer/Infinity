@@ -80,10 +80,6 @@ public class GenericList<E> implements Iterable<E> {
     }
 
     public int size(){
-        if (isEmpty())
-        {
-            return 0;
-        }
         int counter = 0;
         Iterator<E> runner = iterator();
         while(runner.hasNext())
@@ -95,12 +91,7 @@ public class GenericList<E> implements Iterable<E> {
         return counter;
     }
 
-    public Iterator<E> find(E data){
-        if (isEmpty())
-        {
-            return null;
-        }
-        
+    public Iterator<E> find(E data){      
         Iterator<E> runner = iterator();
         Iterator<E> returnRunner = iterator();
 
