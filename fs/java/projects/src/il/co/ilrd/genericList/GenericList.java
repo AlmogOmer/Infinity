@@ -1,3 +1,5 @@
+/*reviewer : Shani*/
+
 package il.co.ilrd.genericList;
 
 import java.util.ConcurrentModificationException;
@@ -20,8 +22,7 @@ public class GenericList<E> implements Iterable<E> {
 
     @Override
     public Iterator<E> iterator() {
-        Iterator<E> iter = new ListIter(this.head);
-        return iter;
+        return (Iterator<E>) new ListIter(head);
     }
 
     private class ListIter implements Iterator<E>{
@@ -56,31 +57,30 @@ public class GenericList<E> implements Iterable<E> {
 
     }
     
-    public void PushFront(E data){
+    public void pushFront(E data){
         ++versionNum;
-        Node<E> newNode = new Node<E>(data, head);
-        this.head = newNode;
+        head = new Node<E>(data, head);
     }
 
-    public E PopFront(){
-        if (IsEmpty())
+    public E popFront(){
+        if (isEmpty())
         {
             return null;
         }
 
         ++versionNum;
         E popped = head.data;
-        this.head = head.next;
+        head = head.next;
 
         return popped;
     }
 
-    public boolean IsEmpty(){
-        return this.head == null;
+    public boolean isEmpty(){
+        return head == null;
     }
 
-    public int Size(){
-        if (IsEmpty())
+    public int size(){
+        if (isEmpty())
         {
             return 0;
         }
@@ -95,8 +95,8 @@ public class GenericList<E> implements Iterable<E> {
         return counter;
     }
 
-    public Iterator<E> Find(E data){
-        if (IsEmpty())
+    public Iterator<E> find(E data){
+        if (isEmpty())
         {
             return null;
         }
@@ -118,7 +118,7 @@ public class GenericList<E> implements Iterable<E> {
     
         while(runner.hasNext())
         {
-            reversedList.PushFront(runner.next());
+            reversedList.pushFront(runner.next());
         }
     
         return reversedList;
@@ -130,16 +130,18 @@ public class GenericList<E> implements Iterable<E> {
 
         while(runner1.hasNext())
         {
-            mergeList.PushFront(runner1.next());
+            mergeList.pushFront(runner1.next());
         }
 
         while(runner2.hasNext())
         {
-            mergeList.PushFront(runner2.next());
+            mergeList.pushFront(runner2.next());
         }
 
         return reversList(mergeList);
     }
 
 }
+
+
 

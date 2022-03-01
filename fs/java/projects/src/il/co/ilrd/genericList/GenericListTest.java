@@ -7,7 +7,7 @@ public class GenericListTest {
 
         GenericList<Integer> list = new GenericList<Integer>();
         GenericList<Integer> list1 = new GenericList<Integer>();
-        if(!list.IsEmpty())
+        if(!list.isEmpty())
         {
             System.out.println("isempty failed");
         }
@@ -22,63 +22,63 @@ public class GenericListTest {
         Integer y3 = 30;
         Integer y4 = 40;
 
-        list.PushFront(x1);
-        if(list.IsEmpty())
+        list.pushFront(x1);
+        if(list.isEmpty())
         {
             System.out.println("isempty failed");
         }
-        if(list.Size() != 1)
+        if(list.size() != 1)
         {
             System.out.println("size failed");
         }
-        if(list.Find(1) == null)
+        if(list.find(1) == null)
         {
             System.out.println("find failed");
         }
 
-        list.PopFront();
-        if(!list.IsEmpty())
+        list.popFront();
+        if(!list.isEmpty())
         {
             System.out.println("isempty failed");
         }
-        if(list.Size() != 0)
+        if(list.size() != 0)
         {
             System.out.println("size failed");
         }
-        if(list.Find(1) != null)
+        if(list.find(1) != null)
         {
             System.out.println("find failed");
         }
 
-        list.PushFront(x1);
-        list.PushFront(x2);
-        list.PushFront(x3);
-        list.PushFront(x4);
+        list.pushFront(x1);
+        list.pushFront(x2);
+        list.pushFront(x3);
+        list.pushFront(x4);
 
-        if(list.Size() != 4)
+        if(list.size() != 4)
         {
             System.out.println("size failed");
         }
 
-        if (list.Find(x3).next() != x3)
+        if (list.find(x3).next() != x3)
         {
             System.out.println("find x3 failed");
         }
 
-        if (list.Find(x1).next() != x1)
+        if (list.find(x1).next() != x1)
         {
             System.out.println("find x1 failed");
         }
 
-        list1.PushFront(y1);
+        list1.pushFront(y1);
         Iterator<Integer> iter = list1.iterator();
         while (iter.hasNext()) {
             System.out.println(iter.next());    //should throw exception //
-            list1.PushFront(y2);
+            list1.pushFront(y2);
         }
         
-        list1.PushFront(y3);
-        list1.PushFront(y4);
+        list1.pushFront(y3);
+        list1.pushFront(y4);
 
         System.out.println("\n****list****\n");
         for( Integer element : list ){
