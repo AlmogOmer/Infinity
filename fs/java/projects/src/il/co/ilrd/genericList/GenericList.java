@@ -37,10 +37,6 @@ public class GenericList<E> implements Iterable<E> {
 
         @Override
         public boolean hasNext() {
-            if(iterVersionNum != versionNum){
-                throw new ConcurrentModificationException();
-            }
-
             return null != this.node;
         }
 
@@ -81,11 +77,9 @@ public class GenericList<E> implements Iterable<E> {
 
     public int size(){
         int counter = 0;
-        Iterator<E> runner = iterator();
-        while(runner.hasNext())
+        for(E element : this)
         {
             ++counter;
-            runner.next();
         }
 
         return counter;
@@ -105,31 +99,28 @@ public class GenericList<E> implements Iterable<E> {
 
     public static <E> GenericList<E> reversList(GenericList <E> list){
         GenericList<E> reversedList = new GenericList<E>();
-        Iterator<E> runner = list.iterator();
-    
-        while(runner.hasNext())
+        
+        for(E element : list)
         {
-            reversedList.pushFront(runner.next());
+            reversedList.pushFront(element);
         }
-    
+
         return reversedList;
     }
     public static <E> GenericList<E> merge(GenericList <E> list1, GenericList <E> list2){
         GenericList<E> mergeList = new GenericList<E>();
-        Iterator<E> runner1 = list1.iterator();
-        Iterator<E> runner2 = list2.iterator();
 
-        while(runner1.hasNext())
+        for(E element : list1)
         {
-            mergeList.pushFront(runner1.next());
+            mergeList.pushFront(element);
         }
 
-        while(runner2.hasNext())
+        for(E element : list2)
         {
-            mergeList.pushFront(runner2.next());
+            mergeList.pushFront(element);
         }
 
-        return reversList(mergeList);
+        return mergeList;
     }
 
 }
