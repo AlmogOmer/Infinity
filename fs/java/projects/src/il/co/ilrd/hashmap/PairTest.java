@@ -2,6 +2,8 @@ package il.co.ilrd.hashmap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Comparator;
+
 import org.junit.jupiter.api.Test;
 
 public class PairTest {
@@ -38,11 +40,32 @@ public class PairTest {
 
     @Test
     void testMinMax() {
+        class TestComparator<T extends Comparable<T>> implements Comparator<T> {
+            @Override
+            public int compare(T obj1, T obj2) {
+                return obj1.compareTo(obj2);
+
+            }
+        }
+        Integer[] array = {1,2,3,4,5,6,7,8,9,10};
+        Integer[] array2 = {8,96,3,14,75,6,7,0,9,10};
+        Pair<Integer,Integer> p4 = Pair.of(1, 10);
+        Pair<Integer,Integer> p5 = Pair.of(0, 96);
+        
+        assertTrue(p4.equals(Pair.minMax(array,new TestComparator<>())));
+        assertTrue(p5.equals(Pair.minMax(array2,new TestComparator<>())));
 
     }
 
     @Test
     void testMinMax2() {
+        Integer[] array = {1,2,3,4,5,6,7,8,9,10};
+        Integer[] array2 = {8,96,3,14,75,6,7,0,9,10};
+        Pair<Integer,Integer> p4 = Pair.of(1, 10);
+        Pair<Integer,Integer> p5 = Pair.of(0, 96);
+        
+        assertTrue(p4.equals(Pair.minMax(array)));
+        assertTrue(p5.equals(Pair.minMax(array2)));
 
     }
 

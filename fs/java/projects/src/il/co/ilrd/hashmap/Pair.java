@@ -17,16 +17,67 @@ public class Pair <K,V> implements Map.Entry<K,V>{
     }
 
     public static <K,V> Pair<V,K> swap(Pair<K,V> pair){
-        return new Pair<V,K>(pair.value,pair.key);
+        return new Pair<V,K>(pair.getValue(),pair.getKey());
     }
 
     public static <T extends Comparable<T>> Pair<T,T> minMax(T[] array){
-        return null;
-    }/* create new Pair */
+        Comparator<T> comp = new Comparator<T>() {
+			
+			@Override
+			public int compare(T obj1, T obj2) {
+				return obj1.compareTo(obj2);
+			}
+		};
+		
+		return minMax(array, comp);
+    }
 
     public static <T> Pair<T,T> minMax(T[] array, Comparator<T> comp){
-        return null;
-    }/* create new Pair */
+        int i;
+        T min, max;
+        int size = array.length;
+        if (size == 0) {
+			return null;
+		}
+        if (size % 2 == 0) {
+            if ( 0 < comp.compare(array[0],array[1])){
+                max = array[0];
+                min = array[1];
+            } else {
+                min = array[0];
+                max = array[1];
+            }
+            i = 2;
+        } 
+         
+        else {
+            min = array[0];
+            max = array[0];
+            i = 1;
+        }
+ 
+        while (i < size - 1) {
+            if (0 < comp.compare(array[i],array[i + 1])) {
+                if (0 < comp.compare(array[i],max)) {
+                    max = array[i];
+                }
+                if (0 > comp.compare(array[i + 1],min)) {
+                    min = array[i + 1];
+                }
+            } else {
+                if (0 < comp.compare(array[i + 1],max)) {
+                    max = array[i + 1];
+                }
+                if (0 > comp.compare(array[i],min)) {
+                    min = array[i];
+                }
+            }
+            i += 2;
+        }
+
+        return Pair.of(min, max) ;
+    
+    }
 
     public K setKey(K key){
         K old_key = this.key;
