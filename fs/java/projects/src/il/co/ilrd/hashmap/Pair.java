@@ -7,15 +7,18 @@ public class Pair <K,V> implements Map.Entry<K,V>{
     private K key;
     private V value;
 
-    private Pair(K key, V value){}
+    private Pair(K key, V value){
+        this.key = key;
+        this.value = value;
+    }
 
     public static <K,V> Pair<K,V> of(K key, V value){
-        return null;
-    }/* create new pair */
+        return new Pair<K,V>(key,value);
+    }
 
     public static <K,V> Pair<V,K> swap(Pair<K,V> pair){
-        return null;
-    }/* create new Pair */
+        return new Pair<V,K>(pair.value,pair.key);
+    }
 
     public static <T extends Comparable<T>> Pair<T,T> minMax(T[] array){
         return null;
@@ -26,38 +29,46 @@ public class Pair <K,V> implements Map.Entry<K,V>{
     }/* create new Pair */
 
     public K setKey(K key){
-        return null;
+        K old_key = this.key;
+        this.key = key;
+        return old_key;
     }
     @Override
     public K getKey() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.key;
     }
 
     @Override
     public V getValue() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.value;
     }
 
     @Override
     public V setValue(V value) {
-        // TODO Auto-generated method stub
-        return null;
+        V old_value = this.value;
+        this.value = value;
+        return old_value;
     }
     @Override
     public int hashCode() {
-        // TODO Auto-generated method stub
-        return super.hashCode();
+        
+        return this.key.hashCode() + this.value.hashCode();
     }
     @Override
     public boolean equals(Object obj){
+        if (obj instanceof Pair) {
+            Pair<K,V> pair = (Pair<K,V>)obj;
+            return (
+                this.key == pair.key &&
+                this.value == pair.value
+            );
+        }
         return false;
     }
+
     @Override
     public String toString() {
-        // TODO Auto-generated method stub
-        return super.toString();
+        return "(" + key + "," + value + ")";
     }
     
 }
