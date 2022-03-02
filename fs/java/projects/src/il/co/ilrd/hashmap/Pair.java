@@ -19,7 +19,7 @@ public class Pair <K,V> implements Map.Entry<K,V>{
     }
 
     public static <K,V> Pair<V,K> swap(Pair<K,V> pair){
-        return new Pair<V,K>(pair.getValue(),pair.getKey());
+        return Pair.of(pair.getValue(),pair.getKey());
     }
 
     public static <T extends Comparable<T>> Pair<T,T> minMax(T[] array){
@@ -35,8 +35,9 @@ public class Pair <K,V> implements Map.Entry<K,V>{
     }
 
     public static <T> Pair<T,T> minMax(T[] array, Comparator<T> comp){
-        int i;
-        T min, max;
+        int i = 1;
+        T min = array[0];
+        T max = array[0];
         int size = array.length;
         if (size == 0) {
 			return null;
@@ -51,12 +52,6 @@ public class Pair <K,V> implements Map.Entry<K,V>{
             }
             i = 2;
         } 
-         
-        else {
-            min = array[0];
-            max = array[0];
-            i = 1;
-        }
  
         while (i < size - 1) {
             if (0 < comp.compare(array[i],array[i + 1])) {
@@ -88,12 +83,12 @@ public class Pair <K,V> implements Map.Entry<K,V>{
     }
     @Override
     public K getKey() {
-        return this.key;
+        return key;
     }
 
     @Override
     public V getValue() {
-        return this.value;
+        return value;
     }
 
     @Override

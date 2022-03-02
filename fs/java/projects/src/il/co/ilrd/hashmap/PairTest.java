@@ -48,7 +48,7 @@ public class PairTest {
             }
         }
         Integer[] array = {1,2,3,4,5,6,7,8,9,10};
-        Integer[] array2 = {8,96,3,14,75,6,7,0,9,10};
+        Integer[] array2 = {8,96,3,14,75,6,7,0,9};
         Pair<Integer,Integer> p4 = Pair.of(1, 10);
         Pair<Integer,Integer> p5 = Pair.of(0, 96);
         
@@ -60,7 +60,7 @@ public class PairTest {
     @Test
     void testMinMax2() {
         Integer[] array = {1,2,3,4,5,6,7,8,9,10};
-        Integer[] array2 = {8,96,3,14,75,6,7,0,9,10};
+        Integer[] array2 = {8,96,3,14,75,6,7,0,9};
         Pair<Integer,Integer> p4 = Pair.of(1, 10);
         Pair<Integer,Integer> p5 = Pair.of(0, 96);
         
