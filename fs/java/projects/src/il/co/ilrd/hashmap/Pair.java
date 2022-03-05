@@ -100,7 +100,7 @@ public class Pair <K,V> implements Map.Entry<K,V>{
     @Override
     public int hashCode() {
         
-        return this.key.hashCode() + this.value.hashCode();
+        return key.hashCode() ^ value.hashCode();
     }
     @Override
     public boolean equals(Object obj){
