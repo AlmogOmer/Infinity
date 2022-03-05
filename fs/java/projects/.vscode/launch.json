@@ -3,6 +3,13 @@
     "configurations": [
       {
         "type": "java",
+        "name": "Launch Collection",
+        "request": "launch",
+        "mainClass": "il.co.ilrd.collection.Collection",
+        "projectName": "projects_40722b42"
+      },
+      {
+        "type": "java",
         "name": "Launch TestHashMap",
         "request": "launch",
         "mainClass": "il.co.ilrd.hashmap.TestHashMap",
