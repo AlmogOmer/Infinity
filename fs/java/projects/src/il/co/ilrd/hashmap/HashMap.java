@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class HashMap<K,V> implements Map<K,V>{
@@ -20,6 +21,9 @@ public class HashMap<K,V> implements Map<K,V>{
         this(16);
     }
     public HashMap(int capacity){
+        if(capacity < 0){
+            throw new IllegalArgumentException();
+        }
         tableOfLists = new ArrayList<>(capacity);
         this.capacity = capacity;
 
@@ -38,6 +42,8 @@ public class HashMap<K,V> implements Map<K,V>{
 
     @Override
     public boolean containsKey(Object key) {
+        Objects.requireNonNull(key);
+
         int idx = key.hashCode() % capacity;
         if(tableOfLists.get(idx) == null){
             return false;
@@ -58,6 +64,8 @@ public class HashMap<K,V> implements Map<K,V>{
 
     @Override
     public V get(Object key) {
+        Objects.requireNonNull(key);
+
         int idx = key.hashCode() % capacity;
         for(Pair<K,V> pair :tableOfLists.get(idx)){
             if(pair.getKey().equals(key)){
@@ -79,6 +87,8 @@ public class HashMap<K,V> implements Map<K,V>{
  
     @Override
     public V put(K arg0, V arg1) {
+        Objects.requireNonNull(arg0);
+
         ++mapVersionNum;
         int idx = arg0.hashCode() % capacity;
         if (tableOfLists.get(idx) != null){
@@ -96,6 +106,8 @@ public class HashMap<K,V> implements Map<K,V>{
     }
     @Override
     public void putAll(Map<? extends K, ? extends V> m) { 
+        Objects.requireNonNull(m);
+
         ++mapVersionNum;
         for (Entry<? extends K, ? extends V> element : m.entrySet()) {
             put(element.getKey(), element.getValue());
@@ -105,6 +117,8 @@ public class HashMap<K,V> implements Map<K,V>{
 
     @Override
     public V remove(Object key) {
+        Objects.requireNonNull(key);
+        
         ++mapVersionNum;
         int idx = key.hashCode() % capacity;
         if (tableOfLists.get(idx) != null){

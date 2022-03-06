@@ -1,5 +1,6 @@
 package il.co.ilrd.collection;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,9 +19,12 @@ class ObjectData{
 
 public class Collection {
     public static void main(String[] args) {
-        Integer[] array = new Integer[] { 1, 2, 9, 70, 21, 97 };
+        int[] array = new int[] { 1, 2, 9, 70, 21, 97 };
         System.out.println(Arrays.toString(array));
-        List<Integer> list = Arrays.asList(array);
+        List<Integer> list = new ArrayList<>();
+        for (int i : array) {
+            list.add(i);
+        }
         Collections.sort(list);
         System.out.println(list);
         
