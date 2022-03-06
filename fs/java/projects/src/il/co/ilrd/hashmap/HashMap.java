@@ -91,13 +91,11 @@ public class HashMap<K,V> implements Map<K,V>{
 
         ++mapVersionNum;
         int idx = arg0.hashCode() % capacity;
-        if (tableOfLists.get(idx) != null){
-            for(Pair<K,V> pair :tableOfLists.get(idx)){
-                if(pair.getKey().equals(arg0)){
-                    V oldValue =  pair.getValue();
-                    pair.setValue(arg1); 
-                    return oldValue;  
-                }
+        for(Pair<K,V> pair :tableOfLists.get(idx)){
+            if(pair.getKey().equals(arg0)){
+                V oldValue =  pair.getValue();
+                pair.setValue(arg1); 
+                return oldValue;  
             }
         }
 
