@@ -121,15 +121,14 @@ public class HashMap<K,V> implements Map<K,V>{
         
         ++mapVersionNum;
         int idx = key.hashCode() % capacity;
-        if (tableOfLists.get(idx) != null){
-            for(Pair<K,V> pair :tableOfLists.get(idx)){
-                if(pair.getKey().equals(key)){
-                    V oldValue = pair.getValue();
-                    tableOfLists.get(idx).remove(pair);
-                    return oldValue;
-                }
+        for(Pair<K,V> pair :tableOfLists.get(idx)){
+            if(pair.getKey().equals(key)){
+                V oldValue = pair.getValue();
+                tableOfLists.get(idx).remove(pair);
+                return oldValue;
             }
         }
+        
         return null;
     }
 
