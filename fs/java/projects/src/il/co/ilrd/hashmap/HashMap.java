@@ -4,6 +4,7 @@ import java.util.AbstractCollection;
 import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Set;
 public class HashMap<K,V> implements Map<K,V>{
     private List<List<Pair<K,V>>> tableOfLists;
     private int capacity;
+    private int mapVersionNum = 0;
 
     public HashMap(){
         this(16);
@@ -25,9 +27,10 @@ public class HashMap<K,V> implements Map<K,V>{
             tableOfLists.add(new LinkedList<>());
         }  
     }
-    
+
     @Override
     public void clear() {
+        ++mapVersionNum;
         for(List<Pair<K,V>> list : tableOfLists){
             list.clear();
         }   
@@ -40,25 +43,17 @@ public class HashMap<K,V> implements Map<K,V>{
             return false;
         }
 
-        for(List<Pair<K,V>> list : tableOfLists){
-            for(Pair<K,V> pair : list){
-                if(pair.getKey().equals(key)){
-                    return true;
-                }
+        for(Pair<K,V> pair : tableOfLists.get(idx)){
+            if(pair.getKey().equals(key)){
+                return true;
             }
-        }  
+        }
         return false;
     }
     @Override
     public boolean containsValue(Object value) { 
-        for(List<Pair<K,V>> list : tableOfLists){
-            for(Pair<K,V> pair : list){
-                if(pair.getValue().equals(value)){
-                    return true;
-                }
-            }
-        }  
-        return false;
+        Collection<V> vals = values();
+        return vals.contains(value);
     }
 
     @Override
@@ -84,6 +79,7 @@ public class HashMap<K,V> implements Map<K,V>{
  
     @Override
     public V put(K arg0, V arg1) {
+        ++mapVersionNum;
         int idx = arg0.hashCode() % capacity;
         if (tableOfLists.get(idx) != null){
             for(Pair<K,V> pair :tableOfLists.get(idx)){
@@ -100,10 +96,16 @@ public class HashMap<K,V> implements Map<K,V>{
     }
     @Override
     public void putAll(Map<? extends K, ? extends V> m) { 
+        ++mapVersionNum;
+        for (Entry<? extends K, ? extends V> element : m.entrySet()) {
+            put(element.getKey(), element.getValue());
+        }
+
     }
 
     @Override
     public V remove(Object key) {
+        ++mapVersionNum;
         int idx = key.hashCode() % capacity;
         if (tableOfLists.get(idx) != null){
             for(Pair<K,V> pair :tableOfLists.get(idx)){
@@ -128,21 +130,17 @@ public class HashMap<K,V> implements Map<K,V>{
 
     @Override
     public Set<K> keySet() { 
-        // return a set of the keys, with iterator
-        return null;
+        return new SetOfKey();
     }
 
     @Override
     public Collection<V> values() { 
-        // return collection of value
-        return null;
+        return new CollectionOfValue();
     }
 
     @Override
     public Set<Entry<K, V>> entrySet() { 
-        // return reflection of the map, without duplicate
-        // set is iterabl
-        return null;
+        return new SetOfPairs();
     }
 
     private class SetOfPairs extends AbstractSet<Entry<K,V>>{
@@ -150,28 +148,54 @@ public class HashMap<K,V> implements Map<K,V>{
         
         @Override
         public Iterator<Entry<K,V>> iterator() {
-            // TODO Auto-generated method stub
-            return null;
+            return new SetOfPairsIter();
         }
 
         @Override
         public int size() {
-            // TODO Auto-generated method stub
-            return 0;
+            return HashMap.this.size();
         }
 
         private class SetOfPairsIter implements Iterator<Entry<K,V>>{
+            private int iterVersionNum;
+            private Iterator<List<Pair<K,V>>> outIter;
+            private Iterator<Pair<K,V>> innerIter; 
 
+            // Constructor
+            private SetOfPairsIter(){
+                iterVersionNum = mapVersionNum;
+
+                this.outIter = tableOfLists.iterator();
+                this.innerIter = outIter.next().iterator();
+                findNextValid();
+            }
+            
             @Override
             public boolean hasNext() {
-                // TODO Auto-generated method stub
-                return false;
+                return innerIter.hasNext(); 
             }
 
             @Override
             public Entry<K,V> next() {
-                // TODO Auto-generated method stub
-                return null;
+                if (iterVersionNum != mapVersionNum){
+                    throw new ConcurrentModificationException();
+                }
+                Entry<K,V> curr = innerIter.next();
+                findNextValid();
+
+                return curr;
+            }
+
+            private void findNextValid(){
+                if (!innerIter.hasNext()) {
+                    while(outIter.hasNext()){
+                        List<Pair<K,V>> list = outIter.next();
+                        if(!list.isEmpty()){
+                            innerIter = list.iterator();
+                            break;
+                        }
+                    }
+                }
             }
 
         }
@@ -180,27 +204,28 @@ public class HashMap<K,V> implements Map<K,V>{
 
         @Override
         public Iterator<K> iterator() {
-            // TODO Auto-generated method stub
-            return null;
+            return new SetOfKeyIter();
         }
 
         @Override
         public int size() {
-            // TODO Auto-generated method stub
-            return 0;
+            return HashMap.this.size();
         }
         private class SetOfKeyIter implements Iterator<K>{
+            private Iterator<Entry<K, V>> setPairsIter;
+
+            private SetOfKeyIter() {
+            	setPairsIter = new SetOfPairs().iterator();
+            }
 
             @Override
             public boolean hasNext() {
-                // TODO Auto-generated method stub
-                return false;
+                return setPairsIter.hasNext();
             }
 
             @Override
             public K next() {
-                // TODO Auto-generated method stub
-                return null;
+                return setPairsIter.next().getKey();
             }
 
         }
@@ -209,27 +234,29 @@ public class HashMap<K,V> implements Map<K,V>{
 
         @Override
         public Iterator<V> iterator() {
-            // TODO Auto-generated method stub
-            return null;
+            return new CollectionOfValueIter();
         }
 
         @Override
         public int size() {
-            // TODO Auto-generated method stub
-            return 0;
+            return HashMap.this.size();
         }
+
         private class CollectionOfValueIter implements Iterator<V>{
+            private Iterator<Entry<K, V>> setPairsIter;
+
+            private CollectionOfValueIter() {
+            	setPairsIter = new SetOfPairs().iterator();
+            }
 
             @Override
             public boolean hasNext() {
-                // TODO Auto-generated method stub
-                return false;
+                return setPairsIter.hasNext();
             }
 
             @Override
             public V next() {
-                // TODO Auto-generated method stub
-                return null;
+                return setPairsIter.next().getValue();
             }
 
         }
@@ -237,4 +264,5 @@ public class HashMap<K,V> implements Map<K,V>{
     }
     
 }
+
 

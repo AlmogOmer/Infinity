@@ -1,8 +1,16 @@
 package il.co.ilrd.hashmap;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.Map.Entry;
+
+
+
 public class TestHashMap {
     public static void main(String[] args) {
         HashMap<Integer,String> myhash = new HashMap<>(20);
+        HashMap<Integer,String> putallhash = new HashMap<>(20);
         if (!myhash.isEmpty()){
             System.out.println("failed in isempty1");
         }
@@ -12,7 +20,7 @@ public class TestHashMap {
         }
 
         myhash.put(10, "almog");
-        myhash.put(20, "andrey");
+        myhash.put(22, "andrey");
         myhash.put(30, "omer");
 
         if (myhash.isEmpty()){
@@ -34,7 +42,7 @@ public class TestHashMap {
         }
 
         myhash.put(10, "almog");
-        myhash.put(20, "andrey");
+        myhash.put(22, "andrey");
         myhash.put(30, "omer");
         myhash.put(40, "idan");
         myhash.put(50, "maya");
@@ -77,7 +85,7 @@ public class TestHashMap {
         if(myhash.get(10) != "almog2"){
             System.out.println("failed in get1");
         }
-        if(myhash.get(20) != "andrey"){
+        if(myhash.get(22) != "andrey"){
             System.out.println("failed in get2");
         }
         if(myhash.get(30) != "omer"){
@@ -102,7 +110,41 @@ public class TestHashMap {
         if(myhash.get(80) != null){
             System.out.println("failed in get8");
         }
+        
+        Set<Entry<Integer,String>> myset = myhash.entrySet();
+        Iterator<Entry<Integer,String>> iter = myset.iterator();
+        while(iter.hasNext()) {
+            System.out.println(iter.next());
+        }
+
+        Set<Integer> keyset = myhash.keySet();
+        Iterator<Integer> iterKey = keyset.iterator();
+        while(iterKey.hasNext()) {
+            System.out.println(iterKey.next());
+        }
+
+
+        Collection<String> values = myhash.values();
+        Iterator<String> iterVal = values.iterator();
+        while(iterVal.hasNext()) {
+            System.out.println(iterVal.next());
+        }
+
+        putallhash.put(22, "hi");
+        putallhash.put(40, "how");
+        putallhash.put(65, "are");
+        putallhash.put(88, "you");
+
+        myhash.putAll(putallhash);
+        Set<Entry<Integer,String>> myset1 = myhash.entrySet();
+        Iterator<Entry<Integer,String>> iter1 = myset1.iterator();
+        while(iter1.hasNext()) {
+            System.out.println(iter1.next());
+        }
+
 
         System.out.println("test done!");
+
+
     }
 }
