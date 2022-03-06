@@ -157,7 +157,6 @@ public class HashMap<K,V> implements Map<K,V>{
     }
 
     private class SetOfPairs extends AbstractSet<Entry<K,V>>{
-        private SetOfPairs(){}
         
         @Override
         public Iterator<Entry<K,V>> iterator() {
