@@ -200,19 +200,14 @@ public class Hashmap<K,V> implements Map<K,V>{
             }
 
             private void findNextValid(){
-                if (!innerIter.hasNext()) {
-                    while(outIter.hasNext()){
-                        List<Pair<K,V>> list = outIter.next();
-                        if(!list.isEmpty()){
-                            innerIter = list.iterator();
-                            break;
-                        }
-                    }
+                while (!innerIter.hasNext() && outIter.hasNext()) {
+                    innerIter = outIter.next().iterator();  
                 }
             }
-
+             
         }
     }
+
     private class SetOfKey extends AbstractSet<K>{
 
         @Override
@@ -243,6 +238,7 @@ public class Hashmap<K,V> implements Map<K,V>{
 
         }
     }
+
     private class CollectionOfValue extends AbstractCollection<V>{
 
         @Override
