@@ -1,3 +1,4 @@
+/*Reviewr: Yoni*/
 package il.co.ilrd.hashmap;
 
 import java.util.AbstractCollection;
@@ -175,8 +176,8 @@ public class HashMap<K,V> implements Map<K,V>{
             private SetOfPairsIter(){
                 iterVersionNum = mapVersionNum;
 
-                this.outIter = tableOfLists.iterator();
-                this.innerIter = outIter.next().iterator();
+                outIter = tableOfLists.iterator();
+                innerIter = outIter.next().iterator();
                 findNextValid();
             }
             
