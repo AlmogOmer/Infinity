@@ -22,7 +22,7 @@ public class HashMap<K,V> implements Map<K,V>{
         this(16);
     }
     public HashMap(int capacity){
-        if(capacity < 0){
+        if(capacity <= 0){
             throw new IllegalArgumentException();
         }
         tableOfLists = new ArrayList<>(capacity);
@@ -36,6 +36,7 @@ public class HashMap<K,V> implements Map<K,V>{
     @Override
     public void clear() {
         ++mapVersionNum;
+
         for(List<Pair<K,V>> list : tableOfLists){
             list.clear();
         }   
@@ -76,6 +77,7 @@ public class HashMap<K,V> implements Map<K,V>{
 
         return null;
     }
+
     @Override
     public boolean isEmpty() {
         for(List<Pair<K,V>> list : tableOfLists){
@@ -90,8 +92,9 @@ public class HashMap<K,V> implements Map<K,V>{
     public V put(K arg0, V arg1) {
         Objects.requireNonNull(arg0);
 
-        ++mapVersionNum;
         int idx = arg0.hashCode() % capacity;
+        ++mapVersionNum;
+
         for(Pair<K,V> pair :tableOfLists.get(idx)){
             if(pair.getKey().equals(arg0)){
                 V oldValue =  pair.getValue();
@@ -99,10 +102,10 @@ public class HashMap<K,V> implements Map<K,V>{
                 return oldValue;  
             }
         }
-
         tableOfLists.get(idx).add(Pair.of(arg0, arg1));
         return null;
     }
+
     @Override
     public void putAll(Map<? extends K, ? extends V> m) { 
         Objects.requireNonNull(m);
@@ -111,23 +114,22 @@ public class HashMap<K,V> implements Map<K,V>{
         for (Entry<? extends K, ? extends V> element : m.entrySet()) {
             put(element.getKey(), element.getValue());
         }
-
     }
 
     @Override
     public V remove(Object key) {
         Objects.requireNonNull(key);
         
-        ++mapVersionNum;
         int idx = key.hashCode() % capacity;
-        for(Pair<K,V> pair :tableOfLists.get(idx)){
+        ++mapVersionNum;
+
+        for(Pair<K,V> pair : tableOfLists.get(idx)){
             if(pair.getKey().equals(key)){
                 V oldValue = pair.getValue();
                 tableOfLists.get(idx).remove(pair);
                 return oldValue;
             }
         }
-        
         return null;
     }
 
