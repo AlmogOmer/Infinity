@@ -17,6 +17,9 @@ public class Hashmap<K,V> implements Map<K,V>{
     private List<List<Pair<K,V>>> tableOfLists;
     private int capacity;
     private int mapVersionNum = 0;
+    private Set<K> keySet;
+    private Collection<V> values;
+    private Set<Entry<K, V>> entrySet;
 
     public Hashmap(){
         this(16);
@@ -144,17 +147,29 @@ public class Hashmap<K,V> implements Map<K,V>{
 
     @Override
     public Set<K> keySet() { 
-        return new SetOfKey();
+        if(keySet == null){
+            return new SetOfKey();
+        }
+
+        return keySet;
     }
 
     @Override
     public Collection<V> values() { 
-        return new CollectionOfValue();
+        if(values == null){
+            return new CollectionOfValue();
+        }
+
+        return values;
     }
 
     @Override
     public Set<Entry<K, V>> entrySet() { 
-        return new SetOfPairs();
+        if(entrySet == null){
+            return new SetOfPairs();
+        }
+
+        return entrySet;
     }
 
     private class SetOfPairs extends AbstractSet<Entry<K,V>>{
