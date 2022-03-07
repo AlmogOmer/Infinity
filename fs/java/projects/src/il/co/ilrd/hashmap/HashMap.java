@@ -1,4 +1,4 @@
-/*Reviewr: Yoni*/
+/*Reviewer: Yoni*/
 package il.co.ilrd.hashmap;
 
 import java.util.AbstractCollection;
@@ -13,15 +13,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-public class HashMap<K,V> implements Map<K,V>{
+public class Hashmap<K,V> implements Map<K,V>{
     private List<List<Pair<K,V>>> tableOfLists;
     private int capacity;
     private int mapVersionNum = 0;
 
-    public HashMap(){
+    public Hashmap(){
         this(16);
     }
-    public HashMap(int capacity){
+    public Hashmap(int capacity){
         if(capacity <= 0){
             throw new IllegalArgumentException();
         }
@@ -166,7 +166,7 @@ public class HashMap<K,V> implements Map<K,V>{
 
         @Override
         public int size() {
-            return HashMap.this.size();
+            return Hashmap.this.size();
         }
 
         private class SetOfPairsIter implements Iterator<Entry<K,V>>{
@@ -222,7 +222,7 @@ public class HashMap<K,V> implements Map<K,V>{
 
         @Override
         public int size() {
-            return HashMap.this.size();
+            return Hashmap.this.size();
         }
         private class SetOfKeyIter implements Iterator<K>{
             private Iterator<Entry<K, V>> setPairsIter;
@@ -252,7 +252,7 @@ public class HashMap<K,V> implements Map<K,V>{
 
         @Override
         public int size() {
-            return HashMap.this.size();
+            return Hashmap.this.size();
         }
 
         private class CollectionOfValueIter implements Iterator<V>{

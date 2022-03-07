@@ -9,8 +9,8 @@ import java.util.Map.Entry;
 
 public class TestHashMap {
     public static void main(String[] args) {
-        HashMap<Integer,String> myhash = new HashMap<>(20);
-        HashMap<Integer,String> putallhash = new HashMap<>(20);
+        Hashmap<Integer,String> myhash = new Hashmap<>(20);
+        Hashmap<Integer,String> putallhash = new Hashmap<>(20);
         if (!myhash.isEmpty()){
             System.out.println("failed in isempty1");
         }
