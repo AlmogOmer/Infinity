@@ -3,6 +3,20 @@
     "configurations": [
       {
         "type": "java",
+        "name": "Launch Exc1",
+        "request": "launch",
+        "mainClass": "il.co.ilrd.concurrency.Exc1",
+        "projectName": "projects_40722b42"
+      },
+      {
+        "type": "java",
+        "name": "Launch Tree",
+        "request": "launch",
+        "mainClass": "il.co.ilrd.composite.Tree",
+        "projectName": "projects_40722b42"
+      },
+      {
+        "type": "java",
         "name": "Launch Collection",
         "request": "launch",
         "mainClass": "il.co.ilrd.collection.Collection",
