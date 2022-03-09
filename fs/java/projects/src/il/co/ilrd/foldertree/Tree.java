@@ -1,4 +1,4 @@
-package il.co.ilrd.composite;
+package il.co.ilrd.foldertree;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,11 +13,11 @@ public class Tree{
     }
 
     public void print(){
-        rootDirectory.print();
+        rootDirectory.print(0);
     }
 
     interface AbstractFile{
-        abstract void print();
+        abstract void print(int offset);
     }
 
     private class LeafFile implements AbstractFile{
@@ -28,8 +28,10 @@ public class Tree{
         }
 
         @Override
-        public void print(){
-            System.out.println(fileName);
+        public void print(int offset){
+            printOffset(offset);
+            System.out.println("|____" + fileName);
+            ++offset;
         }
     }
 
@@ -37,13 +39,13 @@ public class Tree{
         private List<AbstractFile> listFile = new ArrayList<>();
         private String folderName;
 
-        public Folder(String path){
-            folderName = path;
-            File root = new File(path);        
+        public Folder(String path){ 
+            File root = new File(path);
+            folderName = root.getName();  
             File [] subfiles = root.listFiles();  
             for (File pathSub : subfiles) {
-                if (root.isDirectory()){
-                    listFile.add(new Folder(pathSub.getName()));
+                if (pathSub.isDirectory()){
+                    listFile.add(new Folder(pathSub.toString()));
                 }
                 else{
                     listFile.add(new LeafFile(pathSub.getName()));
@@ -53,17 +55,25 @@ public class Tree{
         }
 
         @Override
-        public void print(){
-            System.out.println(folderName);
+        public void print(int offset){
+            printOffset(offset);
+            System.out.println("|____" + folderName);
+            ++offset;
+            
             for (AbstractFile abstractFile : listFile) {
-                abstractFile.print();
+                abstractFile.print(offset);
             }
         }
     }
 
+    public void printOffset(int offset) {
+        for (int i = 0; i < offset; ++i) {
+            System.out.print("    ");
+        }
+    }
+
     public static void main(String[] args) {
-        String path = "~/Desktop/infinity/almog-pmer/fs";
-        Tree tree = new Tree(path);
+        Tree tree = new Tree(".");
         tree.print();
     }
 
