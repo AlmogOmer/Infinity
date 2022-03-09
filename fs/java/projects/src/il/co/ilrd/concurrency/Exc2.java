@@ -1,6 +1,6 @@
 package il.co.ilrd.concurrency;
 
-import java.util.concurrent.atomic.AtomicInteger;
+//import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Exc2 {

@@ -3,6 +3,34 @@
     "configurations": [
       {
         "type": "java",
+        "name": "Launch Exc3LinkedSem",
+        "request": "launch",
+        "mainClass": "il.co.ilrd.concurrency.Exc3LinkedSem",
+        "projectName": "projects_40722b42"
+      },
+      {
+        "type": "java",
+        "name": "Launch Exc3Linked",
+        "request": "launch",
+        "mainClass": "il.co.ilrd.concurrency.Exc3Linked",
+        "projectName": "projects_40722b42"
+      },
+      {
+        "type": "java",
+        "name": "Launch Exc3Sem",
+        "request": "launch",
+        "mainClass": "il.co.ilrd.concurrency.Exc3Sem",
+        "projectName": "projects_40722b42"
+      },
+      {
+        "type": "java",
+        "name": "Launch Exc3",
+        "request": "launch",
+        "mainClass": "il.co.ilrd.concurrency.Exc3",
+        "projectName": "projects_40722b42"
+      },
+      {
+        "type": "java",
         "name": "Launch Exc2",
         "request": "launch",
         "mainClass": "il.co.ilrd.concurrency.Exc2",
