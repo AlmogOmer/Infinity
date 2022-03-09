@@ -8,8 +8,8 @@ import java.util.concurrent.Semaphore;
 
 public class Exc3LinkedSem {
     public static List<Object> list1 = new LinkedList<>();
-    public static Object obj1 = new Object();
-    public static final Semaphore sem = new Semaphore(5);
+    public static Integer a = 0;
+    public static final Semaphore sem = new Semaphore(0);
     
     public static void main(String[] args) {
         final int NUM_OF_THREADS = 10;
@@ -41,9 +41,10 @@ class Producer3 extends Thread {
     public void run() {
     	int i;
         for(i=0; i<30;++i){
-            synchronized (Exc3LinkedSem.obj1) {
-                System.out.println("insert obj");
-                Exc3LinkedSem.list1.add(Exc3LinkedSem.obj1);
+            synchronized (Exc3LinkedSem.list1) {
+                ++Exc3LinkedSem.a;
+                System.out.println("insert a:" + Exc3LinkedSem.a);
+                Exc3LinkedSem.list1.add(Exc3LinkedSem.a);
             }
             Exc3LinkedSem.sem.release();
 
@@ -61,9 +62,9 @@ class Consumer3 extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            synchronized (Exc3LinkedSem.obj1) {
-                System.out.println("removing obj from list");
-                Exc3LinkedSem.list1.remove(Exc3LinkedSem.obj1);
+            synchronized (Exc3LinkedSem.list1) {
+                System.out.println("removing : " + Exc3LinkedSem.a);
+                Exc3LinkedSem.list1.remove(Exc3LinkedSem.a);
             }
 
         }

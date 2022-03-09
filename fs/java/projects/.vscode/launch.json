@@ -3,6 +3,13 @@
     "configurations": [
       {
         "type": "java",
+        "name": "Launch Exc3Barrier",
+        "request": "launch",
+        "mainClass": "il.co.ilrd.concurrency.Exc3Barrier",
+        "projectName": "projects_40722b42"
+      },
+      {
+        "type": "java",
         "name": "Launch Exc3LinkedSem",
         "request": "launch",
         "mainClass": "il.co.ilrd.concurrency.Exc3LinkedSem",

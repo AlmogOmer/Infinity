@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Exc3Linked {
     public static List<Object> list = new LinkedList<>();
-    public static Object obj = new Object();
+    public static Integer a = 0;
     
     public static void main(String[] args) {
         final int NUM_OF_THREADS = 10;
@@ -38,9 +38,10 @@ class Producer2 extends Thread {
     public void run() {
     	int i;
         for(i=0; i<30;++i){
-            synchronized (Exc3Linked.obj) {
-                System.out.println("insert obj");
-                Exc3Linked.list.add(Exc3Linked.obj);
+            synchronized (Exc3Linked.list) {
+                ++Exc3Linked.a;
+                System.out.println("insert : " + Exc3Linked.a);
+                Exc3Linked.list.add(Exc3Linked.a);
             }
 
         }
@@ -52,9 +53,12 @@ class Consumer2 extends Thread {
     public void run() {
         int i;
         for(i=0; i<30;++i){
-            synchronized (Exc3Linked.obj) {
-                System.out.println("removing obj from list");
-                Exc3Linked.list.remove(Exc3Linked.obj);
+            synchronized (Exc3Linked.list) {
+                if(!Exc3Linked.list.isEmpty()){
+                    System.out.println("removing : " + Exc3Linked.a);
+                    Exc3Linked.list.remove(Exc3Linked.a);
+                }
+                
             }
 
         }

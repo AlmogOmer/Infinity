@@ -4,7 +4,7 @@ import java.util.concurrent.Semaphore;
 
 public class Exc3Sem {
     public static final Semaphore proSem = new Semaphore(1);
-    public static final Semaphore conSem = new Semaphore(1);
+    public static final Semaphore conSem = new Semaphore(0);
     public static void main(String[] args) {
         Producer1 pro1 = new Producer1();
         Consumer1 con1 = new Consumer1();
