@@ -57,9 +57,9 @@ public class Tree{
         @Override
         public void print(int offset){
             printOffset(offset);
-            System.out.println("|____" + folderName);
+            System.out.println("|__" + folderName);
             ++offset;
-            
+
             for (AbstractFile abstractFile : listFile) {
                 abstractFile.print(offset);
             }
@@ -68,7 +68,7 @@ public class Tree{
 
     public void printOffset(int offset) {
         for (int i = 0; i < offset; ++i) {
-            System.out.print("    ");
+            System.out.print("   ");
         }
     }
 
