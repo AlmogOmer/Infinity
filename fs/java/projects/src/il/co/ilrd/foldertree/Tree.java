@@ -82,7 +82,7 @@ public class Tree{
     }
 
     public static void main(String[] args) {
-        Tree tree = new Tree("./co");
+        Tree tree = new Tree(".");
         tree.print();
     }
 
