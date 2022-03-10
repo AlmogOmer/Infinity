@@ -3,6 +3,13 @@
     "configurations": [
       {
         "type": "java",
+        "name": "Launch FactoryTest",
+        "request": "launch",
+        "mainClass": "il.co.ilrd.factory.FactoryTest",
+        "projectName": "projects_40722b42"
+      },
+      {
+        "type": "java",
         "name": "Launch Tree",
         "request": "launch",
         "mainClass": "il.co.ilrd.foldertree.Tree",
