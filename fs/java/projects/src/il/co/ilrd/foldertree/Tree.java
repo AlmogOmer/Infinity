@@ -51,13 +51,15 @@ public class Tree{
 
         public Folder(File root){ 
             folderName = root.getName();  
-            File [] subfiles = root.listFiles();  
-            for (File pathSub : subfiles) {
-                if (pathSub.isDirectory()){
-                    listFile.add(new Folder(pathSub));
-                }
-                else{
-                    listFile.add(new LeafFile(pathSub));
+            File [] subfiles = root.listFiles();
+            if(subfiles.length != 0){
+                for (File pathSub : subfiles) {
+                    if (pathSub.isDirectory()){
+                        listFile.add(new Folder(pathSub));
+                    }
+                    else{
+                        listFile.add(new LeafFile(pathSub));
+                    }
                 }
             }
         
@@ -66,9 +68,14 @@ public class Tree{
         @Override
         public void print(int offset){
             printOffset(offset);
-            System.out.println("|___" + folderName);
+            if (offset == 0){
+                System.out.println(folderName);
+            }
+            else{
+                System.out.println("|____" + folderName);
+            }
+            
             ++offset;
-
             for (AbstractFile abstractFile : listFile) {
                 abstractFile.print(offset);
             }
@@ -76,7 +83,7 @@ public class Tree{
     }
 
     private void printOffset(int offset) {
-        for (int i = 0; i < offset; ++i) {
+        for (int i = 0; i < offset-1; ++i) {
             System.out.print("   ");
         }
     }
