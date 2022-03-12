@@ -2,15 +2,32 @@
 package il.co.ilrd.foldertree;
 
 import java.io.File;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import il.co.ilrd.factory.Factory; 
 
 public class Tree{
     
     private Folder rootDirectory;
+    private int folderCounter = 0;
+    private int fileCounter = 0;
+
+    private Factory<AbstractFile, File, String> treeFactory = new Factory<>();
 
     public Tree(String path){
+        Objects.requireNonNull(path);
+
+        treeFactory.add("Folder", Folder :: new);
+        treeFactory.add("File", LeafFile :: new);
+
         File root = new File(path);
+        if(!root.exists()){
+            throw new InvalidParameterException("invalid path");
+        }
+
         if (root.isDirectory()){
             rootDirectory = new Folder(root);
         }
@@ -23,6 +40,7 @@ public class Tree{
     public void print(){
         if(rootDirectory != null){
             rootDirectory.print(0);
+            System.out.println(folderCounter + " directoried " + fileCounter + " files");
         } 
     }
 
@@ -55,10 +73,12 @@ public class Tree{
             if(subfiles.length != 0){
                 for (File pathSub : subfiles) {
                     if (pathSub.isDirectory()){
-                        listFile.add(new Folder(pathSub));
+                        ++folderCounter;
+                        listFile.add(treeFactory.create("Folder", pathSub));
                     }
                     else{
-                        listFile.add(new LeafFile(pathSub));
+                        ++fileCounter;
+                        listFile.add(treeFactory.create("File", pathSub));
                     }
                 }
             }
