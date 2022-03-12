@@ -66,8 +66,19 @@ You could cast the object to:*/
 Class<? extends Annotation> /*this cast is unchecked*/
 
 /*class Class provides an instance method that performs this cast safely and dynamically.
-The method is called asSubclass. 
-it casts the Class object on which it is called
+The method is called asSubclass:*/ 
+
+public <U> Class<? extends U> asSubclass(Class<U> clazz){};
+
+/*U - Type to cast this class object to
+
+clazz - class of the type to cast this class object to.*/
+
+/*This method is useful when a client needs to "narrow" the type
+of a Class object to pass it to an API 
+that restricts the Class objects that it is willing to accept.*/
+
+/*it casts the Class object on which it is called
 to represent a subclass of the class represented by its argument.
 
 If the cast succeeds, the method returns its argument; 
