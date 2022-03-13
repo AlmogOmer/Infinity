@@ -1,8 +1,6 @@
 /*Reviwer : Ofek*/
 
 package il.co.ilrd.factory;
-
-import java.lang.reflect.InvocationTargetException;
 import java.util.function.Function;
 
 public class FactoryTest {
@@ -38,12 +36,7 @@ public class FactoryTest {
 
         /*Test 4*/
         Function<String,Bird> birdCtor = new Bird() :: birdInstance;
-
-        /*Test 5*/
-        //Function<String,Elephant> elephantCtor = Class.forName("il.co.ilrd.factory.Elephant") :: getConstructor().newInstance();
-           
-     
-
+    
         animalFactory.add("Dog", dogCtor);
         animalFactory.add("Cat", catCtor);
         animalFactory.add("Cat2", catCtor2);
@@ -52,7 +45,7 @@ public class FactoryTest {
         animalFactory.add("Dog2", dogCtor2);
         animalFactory.add("Cat4", catCtor4);
         animalFactory.add("Bird", birdCtor);
-        //animalFactory.add("elephant2", elephantCtor);
+       
 
         Animal mydog = animalFactory.create("Dog");
         Animal mycat = animalFactory.create("Cat", "jerry");
@@ -62,14 +55,25 @@ public class FactoryTest {
         Animal mydog2 = animalFactory.create("Dog2");
         Animal mycat4 = animalFactory.create("Cat4");
         Animal mybird = animalFactory.create("Bird");
-        Animal mybird2 = animalFactory.create("Bird", "eagle");
-        //Animal myelephant2 = animalFactory.create("elephant2");
+
+        /*Test 5*/
+        Factory<Animal, Data, String> animalFactoryType = new Factory<>();
+        animalFactoryType.add("DogType", Data :: createAnimal);
+        Animal mydogType = animalFactoryType.create("DogType", new Data());
+        
+       
     } 
     
 }
 
 interface Animal{
     public void print();
+}
+
+class Data{
+    public Animal createAnimal(){
+        return new Dog();
+    }
 }
 
 class Dog implements Animal{
@@ -103,8 +107,16 @@ class Cat implements Animal{
 }
 
 class Elephant implements Animal{
+    private String name;
+
     public Elephant(){
         print();
+    }
+
+    public Elephant(String name){
+        this.name = name;
+        print();
+        System.out.println("my name is: " + name);
     }
 
     @Override
