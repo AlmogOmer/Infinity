@@ -20,16 +20,15 @@ public class Tree{
     public Tree(String path){
         Objects.requireNonNull(path);
 
-        treeFactory.add("Folder", Folder :: new);
-        treeFactory.add("File", LeafFile :: new);
-
         File root = new File(path);
         if(!root.exists()){
             throw new InvalidParameterException("invalid path");
         }
 
         if (root.isDirectory()){
-            rootDirectory = new Folder(root);
+            treeFactory.add("Folder", Folder :: new);
+            treeFactory.add("File", LeafFile :: new);
+            rootDirectory = (Folder) treeFactory.create("Folder", root);
         }
         else{
             System.out.println(root.getName() + " [error opening dir]");
