@@ -1,3 +1,5 @@
+/*Reviwer : Ofek*/
+
 package il.co.ilrd.factory;
 
 import java.lang.reflect.InvocationTargetException;
@@ -32,22 +34,15 @@ public class FactoryTest {
         
         /*Test 3*/
         Function<String,Dog> dogCtor2 = (str) -> SugarRef.dogCtorSugar();
-        //Function<String,Dog> dogCtor3 = SugarRef::dogCtorSugar(str);
+        Function<String,Cat> catCtor4 = SugarRef :: catCtorSugar;
 
         /*Test 4*/
-        Function<String,Bird> birdCtor = (str) -> new Bird().birdInstance(str);
+        Function<String,Bird> birdCtor = new Bird() :: birdInstance;
 
         /*Test 5*/
-        Function<String,Elephant> elephantCtor = (str) -> {
-            try {
-                return (Elephant) Class.forName("il.co.ilrd.factory.Elephant").getConstructor().newInstance();
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                    | InvocationTargetException | NoSuchMethodException | SecurityException
-                    | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-            return null;
-        };
+        //Function<String,Elephant> elephantCtor = Class.forName("il.co.ilrd.factory.Elephant") :: getConstructor().newInstance();
+           
+     
 
         animalFactory.add("Dog", dogCtor);
         animalFactory.add("Cat", catCtor);
@@ -55,9 +50,9 @@ public class FactoryTest {
         animalFactory.add("elephant", elephCtor);
         animalFactory.add("Cat3", catCtor3);
         animalFactory.add("Dog2", dogCtor2);
-        //animalFactory.add("Dog3", dogCtor3);
+        animalFactory.add("Cat4", catCtor4);
         animalFactory.add("Bird", birdCtor);
-        animalFactory.add("elephant2", elephantCtor);
+        //animalFactory.add("elephant2", elephantCtor);
 
         Animal mydog = animalFactory.create("Dog");
         Animal mycat = animalFactory.create("Cat", "jerry");
@@ -65,10 +60,10 @@ public class FactoryTest {
         Animal myelephant = animalFactory.create("elephant");
         Animal mycat3 = animalFactory.create("Cat3", "josef");
         Animal mydog2 = animalFactory.create("Dog2");
-        //Animal mydog3 = animalFactory.create("Dog3");
+        Animal mycat4 = animalFactory.create("Cat4");
         Animal mybird = animalFactory.create("Bird");
         Animal mybird2 = animalFactory.create("Bird", "eagle");
-        Animal myelephant2 = animalFactory.create("elephant2");
+        //Animal myelephant2 = animalFactory.create("elephant2");
     } 
     
 }
