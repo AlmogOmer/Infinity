@@ -8,17 +8,32 @@ public class Callback <T>{
     private Consumer<T> update;
     private Runnable stopService;
 
-    public Callback(Consumer<T> update, Runnable stopService){}
+    public Callback(Consumer<T> update, Runnable stopService){
+        this.update = update;
+        this.stopService = stopService;
+    }
     
-    public void update(T data){}
+    public void update(T data){
+        update.accept(data);
+    }
     
-    public void stopService(){}
+    public void stopService(){
+        stopService.run();
+    }
 
-    public void setDispatcher(Dispatcher<T> dispatcher){}
+    public void setDispatcher(Dispatcher<T> dispatcher){
+        this.dispatcher = dispatcher;
+    }
 
-    public void unregister(){}
+    public void unregister(){
+        dispatcher.unregister(this);
+    }
 
-    public void setUpdate(Consumer<T> update){}
+    public void setUpdate(Consumer<T> update){
+        this.update = update;
+    }
     
-    public void setStopService(Runnable stopService){}
+    public void setStopService(Runnable stopService){
+        this.stopService = stopService;
+    }
 }

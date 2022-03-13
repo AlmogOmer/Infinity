@@ -7,11 +7,23 @@ public class Dispatcher <T>{
     
     private Collection<Callback<T>> callbackList = new ArrayList<>();
 
-    public void notifyAllCallback(T data){}
+    public void notifyAllCallback(T data){
+        for(Callback<T> callback : callbackList){
+            callback.update(data);
+        }
+    }
     
-    public void stopAllCallback(){}
+    public void stopAllCallback(){
+        for(Callback<T> callback : callbackList){
+            callback.stopService();
+        }
+    }
 
-    public void register(Callback<T> callback){}
+    public void register(Callback<T> callback){
+        callbackList.add(callback);
+    }
 
-    public void unregister(Callback<T> callback){}
+    public void unregister(Callback<T> callback){
+        callbackList.remove(callback);
+    }
 }
