@@ -26,6 +26,7 @@ public class Callback <T>{
     }
 
     public void unregister(){
+        stopService.run();
         dispatcher.unregister(this);
     }
 

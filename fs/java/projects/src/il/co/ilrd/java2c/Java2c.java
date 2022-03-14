@@ -158,9 +158,10 @@ public class Java2c {
 	public static void main(String[] args){
 		
 		Object obj;
-		Animal animal = new Animal();
+		//Animal animal = new Animal();
 		Dog dog = new Dog();
-		Cat cat = new Cat();
+		Dog dog1 = new Dog();
+		/*Cat cat = new Cat();
 		LegendaryAnimal la = new LegendaryAnimal();
 		
 		Animal.showCounter();
@@ -189,7 +190,7 @@ public class Java2c {
 		
 		//System.gc();
 		//System.out.println("After gc");
-		//Runtime.runFinalizersOnExit(true);
+		//Runtime.runFinalizersOnExit(true);*/
 	}
 }
 

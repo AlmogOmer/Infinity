@@ -17,13 +17,17 @@ public class Dispatcher <T>{
         for(Callback<T> callback : callbackList){
             callback.stopService();
         }
+        callbackList.clear();
     }
 
     public void register(Callback<T> callback){
         callbackList.add(callback);
+        callback.setDispatcher(this);
     }
 
     public void unregister(Callback<T> callback){
+        System.out.println("we sorry that you are leaving");
         callbackList.remove(callback);
     }
+
 }
