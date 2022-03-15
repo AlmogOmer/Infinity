@@ -1,5 +1,5 @@
+/*Reviewer : Ofek*/
 package il.co.ilrd.observer;
-
 import java.util.function.Consumer;
 
 public class Callback <T>{
