@@ -3,6 +3,13 @@
     "configurations": [
       {
         "type": "java",
+        "name": "Launch WaitablePriorityQueueTest",
+        "request": "launch",
+        "mainClass": "il.co.ilrd.waitablepq.WaitablePriorityQueueTest",
+        "projectName": "projects_40722b42"
+      },
+      {
+        "type": "java",
         "name": "Launch ObserverTest",
         "request": "launch",
         "mainClass": "il.co.ilrd.observer.ObserverTest",
