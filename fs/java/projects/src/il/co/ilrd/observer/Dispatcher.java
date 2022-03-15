@@ -17,8 +17,9 @@ public class Dispatcher <T>{
     public void stopAllCallback(){
         for(Callback<T> callback : callbackList){
             callback.stopService();
-            callbackList.remove(callback);
         }
+        
+        callbackList.clear();
     }
 
     public void register(Callback<T> callback){
