@@ -1,5 +1,6 @@
 /*Reviewer : Ofek*/
 package il.co.ilrd.observer;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class Callback <T>{
@@ -9,6 +10,9 @@ public class Callback <T>{
     private Runnable stopService;
 
     public Callback(Consumer<T> update, Runnable stopService){
+        Objects.requireNonNull(update);
+        Objects.requireNonNull(stopService);
+        
         this.update = update;
         this.stopService = stopService;
     }
@@ -26,15 +30,19 @@ public class Callback <T>{
     }
 
     public void unregister(){
+        Objects.requireNonNull(dispatcher);
         stopService.run();
         dispatcher.unregister(this);
+        dispatcher = null;
     }
 
     public void setUpdate(Consumer<T> update){
+        Objects.requireNonNull(update);
         this.update = update;
     }
     
     public void setStopService(Runnable stopService){
+        Objects.requireNonNull(stopService);
         this.stopService = stopService;
     }
 }
