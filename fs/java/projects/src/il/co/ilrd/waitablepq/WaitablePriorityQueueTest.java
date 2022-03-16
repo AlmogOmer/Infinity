@@ -8,14 +8,15 @@ public class WaitablePriorityQueueTest {
         //WaitablePriorityQueueSem<Integer> semq = new WaitablePriorityQueueSem<>();
         //WaitablePriorityQueueCond<Integer> conq = new WaitablePriorityQueueCond<>();
         Comparator<Integer> comparator = (o1, o2) -> o1.compareTo(o2);
-        WaitablePriorityQueueCond<Integer> conq = new WaitablePriorityQueueCond<>(7,comparator);
+        //WaitablePriorityQueueCond<Integer> conq = new WaitablePriorityQueueCond<>(7,comparator);
+        WaitablePriorityQueueSem<Integer> semq = new WaitablePriorityQueueSem<>(7,comparator);
         Runnable p = new Runnable() {
             @Override
             public void run() {
                 for(int i=0; i<30;++i){
-                    conq.enqueue(i);
+                    semq.enqueue(i);
                     System.out.println("adding :" + i);
-                    System.out.println("size is :" + conq.size());
+                    System.out.println("size is :" + semq.size());
                 }
             }
         };
@@ -24,7 +25,7 @@ public class WaitablePriorityQueueTest {
             @Override
             public void run() {
                 for(int i=0; i<30;++i) {
-                    System.out.println("removing: " + conq.dequeue() + " size " + conq.size());
+                    System.out.println("removing: " + semq.dequeue() + " size " + semq.size());
                 }
             }
         };
