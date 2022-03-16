@@ -80,7 +80,9 @@ public class WaitablePriorityQueueCond<T> {
         lock.lock();
         try{
             ret = queue.remove(data);
-            condEmpty.signal();
+            if (ret){
+                condEmpty.signal();
+            }
         }
 
         finally{

@@ -46,7 +46,7 @@ public class WaitablePriorityQueueSem<T> {
             queue.add(data);
             semFull.release();
         }
-        
+
         finally{
             lock.unlock();
         }
@@ -79,7 +79,9 @@ public class WaitablePriorityQueueSem<T> {
         lock.lock();
         try{
             ret = queue.remove(data);
-            semEmpty.release();
+            if (ret){
+                semEmpty.release();
+            }
         }
 
         finally{
