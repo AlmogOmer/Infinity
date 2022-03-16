@@ -44,7 +44,7 @@ public class WaitablePriorityQueueCond<T> {
         }
         
         queue.add(data);
-        condFull.signalAll();
+        condFull.signal();
         lock.unlock();
 
     }
@@ -61,7 +61,7 @@ public class WaitablePriorityQueueCond<T> {
         }
 
         data = queue.poll();
-        condEmpty.signalAll();
+        condEmpty.signal();
         lock.unlock();
 
         return data;
@@ -71,7 +71,7 @@ public class WaitablePriorityQueueCond<T> {
         boolean ret;
         lock.lock();
         ret = queue.remove(data);
-        condEmpty.signalAll();
+        condEmpty.signal();
         lock.unlock();
 
         return ret;

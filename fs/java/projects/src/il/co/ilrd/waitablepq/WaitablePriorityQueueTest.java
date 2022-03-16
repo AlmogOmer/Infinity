@@ -1,11 +1,14 @@
 package il.co.ilrd.waitablepq;
 
+import java.util.Comparator;
+
 public class WaitablePriorityQueueTest {
     public static void main(String[] args) {
         final int NUM_OF_THREADS = 30;
         //WaitablePriorityQueueSem<Integer> semq = new WaitablePriorityQueueSem<>();
-        WaitablePriorityQueueCond<Integer> conq = new WaitablePriorityQueueCond<>();
-
+        //WaitablePriorityQueueCond<Integer> conq = new WaitablePriorityQueueCond<>();
+        Comparator<Integer> comparator = (o1, o2) -> o1.compareTo(o2);
+        WaitablePriorityQueueCond<Integer> conq = new WaitablePriorityQueueCond<>(7,comparator);
         Runnable p = new Runnable() {
             @Override
             public void run() {
