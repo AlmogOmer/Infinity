@@ -6,13 +6,13 @@ import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
 public class WaitablePriorityQueueSem<T> {
-    private Queue<T> queue;
-    private int capacity;
-    private Semaphore semFull;
-    private Semaphore semEmpty;
+    private volatile Queue<T> queue;
+    private final int capacity;
+    private final Semaphore semFull;
+    private final Semaphore semEmpty;
 
     public WaitablePriorityQueueSem() {
-        this(16,null);
+        this(11,null);
     }
 
     public WaitablePriorityQueueSem(int capacity) {

@@ -7,14 +7,14 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class WaitablePriorityQueueCond<T> {
-    private Queue<T> queue;
-    private int capacity;
-    private ReentrantLock lock;
-    private Condition condFull;
-    private Condition condEmpty;
+    private volatile Queue<T> queue;
+    private final int capacity;
+    private final ReentrantLock lock;
+    private final Condition condFull;
+    private final Condition condEmpty;
 
     public WaitablePriorityQueueCond() {
-        this(16,null);
+        this(11,null);
     }
 
     public WaitablePriorityQueueCond(int capacity) {
@@ -35,46 +35,58 @@ public class WaitablePriorityQueueCond<T> {
 
     public void enqueue(T data) {
         lock.lock();
-        while (queue.size() == capacity){
-            try {
+        try{
+            while (queue.size() == capacity){
                 condEmpty.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
+            queue.add(data);
+            condFull.signal();
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        finally{
+            lock.unlock();
         }
         
-        queue.add(data);
-        condFull.signal();
-        lock.unlock();
-
     }
 
     public T dequeue() {
-        T data;
+        T data = null;
         lock.lock();
-        while (queue.isEmpty()){
-            try {
+        try{
+            while (queue.isEmpty()){
                 condFull.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
+    
+            data = queue.poll();
+            condEmpty.signal();
+            return data;
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-        data = queue.poll();
-        condEmpty.signal();
-        lock.unlock();
+        finally{
+            lock.unlock();
+        }
 
-        return data;
+        return data; 
     }
 
     public boolean remove(T data) {
-        boolean ret;
+        boolean ret = false;
         lock.lock();
-        ret = queue.remove(data);
-        condEmpty.signal();
-        lock.unlock();
+        try{
+            ret = queue.remove(data);
+            condEmpty.signal();
+            return ret;
+        }
 
-        return ret;
+        finally{
+            lock.unlock();
+        }
     }
 
     public int size() {
