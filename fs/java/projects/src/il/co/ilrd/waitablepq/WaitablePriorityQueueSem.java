@@ -1,13 +1,16 @@
+/*Reviewer : Dolev*/
 package il.co.ilrd.waitablepq;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class WaitablePriorityQueueSem<T> {
     private volatile Queue<T> queue;
     private final int capacity;
+    private final ReentrantLock lock;
     private final Semaphore semFull;
     private final Semaphore semEmpty;
 
@@ -24,6 +27,7 @@ public class WaitablePriorityQueueSem<T> {
             throw new IllegalArgumentException();
         }
 
+        lock = new ReentrantLock();
         semFull = new Semaphore(0);
         semEmpty = new Semaphore(capacity);
         queue = new PriorityQueue<>(capacity,comp);
@@ -36,9 +40,15 @@ public class WaitablePriorityQueueSem<T> {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        synchronized(this){
+
+        lock.lock();
+        try{
             queue.add(data);
             semFull.release();
+        }
+        
+        finally{
+            lock.unlock();
         }
     }
 
@@ -50,19 +60,30 @@ public class WaitablePriorityQueueSem<T> {
             e.printStackTrace();
         }
 
-        synchronized(this){
+        lock.lock();
+        try{
             data = queue.poll();
             semEmpty.release();
         }
 
-        return data;
+        finally{
+            lock.unlock();
+        }
+
+        return data; 
+
     }
 
     public boolean remove(T data) {
-        boolean ret;
-        synchronized(this){
+        boolean ret = false;
+        lock.lock();
+        try{
             ret = queue.remove(data);
             semEmpty.release();
+        }
+
+        finally{
+            lock.unlock();
         }
 
         return ret;
@@ -70,14 +91,30 @@ public class WaitablePriorityQueueSem<T> {
     }
 
     public int size() {
-        synchronized (this) {
-            return queue.size();
+        int ret = 0;
+        lock.lock();
+        try{
+            ret = queue.size();
         }
+
+        finally{
+            lock.unlock();
+        }
+        
+        return ret;
     }
 
     public boolean isEmpty() {
-        synchronized (this) {
-            return queue.isEmpty();
+        boolean ret = false;
+        lock.lock();
+        try{
+            ret = queue.isEmpty();
         }
+
+        finally{
+            lock.unlock();
+        }
+        
+        return ret;
     }
 }

@@ -1,3 +1,4 @@
+/*Reviewer : Dolev*/
 package il.co.ilrd.waitablepq;
 
 import java.util.Comparator;
@@ -62,7 +63,6 @@ public class WaitablePriorityQueueCond<T> {
     
             data = queue.poll();
             condEmpty.signal();
-            return data;
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -81,23 +81,40 @@ public class WaitablePriorityQueueCond<T> {
         try{
             ret = queue.remove(data);
             condEmpty.signal();
-            return ret;
         }
 
         finally{
             lock.unlock();
         }
+
+        return ret;
     }
 
     public int size() {
-        synchronized (this) {
-            return queue.size();
+        int ret = 0;
+        lock.lock();
+        try{
+            ret = queue.size();
         }
+
+        finally{
+            lock.unlock();
+        }
+        
+        return ret;
     }
 
     public boolean isEmpty() {
-        synchronized (this) {
-            return queue.isEmpty();
+        boolean ret = false;
+        lock.lock();
+        try{
+            ret = queue.isEmpty();
         }
+
+        finally{
+            lock.unlock();
+        }
+        
+        return ret;
     }
 }
