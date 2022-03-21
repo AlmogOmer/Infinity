@@ -3,12 +3,16 @@ package il.co.ilrd.threadpool;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
+
 import il.co.ilrd.waitablepq.WaitablePriorityQueueCond;
 
 public class ThreadPoolIMP implements Executor {
@@ -29,7 +33,7 @@ public class ThreadPoolIMP implements Executor {
         }
 
         for(ThreadImp runnable : threads){
-            new Thread(runnable).start();
+            runnable.thread.start();
         }
     }
 
@@ -64,14 +68,19 @@ public class ThreadPoolIMP implements Executor {
         return submitImp(Executors.callable(runnable, result), priority.ordinal());
     }
 
+    private <T> boolean removeTask(Task<T> task){
+        return tasks.remove(task);
+    }
+
 
     private class ThreadImp implements Runnable{
+        private Thread thread = new Thread(this);
 
         @Override
         public void run() {
             while(true){
                 Task<?> task = tasks.dequeue();
-                task.currThread = Thread.currentThread();
+                task.setcurrThread(thread);
                 task.runTask();
             }
             
@@ -84,6 +93,10 @@ public class ThreadPoolIMP implements Executor {
         private final int priority;
         private Thread currThread;
         private final TaskFuture<T> taskFuture;
+        private boolean isDone = false;
+        private Exception executionException = null;
+        private final ReentrantLock lock = new ReentrantLock();
+        private final Condition cond = lock.newCondition();
 
         public Task(Callable<T> task, int priority){
            this.task = task;
@@ -92,16 +105,20 @@ public class ThreadPoolIMP implements Executor {
         }
 
         public void runTask(){
-            while(!taskFuture.isCancelled())
-            {  
-                try {
-                    taskFuture.retVal = task.call();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
+            try {
+                taskFuture.retVal = task.call();
+                isDone = true;
+            } catch (Exception e) {
+                executionException = e;
+                e.printStackTrace();
             }
-
+            lock.lock();
+            try{
+                cond.signal();
+            }
+            finally{
+                lock.unlock();
+            }
         }
         
         public Future<T> getFuture(){
@@ -110,21 +127,28 @@ public class ThreadPoolIMP implements Executor {
 
         @Override
         public int compareTo(Task<T> other) {
-            return (this.priority - other.priority);
+            return (other.priority - this.priority);
         }
+
+        public void setcurrThread(Thread thread) {
+            currThread = thread;
+        }
+
 
         private class TaskFuture<E> implements Future<E>{
             private T retVal = null;
             private boolean isCancelled = false;
+          
         
             @Override
             public boolean cancel(boolean mayInterruptIfRunning) {
-                if(!isDone() && !isCancelled() && mayInterruptIfRunning){
+                isCancelled = removeTask(Task.this);
+                if(!isDone() && !isCancelled() && mayInterruptIfRunning && (Task.this.currThread != null)){
                     Task.this.currThread.interrupt();
                     isCancelled = true;
-                    return true;
                 }
-                return false;
+
+                return isCancelled;
             }
         
             @Override
@@ -134,19 +158,49 @@ public class ThreadPoolIMP implements Executor {
         
             @Override
             public boolean isDone() {
-                return (retVal != null);
+                return Task.this.isDone;
             }
         
             @Override
             public E get() throws InterruptedException, ExecutionException {
-                // TODO Auto-generated method stub
+                try {
+                    return get(Long.MAX_VALUE, TimeUnit.DAYS);
+                } catch (TimeoutException e) {
+                    e.printStackTrace();
+                }
                 return null;
             }
         
             @Override
             public E get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-                // TODO Auto-generated method stub
-                return null;
+                lock.lock();
+                try{
+                    while(!isDone){
+                        if (isCancelled){
+                            throw new CancellationException();
+                        }
+
+                        if(Task.this.executionException != null){
+                            throw new ExecutionException(Task.this.executionException);
+                        }
+
+                        if (Thread.currentThread().isInterrupted()){
+                            throw new InterruptedException();
+                        }
+
+                        if(cond.await(timeout, unit) == false){
+                            throw new TimeoutException();
+                        }
+                        
+                    }
+                }
+
+                finally{
+                    lock.unlock();
+                }
+                
+                return (E)retVal;
+                
             }
         
         }
