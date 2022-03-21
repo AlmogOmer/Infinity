@@ -3,6 +3,7 @@ package il.co.ilrd.threadpool;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -24,22 +25,26 @@ public class ThreadPoolIMP implements Executor {
     }
     
     private WaitablePriorityQueueCond<Task<?>> tasks;
-    private List<ThreadImp> threads = new ArrayList<>();
+    private List<ThreadImp> threads;
 
     public ThreadPoolIMP(int numOfThreads){
+        if (numOfThreads < 1) {
+            throw new IllegalArgumentException();
+        }
+
         tasks = new WaitablePriorityQueueCond<>();
+        threads = new ArrayList<>();
 
         for(int i=0; i<numOfThreads; i++){
             threads.add(new ThreadImp());
+            threads.get(i).thread.start();
         }
 
-        for(ThreadImp runnable : threads){
-            runnable.thread.start();
-        }
     }
 
     @Override
     public void execute(Runnable command) {
+        Objects.requireNonNull(command);
         Task<?> task = new Task<>(Executors.callable(command), 1);
         tasks.enqueue(task);  
     }
@@ -51,21 +56,26 @@ public class ThreadPoolIMP implements Executor {
     }
 
     public <T> Future<T> submit(Callable<T> callable, Priority priority){
+        Objects.requireNonNull(callable);
         return submitImp(callable, priority.ordinal());
     }
     
     public <T> Future<T> submit(Callable<T> callable){
+        Objects.requireNonNull(callable);
         return submitImp(callable, 1);
     }
 
     public Future<Object> submit(Runnable runnable, Priority priority){
+        Objects.requireNonNull(runnable);
         return submitImp(Executors.callable(runnable), priority.ordinal());
     }
     public Future<Object> submit(Runnable runnable){
+        Objects.requireNonNull(runnable);
         return submitImp(Executors.callable(runnable), 1);
     }
 
     public <T> Future<T> submit(Runnable runnable, Priority priority, T result){
+        Objects.requireNonNull(runnable);
         return submitImp(Executors.callable(runnable, result), priority.ordinal());
     }
 
@@ -81,7 +91,7 @@ public class ThreadPoolIMP implements Executor {
         public void run() {
             while(true){
                 Task<?> task = tasks.dequeue();
-                task.setcurrThread(thread);
+                task.setcurrThread(Thread.currentThread());
                 task.runTask();
             }
             
