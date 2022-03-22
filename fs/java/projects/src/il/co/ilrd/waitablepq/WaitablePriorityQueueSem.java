@@ -76,18 +76,18 @@ public class WaitablePriorityQueueSem<T> {
 
     public boolean remove(T data) {
         boolean ret = false;
-        lock.lock();
-        try{
+        if(semFull.tryAcquire()){
+            lock.lock();
             ret = queue.remove(data);
-            if (ret){
+            lock.unlock();
+            if (!ret){
+                semFull.release();
+            }
+            else{
                 semEmpty.release();
             }
         }
-
-        finally{
-            lock.unlock();
-        }
-
+        
         return ret;
 
     }

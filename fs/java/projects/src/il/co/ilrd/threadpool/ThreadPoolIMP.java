@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Condition;
@@ -26,19 +27,23 @@ public class ThreadPoolIMP implements Executor {
     
     private WaitablePriorityQueueCond<Task<?>> tasks;
     private List<ThreadImp> threads;
+    private int numOfThreads = 0;
+    private int HIGHESTPRI = 4;
+    private int LOWESTPRI = -1;
+    private final ReentrantLock lockP = new ReentrantLock();
+    private final Condition condP = lockP.newCondition();
+    private final Semaphore sem = new Semaphore(0);
+    private boolean isShutdown = false;
 
     public ThreadPoolIMP(int numOfThreads){
         if (numOfThreads < 1) {
             throw new IllegalArgumentException();
         }
-
+        this.numOfThreads = numOfThreads;
         tasks = new WaitablePriorityQueueCond<>();
         threads = new ArrayList<>();
 
-        for(int i=0; i<numOfThreads; i++){
-            threads.add(new ThreadImp());
-            threads.get(i).thread.start();
-        }
+        addThreads(numOfThreads);
 
     }
 
@@ -79,17 +84,124 @@ public class ThreadPoolIMP implements Executor {
         return submitImp(Executors.callable(runnable, result), priority.ordinal());
     }
 
+    public void setNumberOfThreads(int numOfThreads){
+        if (numOfThreads < 1) {
+            throw new IllegalArgumentException();
+        }
+
+        if (numOfThreads > this.numOfThreads){
+            int diff = numOfThreads - this.numOfThreads;
+            addThreads(diff);
+
+        }
+
+        else if(numOfThreads < this.numOfThreads){
+            int diff = this.numOfThreads - numOfThreads;
+            for (int i = 0; i < diff; ++i){
+                killingtask(HIGHESTPRI);
+            }
+            
+        }
+
+        this.numOfThreads = numOfThreads;
+    }
+
+    public void pause(){
+        for (int i = 0; i < numOfThreads ; ++i){
+            Callable<Void> pausingTask = new Callable<>() {
+                public Void call() throws Exception {
+                    lockP.lock();
+                    try{
+                        condP.await();
+                    }
+
+                    finally{
+                        lockP.unlock();
+                    }
+        
+                    return null;
+                    
+                }
+            };
+
+            submitImp(pausingTask, HIGHESTPRI);
+        }
+    }
+
+    public void resume(){
+        lockP.lock();
+        try{
+            condP.signalAll();
+        }
+
+        finally{
+            lockP.unlock();
+        }
+        
+    }
+
+    public void shutdown(){
+        isShutdown = true;
+        for (int i = 0; i < numOfThreads; ++i){
+            killingtask(LOWESTPRI);
+        }
+    }
+
+    public void awaitTermination() throws InterruptedException{
+        try {
+            sem.acquire(numOfThreads);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException{
+        boolean result = false;
+        try {
+            result = sem.tryAcquire(numOfThreads, timeout, unit);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    private void addThreads(int addThreads) {
+		for(int i = 0; i < addThreads; i++) {
+			ThreadImp newThread = new ThreadImp();
+			threads.add(newThread);
+			newThread.start();
+		}
+	}
+
     private <T> boolean removeTask(Task<T> task){
         return tasks.remove(task);
     }
 
+    private void killingtask(int prioirity){
+        Callable<Void> killingTask = new Callable<>() {
+            public Void call() throws Exception {
+                Thread.currentThread().interrupt();
+                threads.remove(Thread.currentThread());
+                if(isShutdown){
+                    sem.release();
+                }
 
-    private class ThreadImp implements Runnable{
-        private Thread thread = new Thread(this);
+                return null;
+                
+            }
+        };
 
+        submitImp(killingTask, prioirity);
+        
+    }
+
+
+    private class ThreadImp extends Thread{
+        //private boolean isRunning = true;
         @Override
         public void run() {
-            while(true){
+            while(!Thread.interrupted()){
                 Task<?> task = tasks.dequeue();
                 task.setcurrThread(Thread.currentThread());
                 task.runTask();
@@ -98,6 +210,9 @@ public class ThreadPoolIMP implements Executor {
         }
         
     }
+
+
+
 
     private class Task<T> implements Comparable<Task<T>>{
         private final Callable<T> task;
@@ -158,7 +273,7 @@ public class ThreadPoolIMP implements Executor {
                     Task.this.currThread.interrupt();
                     isCancelled = true;
                 }
-
+                Task.this.isDone = true;
                 return isCancelled;
             }
         

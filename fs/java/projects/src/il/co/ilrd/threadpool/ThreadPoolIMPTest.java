@@ -14,9 +14,12 @@ import il.co.ilrd.threadpool.ThreadPoolIMP.Priority;
 public class ThreadPoolIMPTest {
     public static void main(String[] args) {
         //test1();
-        test2();
+        //test2();
         //test3();
         //test4();
+        //test5();
+        //test6();
+        test7();
 
     }
 
@@ -188,6 +191,107 @@ public class ThreadPoolIMPTest {
             System.out.println("can't get return value, task got exception");
         } catch (CancellationException e) {
             System.out.println("can't get return value, cancled");
+        }
+    }
+
+    public static void test5(){
+        System.out.println("**********Test5*********");
+        ThreadPoolIMP threadPool = new ThreadPoolIMP(5);
+        List<Callable<String>> callables = new ArrayList<Callable<String>>();
+        List<Future<String>> futures = new ArrayList<>();
+
+        for (int i = 0; i < 10; ++i){
+            callables.add(new Callable<String>() {
+                public String call() throws Exception {
+                    Thread.sleep(1000);
+                    return "TaskBefore";
+                }
+            });
+        }
+
+        for(Callable<String> call : callables){
+            futures.add(threadPool.submit(call));
+        }
+
+        threadPool.setNumberOfThreads(3);
+
+        for (int i = 0; i < 3; ++i){
+            callables.add(new Callable<String>() {
+                public String call() throws Exception {
+                    Thread.sleep(1000);
+                    return "TaskAfterChanging";
+                }
+            });
+        }
+
+        for(Callable<String> call : callables){
+            futures.add(threadPool.submit(call));
+        }
+
+        for(Future<String> future : futures){
+            try {
+                try {
+                    System.out.println("future.get = " + future.get(5, TimeUnit.SECONDS));
+                } catch (TimeoutException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            } catch (InterruptedException | ExecutionException e) {
+
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void test6(){
+        System.out.println("**********Test6*********");
+        ThreadPoolIMP threadPool = new ThreadPoolIMP(5);
+        List<Callable<String>> callables = new ArrayList<Callable<String>>();
+        List<Future<String>> futures = new ArrayList<>();
+
+        for (int i = 0; i < 20; ++i){
+            callables.add(new Callable<String>() {
+                public String call() throws Exception {
+                    Thread.sleep(1000);
+                    return "Task";
+                }
+            });
+        }
+
+        for(Callable<String> call : callables){
+            futures.add(threadPool.submit(call));
+        }
+
+        threadPool.pause();
+        threadPool.resume();
+
+        for(Future<String> future : futures){
+            try {
+                System.out.println("future.get = " + future.get());
+            } catch (InterruptedException | ExecutionException e) {
+
+                e.printStackTrace();
+            }
+        }
+
+        threadPool.shutdown();
+
+        try {
+            System.out.println(threadPool.awaitTermination(30, TimeUnit.SECONDS));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void test7(){
+        System.out.println("**********Test7*********");
+        ThreadPoolIMP threadPool = new ThreadPoolIMP(10);
+        threadPool.shutdown();
+
+        try {
+            threadPool.awaitTermination(30, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
     
