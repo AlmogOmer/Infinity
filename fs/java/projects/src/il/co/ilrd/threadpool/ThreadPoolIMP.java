@@ -31,8 +31,8 @@ public class ThreadPoolIMP implements Executor {
     private static final int HIGHEST_PRIORITY = Priority.HIGH.ordinal() + 1;
     private static final int LOWEST_PRIORITY = Priority.LOW.ordinal() - 1;
     private static final int DEFAULT_PRIORITY = Priority.MEDIUM.ordinal();
-    private final Semaphore semFinished = new Semaphore(0);
-    private final Semaphore semPause = new Semaphore(0);
+    private Semaphore semFinished = new Semaphore(0);
+    private Semaphore semPause = null;
 
 
     public ThreadPoolIMP(int numOfThreads){
@@ -107,6 +107,7 @@ public class ThreadPoolIMP implements Executor {
     }
 
     public void pause(){
+        semPause = new Semaphore(0);
         for (int i = 0; i < numOfThreads ; ++i){
             Callable<Void> pausingTask = new Callable<>() {
                 public Void call() throws Exception {
