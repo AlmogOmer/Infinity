@@ -31,9 +31,9 @@ public class ThreadPoolIMP implements Executor {
     private static final int HIGHEST_PRIORITY = Priority.HIGH.ordinal() + 1;
     private static final int LOWEST_PRIORITY = Priority.LOW.ordinal() - 1;
     private static final int DEFAULT_PRIORITY = Priority.MEDIUM.ordinal();
-    private final ReentrantLock lockP = new ReentrantLock();
-    private final Condition condP = lockP.newCondition();
-    private final Semaphore sem = new Semaphore(0);
+    private final Semaphore semFinished = new Semaphore(0);
+    private final Semaphore semPause = new Semaphore(0);
+
 
     public ThreadPoolIMP(int numOfThreads){
         if (numOfThreads < 0) {
@@ -49,8 +49,7 @@ public class ThreadPoolIMP implements Executor {
 
     @Override
     public void execute(Runnable command) {
-        Objects.requireNonNull(command);
-        tasks.enqueue(new Task<>(Executors.callable(command), DEFAULT_PRIORITY));  
+        submit(command); 
     }
 
     public <T> Future<T> submit(Callable<T> callable, Priority priority){
@@ -111,15 +110,7 @@ public class ThreadPoolIMP implements Executor {
         for (int i = 0; i < numOfThreads ; ++i){
             Callable<Void> pausingTask = new Callable<>() {
                 public Void call() throws Exception {
-                    lockP.lock();
-                    try{
-                        condP.await();
-                    }
-
-                    finally{
-                        lockP.unlock();
-                    }
-        
+                    semPause.acquire();
                     return null;
                     
                 }
@@ -130,15 +121,9 @@ public class ThreadPoolIMP implements Executor {
     }
 
     public void resume(){
-        lockP.lock();
-        try{
-            condP.signalAll();
-        }
-
-        finally{
-            lockP.unlock();
-        }
-        
+        for(int i = 0; i < numOfThreads ; i++) {
+			semPause.release();
+		} 
     }
 
     public void shutdown(){
@@ -148,7 +133,7 @@ public class ThreadPoolIMP implements Executor {
                     ThreadImp toRemove = (ThreadImp) Thread.currentThread();
                     toRemove.isRunning = false; 
                     threads.remove(toRemove);
-                    sem.release();
+                    semFinished.release();
                     return null;
                     
                 }
@@ -159,11 +144,11 @@ public class ThreadPoolIMP implements Executor {
     }
 
     public void awaitTermination() throws InterruptedException{
-        sem.acquire(numOfThreads);
+        semFinished.acquire(numOfThreads);
     }
 
     public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException{
-        return sem.tryAcquire(numOfThreads, timeout, unit);
+        return semFinished.tryAcquire(numOfThreads, timeout, unit);
     }
 
     private void addThreads(int addThreads) {
@@ -209,7 +194,7 @@ public class ThreadPoolIMP implements Executor {
         private Exception executionException = null;
         private T retVal = null;
         private boolean isCancelled = false;
-        private boolean hadCancelled = false;
+        private boolean isRealDone = false;
         private final ReentrantLock lock = new ReentrantLock();
         private final Condition cond = lock.newCondition();
 
@@ -223,6 +208,7 @@ public class ThreadPoolIMP implements Executor {
             try {
                 retVal = task.call();
                 isDone = true;
+                isRealDone = true;
             } catch (Exception e) {
                 executionException = e;
                 e.printStackTrace();
@@ -259,9 +245,6 @@ public class ThreadPoolIMP implements Executor {
                     currThread.interrupt();
                     isCancelled = true;
                 }
-                else if (!isDone() && !isCancelled() && !mayInterruptIfRunning){
-                    hadCancelled = true;
-                }
 
                 isDone = true;
                 return isCancelled;
@@ -291,7 +274,7 @@ public class ThreadPoolIMP implements Executor {
             public E get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
                 lock.lock();
                 try{
-                    if (!isDone || hadCancelled){
+                    if (!isRealDone){
                         if (isCancelled){
                             throw new CancellationException();
                         }
@@ -314,8 +297,9 @@ public class ThreadPoolIMP implements Executor {
                 finally{
                     lock.unlock();
                 }
-                
-                return (E)retVal;
+                @SuppressWarnings("unchecked")
+                E ret = (E)retVal;
+                return ret;
                 
             }
         
