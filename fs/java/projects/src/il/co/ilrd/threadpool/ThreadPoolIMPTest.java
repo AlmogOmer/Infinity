@@ -30,19 +30,12 @@ public class ThreadPoolIMPTest {
 
             @Override
             public String call() {
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
                 return "Task 1";
             }
 
         };
 
         Future<String> future = threadPool.submit(Task);
-        future.cancel(true);
 
         try {
             System.err.println("future.get() = " + future.get());
@@ -50,12 +43,20 @@ public class ThreadPoolIMPTest {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        threadPool.shutdown();
+
+        try {
+            threadPool.awaitTermination();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 
     public static void test2(){
         System.out.println("**********Test2*********");
-        ThreadPoolIMP tp = new ThreadPoolIMP(1);
+        ThreadPoolIMP tp = new ThreadPoolIMP(5);
         List<Future<Integer>> res = new ArrayList<>();
 
 
@@ -113,15 +114,23 @@ public class ThreadPoolIMPTest {
         tp.submit(testCallTaskP1, Priority.LOW);
         tp.submit(testCallTaskP2, Priority.MEDIUM);
         tp.submit(testCallTaskP3, Priority.HIGH);
+
+        tp.shutdown();
+
+        try {
+            tp.awaitTermination();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void test3(){
         System.out.println("**********Test3*********");
-        ThreadPoolIMP threadPool = new ThreadPoolIMP(3);
+        ThreadPoolIMP threadPool = new ThreadPoolIMP(2);
         List<Callable<String>> callables = new ArrayList<Callable<String>>();
         List<Future<String>> futures = new ArrayList<>();
         
-        for (int i = 0; i < 10; ++i){
+        for (int i = 0; i < 20; ++i){
             callables.add(new Callable<String>() {
                 public String call() throws Exception {
                     Thread.sleep(1000);
@@ -134,7 +143,7 @@ public class ThreadPoolIMPTest {
             futures.add(threadPool.submit(call));
         }
 
-        //System.out.println("cancled? : " + futures.get(9).cancel(true));
+        System.out.println("cancled? : " + futures.get(19).cancel(true));
 
         for(Future<String> future : futures){
             try {
@@ -148,6 +157,14 @@ public class ThreadPoolIMPTest {
 
                 e.printStackTrace();
             }
+        }
+
+        threadPool.shutdown();
+
+        try {
+            threadPool.awaitTermination();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -192,9 +209,17 @@ public class ThreadPoolIMPTest {
         } catch (CancellationException e) {
             System.out.println("can't get return value, cancled");
         }
+
+        threadPool.shutdown();
+
+        try {
+            threadPool.awaitTermination();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    public static void test5(){
+    public static void test5() {
         System.out.println("**********Test5*********");
         ThreadPoolIMP threadPool = new ThreadPoolIMP(5);
         List<Callable<String>> callables = new ArrayList<Callable<String>>();
@@ -230,48 +255,60 @@ public class ThreadPoolIMPTest {
 
         for(Future<String> future : futures){
             try {
-                try {
-                    System.out.println("future.get = " + future.get(5, TimeUnit.SECONDS));
-                } catch (TimeoutException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                System.out.println("future.get = " + future.get());
             } catch (InterruptedException | ExecutionException e) {
-
+                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
+        }
+
+        threadPool.shutdown();
+
+        try {
+            threadPool.awaitTermination();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
     public static void test6(){
         System.out.println("**********Test6*********");
-        ThreadPoolIMP threadPool = new ThreadPoolIMP(5);
-        List<Callable<String>> callables = new ArrayList<Callable<String>>();
-        List<Future<String>> futures = new ArrayList<>();
-
+        ThreadPoolIMP threadPool = new ThreadPoolIMP(2);
+        List<Future<Void>> futures = new ArrayList<>();
+        Callable<Void> call = new Callable<>() {
+            public Void call() throws Exception {
+                System.out.println("Task");
+                return null;
+            }
+        };
         for (int i = 0; i < 20; ++i){
-            callables.add(new Callable<String>() {
-                public String call() throws Exception {
-                    Thread.sleep(1000);
-                    return "Task";
-                }
-            });
-        }
-
-        for(Callable<String> call : callables){
             futures.add(threadPool.submit(call));
         }
 
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         threadPool.pause();
+
+        for (int i = 0; i < 10; ++i){
+            futures.add(threadPool.submit(call));
+        }
+
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         threadPool.resume();
 
-        for(Future<String> future : futures){
-            try {
-                System.out.println("future.get = " + future.get());
-            } catch (InterruptedException | ExecutionException e) {
-
-                e.printStackTrace();
-            }
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         threadPool.shutdown();

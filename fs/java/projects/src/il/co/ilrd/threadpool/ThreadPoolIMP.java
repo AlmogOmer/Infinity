@@ -28,8 +28,8 @@ public class ThreadPoolIMP implements Executor {
     private WaitablePriorityQueueCond<Task<?>> tasks;
     private List<ThreadImp> threads;
     private int numOfThreads = 0;
-    private int HIGHESTPRI = 4;
-    private int LOWESTPRI = -1;
+    private int HIGHESTPRI = Priority.HIGH.ordinal() + 1;
+    private int LOWESTPRI = Priority.LOW.ordinal() - 1;
     private final ReentrantLock lockP = new ReentrantLock();
     private final Condition condP = lockP.newCondition();
     private final Semaphore sem = new Semaphore(0);
@@ -52,12 +52,6 @@ public class ThreadPoolIMP implements Executor {
         Objects.requireNonNull(command);
         Task<?> task = new Task<>(Executors.callable(command), 1);
         tasks.enqueue(task);  
-    }
-
-    private <T> Future<T> submitImp(Callable<T> callable, int priority){
-        Task<T> task = new Task<>(callable, priority);
-        tasks.enqueue(task); 
-        return task.getFuture();
     }
 
     public <T> Future<T> submit(Callable<T> callable, Priority priority){
@@ -174,6 +168,12 @@ public class ThreadPoolIMP implements Executor {
 		}
 	}
 
+    private <T> Future<T> submitImp(Callable<T> callable, int priority){
+        Task<T> task = new Task<>(callable, priority);
+        tasks.enqueue(task); 
+        return task.getFuture();
+    }
+
     private <T> boolean removeTask(Task<T> task){
         return tasks.remove(task);
     }
@@ -198,7 +198,6 @@ public class ThreadPoolIMP implements Executor {
 
 
     private class ThreadImp extends Thread{
-        //private boolean isRunning = true;
         @Override
         public void run() {
             while(!Thread.interrupted()){
