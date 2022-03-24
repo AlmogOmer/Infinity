@@ -3,6 +3,34 @@
     "configurations": [
       {
         "type": "java",
+        "name": "Launch PingPongClientBroadcast",
+        "request": "launch",
+        "mainClass": "il.co.ilrd.networking.PingPongClientBroadcast",
+        "projectName": "projects_40722b42"
+      },
+      {
+        "type": "java",
+        "name": "Launch PingPongClientTCP",
+        "request": "launch",
+        "mainClass": "il.co.ilrd.networking.PingPongClientTCP",
+        "projectName": "projects_40722b42"
+      },
+      {
+        "type": "java",
+        "name": "Launch PingPongServerTCP",
+        "request": "launch",
+        "mainClass": "il.co.ilrd.networking.PingPongServerTCP",
+        "projectName": "projects_40722b42"
+      },
+      {
+        "type": "java",
+        "name": "Launch DownloadWebPage",
+        "request": "launch",
+        "mainClass": "il.co.ilrd.networking.DownloadWebPage",
+        "projectName": "projects_40722b42"
+      },
+      {
+        "type": "java",
         "name": "Launch ThreadPoolIMPTest",
         "request": "launch",
         "mainClass": "il.co.ilrd.threadpool.ThreadPoolIMPTest",
