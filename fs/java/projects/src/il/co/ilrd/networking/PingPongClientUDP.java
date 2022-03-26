@@ -17,9 +17,9 @@ public class PingPongClientUDP {
         address = InetAddress.getLocalHost();
     }
 
-    public String sendEcho(String msg) throws IOException {
+    public String send(String msg, int port) throws IOException {
         buf = msg.getBytes();
-        DatagramPacket packet = new DatagramPacket(buf, buf.length, address, 4445);
+        DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
         socket.send(packet);
         packet = new DatagramPacket(buf, buf.length);
         socket.receive(packet);
