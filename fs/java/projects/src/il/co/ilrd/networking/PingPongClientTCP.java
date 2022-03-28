@@ -1,4 +1,4 @@
-package il.co.ilrd.networking;
+//package il.co.ilrd.networking;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,7 +32,7 @@ public class PingPongClientTCP {
 
     public static void main(String[] args) throws UnknownHostException, IOException {
         PingPongClientTCP client =new PingPongClientTCP();
-        client.startConnection("10.0.0.16", 5000);
+        client.startConnection("localhost", 4445);
         String response = client.sendMessage("ping");
         System.out.println(response);
         client.stopConnection();

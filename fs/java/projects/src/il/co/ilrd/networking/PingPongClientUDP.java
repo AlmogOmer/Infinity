@@ -31,13 +31,12 @@ public class PingPongClientUDP {
         socket.close();
     }    
     
-    /*public static void main(String args[]) throws IOException{
+    public static void main(String args[]) throws IOException{
         PingPongClientUDP client = new PingPongClientUDP();
-        String response = client.sendEcho("ping");
+        String response = client.send("ping", 4445);
         System.out.println(response);
-        client.sendEcho("end");
         client.close();
 
-    }*/
+    }
 }
 
