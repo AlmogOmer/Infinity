@@ -1,4 +1,4 @@
-//package il.co.ilrd.networking;
+package il.co.ilrd.networking;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

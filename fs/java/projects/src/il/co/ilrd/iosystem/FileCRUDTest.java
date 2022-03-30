@@ -20,16 +20,13 @@ public void before()
     }
     
 }
-
     @Test
-    public void testClose() {
-
-    }
-
-    @Test
-    public void testCreate() {
+    public void test() {
         try {
             f.create("fdfdf");
+            f.create("dddd");
+            f.create("eee");
+            f.create("yyy");
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -41,20 +38,27 @@ public void before()
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        try {
+            f.delete(2);
+            assertEquals(f.read(2), "yyy");
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        try {
+            f.update(1, "ggg");
+            assertEquals(f.read(1), "ggg");
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        
     }
 
-    @Test
-    public void testDelete() {
+    
 
-    }
 
-    @Test
-    public void testRead() {
-
-    }
-
-    @Test
-    public void testUpdate() {
-
-    }
 }
