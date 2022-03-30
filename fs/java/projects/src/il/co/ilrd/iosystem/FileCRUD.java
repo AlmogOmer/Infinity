@@ -50,7 +50,7 @@ public class FileCRUD implements CRUD<Integer, String> {
     }
     private void createFileIfNotFound(String s)
     {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(s))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(s,true))) {
         } catch (IOException e) {
             e.printStackTrace();
         }
