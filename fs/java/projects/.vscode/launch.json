@@ -3,6 +3,13 @@
     "configurations": [
       {
         "type": "java",
+        "name": "Launch FolderMonitor",
+        "request": "launch",
+        "mainClass": "il.co.ilrd.iosystem.FolderMonitor",
+        "projectName": "projects_40722b42"
+      },
+      {
+        "type": "java",
         "name": "Launch PingPongClientBroadcast",
         "request": "launch",
         "mainClass": "il.co.ilrd.networking.PingPongClientBroadcast",
