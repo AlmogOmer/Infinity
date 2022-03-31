@@ -3,31 +3,71 @@ package il.co.ilrd.iosystem;
 import java.io.IOException;
 import java.nio.file.*;
 
+import il.co.ilrd.observer.Callback;
+import il.co.ilrd.observer.Dispatcher;
+
 public class FolderMonitor {
-    Path path;
+    private Dispatcher<String> dispatcher = new Dispatcher<>();
+    private Path path;
+    private WatchService watchService;
+    private Thread watchingThread;
 
-    public FolderMonitor(String path) throws IOException, InterruptedException{
-        WatchService watchService = FileSystems.getDefault().newWatchService();
-        this.path = Paths.get(path);
-        this.path.register(watchService,StandardWatchEventKinds.ENTRY_CREATE,StandardWatchEventKinds.ENTRY_DELETE,StandardWatchEventKinds.ENTRY_MODIFY);
+    public FolderMonitor(String pathFolder) throws IOException {
+        watchService = FileSystems.getDefault().newWatchService();
+        path = Paths.get(pathFolder);
+        path.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE,
+                StandardWatchEventKinds.ENTRY_MODIFY);
 
-        WatchKey key;
-        while ((key = watchService.take()) != null) {
-            for (WatchEvent<?> event : key.pollEvents()) {
-                System.out.println("Event kind:" + event.kind() + ". File affected: " + event.context() + ".");
+    }
+
+    public void start() {
+        watchingThread = new Thread() {
+            @Override
+            public void run() {
+                WatchKey key;
+                try {
+                    while ((key = watchService.take()) != null) {
+                        for (WatchEvent<?> event : key.pollEvents()) {
+                            if (event.kind().toString().equals("ENTRY_MODIFY")) {
+                                dispatcher.notifyAllCallback(event.context().toString());
+                            }
+                        }
+                        key.reset();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            key.reset();
-        }
+
+        };
+        watchingThread.start();
+
+        /*
+         * WatchKey key;
+         * while ((key = watchService.take()) != null) {
+         * for (WatchEvent<?> event : key.pollEvents()) {
+         * System.out.println("Event kind:" + event.kind() + ". File affected: " +
+         * event.context() + ".");
+         * }
+         * key.reset();
+         * }
+         */
     }
 
-    public static void main(String[] args) {
-        try {
-            FolderMonitor m = new FolderMonitor("/Users/almogomer/Desktop/infinity/almog-omer/fs/java/projects/monitorTest");
-        } catch (IOException | InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    public void register(Callback<String> callback) {
+        dispatcher.register(callback);
     }
-   
-    
+
+    public void unregister(Callback<String> callback) {
+        dispatcher.unregister(callback);
+    }
+
+    public void stop() {
+        if (watchingThread != null) {
+            watchingThread.interrupt();
+        }
+
+        dispatcher.stopAllCallback();
+    }
+
 }

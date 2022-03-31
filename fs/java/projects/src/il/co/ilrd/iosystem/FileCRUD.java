@@ -20,14 +20,14 @@ public class FileCRUD implements CRUD<Integer, String> {
 
     @Override
     public void close() throws Exception {
-        
+
     }
 
     @Override
     public Integer create(String data) throws IOException {
         lines.add(data);
-        Files.write(path, lines); 
-        return lines.size()-1;
+        Files.write(path, lines);
+        return lines.size() - 1;
     }
 
     @Override
@@ -38,19 +38,19 @@ public class FileCRUD implements CRUD<Integer, String> {
     @Override
     public void update(Integer key, String data) throws IOException {
         lines.set(key, data);
-        Files.write(path, lines); 
+        Files.write(path, lines);
     }
 
     @Override
     public void delete(Integer key) throws IOException {
         int idx = key;
         lines.remove(idx);
-        Files.write(path, lines); 
+        Files.write(path, lines);
 
     }
-    private void createFileIfNotFound(String s)
-    {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(s,true))) {
+
+    private void createFileIfNotFound(String s) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(s, true))) {
         } catch (IOException e) {
             e.printStackTrace();
         }

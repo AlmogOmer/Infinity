@@ -3,6 +3,13 @@
     "configurations": [
       {
         "type": "java",
+        "name": "Launch FolderMonitorTest",
+        "request": "launch",
+        "mainClass": "il.co.ilrd.iosystem.FolderMonitorTest",
+        "projectName": "projects_40722b42"
+      },
+      {
+        "type": "java",
         "name": "Launch FolderMonitor",
         "request": "launch",
         "mainClass": "il.co.ilrd.iosystem.FolderMonitor",
