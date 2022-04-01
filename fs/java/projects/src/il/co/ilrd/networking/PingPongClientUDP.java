@@ -1,4 +1,4 @@
-package il.co.ilrd.networking;
+//package il.co.ilrd.networking;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -29,9 +29,9 @@ public class PingPongClientUDP {
 
     public void close() {
         socket.close();
-    }    
-    
-    public static void main(String args[]) throws IOException{
+    }
+
+    public static void main(String args[]) throws IOException {
         PingPongClientUDP client = new PingPongClientUDP();
         String response = client.send("ping", 4445);
         System.out.println(response);
@@ -39,4 +39,3 @@ public class PingPongClientUDP {
 
     }
 }
-

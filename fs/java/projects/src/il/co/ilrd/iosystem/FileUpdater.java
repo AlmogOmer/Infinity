@@ -49,11 +49,11 @@ public class FileUpdater {
 
     public void update(String str) {
         try {
-            if (!str.equals(this.originalPath.toFile().getName())) {
+            if (!str.equals(originalPath.toFile().getName())) {
                 return;
             }
-            List<String> lines = Files.readAllLines(this.originalPath);
-            int busize = Files.readAllLines(this.BUPath).size();
+            List<String> lines = Files.readAllLines(originalPath);
+            int busize = Files.readAllLines(BUPath).size();
             if (lines.size() > busize) {
                 for (int i = 0; i < busize; ++i) {
                     file.update(i, lines.get(i));
