@@ -28,7 +28,7 @@ public class OperationManager {
         String arr[] = request.split(" ", 2);
         String key = arr[0];
         String data = databasePath + " " + arr[1];
-
+        System.out.println(key + " " + data);
         Pair<String, Responder> pair = Pair.of(data, respond);
 
         Callable<Void> callable = new Callable<>() {
@@ -58,6 +58,7 @@ class CompanyRegisterCommand implements Command {
         String arr[] = pair.getKey().split(" ", 3);
         String path = arr[0];
         String folderName = arr[1];
+        System.out.println(path + " " + folderName);
         boolean ret = true;
         File companyoFolder = new File(path + "/" + folderName);
 
@@ -166,7 +167,7 @@ class IOTUpdateCommand implements Command {
 
                 for (int i = 0; i < lines.size(); ++i) {
                     if (lines.get(i).split(" ")[0].equals(IOTName)) {
-                        fileCRUD.update(i, update);
+                        fileCRUD.update(i, IOTName + " " + update);
                     }
                 }
                 pair.getValue().respond("IOT update completed");

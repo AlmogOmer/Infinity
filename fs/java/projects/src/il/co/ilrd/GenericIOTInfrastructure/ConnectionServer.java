@@ -36,7 +36,7 @@ public class ConnectionServer {
                     try {
                         datagramSocket.receive(packet);
                         massage = new String(packet.getData(), 0, packet.getLength());
-                        UDPesponder respond = new UDPesponder(packet, datagramSocket);
+                        Responder respond = new UDPesponder(packet, datagramSocket);
                         op.handleRequest(massage, respond);
 
                     } catch (IOException e) {
@@ -57,7 +57,7 @@ public class ConnectionServer {
                         clientSocket = serverSocket.accept();
                         BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                         massage = in.readLine();
-                        TCPResponder respond = new TCPResponder(clientSocket);
+                        Responder respond = new TCPResponder(clientSocket);
                         op.handleRequest(massage, respond);
 
                     } catch (IOException e) {
@@ -95,6 +95,7 @@ class TCPResponder implements Responder {
 
     public TCPResponder(Socket clientSocket) {
         this.clientSocket = clientSocket;
+        System.out.println("Ctor");
     }
 
     @Override
@@ -134,6 +135,12 @@ class UDPesponder implements Responder {
             e.printStackTrace();
         }
 
+    }
+
+    public static void main(String[] args) throws IOException {
+        ConnectionServer connectionServer = new ConnectionServer(1234,
+                "/Users/almogomer/Desktop/infinity/almog-omer/fs/java/projects");
+        connectionServer.start();
     }
 
 }

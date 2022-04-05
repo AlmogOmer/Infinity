@@ -1,4 +1,4 @@
-//package il.co.ilrd.networking;
+package il.co.ilrd.networking;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -33,7 +33,7 @@ public class PingPongClientUDP {
 
     public static void main(String args[]) throws IOException {
         PingPongClientUDP client = new PingPongClientUDP();
-        String response = client.send("ping", 4445);
+        String response = client.send("IOTUpdate coca refrigi 113 my temp is 1", 1234);
         System.out.println(response);
         client.close();
 
