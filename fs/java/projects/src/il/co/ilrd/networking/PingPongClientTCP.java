@@ -33,7 +33,7 @@ public class PingPongClientTCP {
     public static void main(String[] args) throws UnknownHostException, IOException {
         PingPongClientTCP client = new PingPongClientTCP();
         client.startConnection("localhost", 1234);
-        String response = client.sendMessage("CompanyRegister coca");
+        String response = client.sendMessage("ping");
         System.out.println(response);
         client.stopConnection();
 

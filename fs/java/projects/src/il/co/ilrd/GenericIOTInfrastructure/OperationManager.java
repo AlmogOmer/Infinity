@@ -22,13 +22,13 @@ public class OperationManager {
         commandFactory.add("ProductRegister", (str) -> new ProductRegisterCommand(str));
         commandFactory.add("IOTRegister", (str) -> new IOTRegisterCommand(str));
         commandFactory.add("IOTUpdate", (str) -> new IOTUpdateCommand(str));
+        commandFactory.add("ping", (str) -> new PingCommand(str));
     }
 
     public void handleRequest(String request, Responder respond) {
         String arr[] = request.split(" ", 2);
         String key = arr[0];
-        String data = databasePath + " " + arr[1];
-        System.out.println(key + " " + data);
+        String data = databasePath + request.substring(key.length());
         Pair<String, Responder> pair = Pair.of(data, respond);
 
         Callable<Void> callable = new Callable<>() {
@@ -180,6 +180,20 @@ class IOTUpdateCommand implements Command {
         else {
             pair.getValue().respond("IOT update failed - no such IOT");
         }
+
+    }
+}
+
+class PingCommand implements Command {
+    Pair<String, Responder> pair;
+
+    public PingCommand(Pair<String, Responder> pair) {
+        this.pair = pair;
+    }
+
+    @Override
+    public void run() {
+        pair.getValue().respond("pong");
 
     }
 }

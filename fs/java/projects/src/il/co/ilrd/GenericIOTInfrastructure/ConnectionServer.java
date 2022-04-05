@@ -95,7 +95,6 @@ class TCPResponder implements Responder {
 
     public TCPResponder(Socket clientSocket) {
         this.clientSocket = clientSocket;
-        System.out.println("Ctor");
     }
 
     @Override
