@@ -1,4 +1,4 @@
-/*package il.co.ilrd.networking;*/
+package il.co.ilrd.networking;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 import java.net.Socket;
-import java.util.Scanner;
+
 
 public class ClientChat {
     private Socket socket;
