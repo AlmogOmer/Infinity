@@ -16,7 +16,7 @@ public class ConnectionServer {
     private ServerSocket serverSocket;
     private Socket clientSocket;
     private boolean runningUDP = false;
-    OperationManager op;
+    private OperationManager op;
 
     public ConnectionServer(int port, String path) throws IOException {
         serverSocket = new ServerSocket(port);

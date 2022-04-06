@@ -14,7 +14,7 @@ import il.co.ilrd.threadpool.ThreadPoolIMP;
 public class OperationManager {
     private final Factory<Command, Pair<String, Responder>, String> commandFactory = new Factory<>();
     private final ThreadPoolIMP threadPool = new ThreadPoolIMP(5);
-    private String databasePath;
+    private final String databasePath;
 
     public OperationManager(String path) {
         databasePath = path;
