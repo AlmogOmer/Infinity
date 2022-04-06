@@ -40,8 +40,7 @@ public class ConnectionServer {
                         op.handleRequest(massage, respond);
 
                     } catch (IOException e) {
-                        runningUDP = false;
-                        datagramSocket.close();
+                        stop();
                     }
                 }
             }
@@ -62,12 +61,7 @@ public class ConnectionServer {
                         op.handleRequest(massage, respond);
 
                     } catch (IOException e) {
-                        try {
-                            serverSocket.close();
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
-                        break;
+                        stop();
                     }
                 }
             }
@@ -79,6 +73,7 @@ public class ConnectionServer {
 
     public void stop() {
         try {
+            runningUDP = false;
             op.stop();
 
             if (datagramSocket != null) {
@@ -143,6 +138,12 @@ class UDPesponder implements Responder {
         ConnectionServer connectionServer = new ConnectionServer(1234,
                 "/Users/almogomer/Desktop/infinity/almog-omer/fs/java/projects");
         connectionServer.start();
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        connectionServer.stop();
     }
 
 }

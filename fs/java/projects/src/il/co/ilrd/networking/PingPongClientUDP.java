@@ -33,7 +33,7 @@ public class PingPongClientUDP {
 
     public static void main(String args[]) throws IOException {
         PingPongClientUDP client = new PingPongClientUDP();
-        String response = client.send("IOTUpdate coca refrigi 113 my temp is 2", 1234);
+        String response = client.send("IOTUpdate coca refrigi 113 my temp is 7", 1234);
         System.out.println(response);
         client.close();
 
