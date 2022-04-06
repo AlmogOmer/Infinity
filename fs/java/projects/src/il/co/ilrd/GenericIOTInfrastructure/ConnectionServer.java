@@ -40,6 +40,7 @@ public class ConnectionServer {
                         op.handleRequest(massage, respond);
 
                     } catch (IOException e) {
+                        runningUDP = false;
                         datagramSocket.close();
                     }
                 }
@@ -78,6 +79,8 @@ public class ConnectionServer {
 
     public void stop() {
         try {
+            op.stop();
+
             if (datagramSocket != null) {
                 datagramSocket.close();
             }

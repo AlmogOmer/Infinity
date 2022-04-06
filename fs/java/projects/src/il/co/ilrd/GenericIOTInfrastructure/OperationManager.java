@@ -44,6 +44,15 @@ public class OperationManager {
         threadPool.submit(callable);
 
     }
+
+    public void stop() {
+        threadPool.shutdown();
+        try {
+            threadPool.awaitTermination();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 class CompanyRegisterCommand implements Command {
