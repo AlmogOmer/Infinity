@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Launch DataObjectCRUD",
+      "request": "launch",
+      "mainClass": "il.co.ilrd.jdbc.DataObjectCRUD",
+      "projectName": "projects_40722b42"
+    },
+    {
+      "type": "java",
       "name": "Launch UDPesponder",
       "request": "launch",
       "mainClass": "il.co.ilrd.GenericIOTInfrastructure.UDPesponder",
@@ -231,7 +238,11 @@
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/shell.out",
-      "args": ["---arg1---", "---arg2---", "---arg3---"],
+      "args": [
+        "---arg1---",
+        "---arg2---",
+        "---arg3---"
+      ],
       "stopAtEntry": true,
       "cwd": "${workspaceFolder}",
       "environment": [],
@@ -249,7 +260,9 @@
       "name": "C/C++ Runner: Debug Session",
       "type": "lldb",
       "request": "launch",
-      "args": [""],
+      "args": [
+        ""
+      ],
       "stopAtEntry": true,
       "cwd": "/Users/almogomer/Desktop/infinity/almog-omer/system_programming/simple_shell",
       "environment": [],
