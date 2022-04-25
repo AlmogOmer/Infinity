@@ -16,15 +16,13 @@ public class ConnectionServer {
     private ServerSocket serverSocket;
     private Socket clientSocket;
     private boolean runningUDP = false;
-    private OperationManager op;
 
-    public ConnectionServer(int port, String path) throws IOException {
+    public ConnectionServer(int port) throws IOException {
         serverSocket = new ServerSocket(port);
         datagramSocket = new DatagramSocket(port);
-        op = new OperationManager(path);
     }
 
-    public void start() {
+    public void start(OperationManager operationManager) {
         runningUDP = true;
         Thread UDPThread = new Thread(new Runnable() {
             @Override
@@ -37,7 +35,7 @@ public class ConnectionServer {
                         datagramSocket.receive(packet);
                         massage = new String(packet.getData(), 0, packet.getLength());
                         Responder respond = new UDPesponder(packet, datagramSocket);
-                        op.handleRequest(massage, respond);
+                        operationManager.handleRequest(massage, respond);
 
                     } catch (IOException e) {
                         stop();
@@ -58,7 +56,7 @@ public class ConnectionServer {
                         BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                         massage = in.readLine();
                         Responder respond = new TCPResponder(clientSocket);
-                        op.handleRequest(massage, respond);
+                        operationManager.handleRequest(massage, respond);
 
                     } catch (IOException e) {
                         stop();
@@ -74,8 +72,6 @@ public class ConnectionServer {
     public void stop() {
         try {
             runningUDP = false;
-            op.stop();
-
             if (datagramSocket != null) {
                 datagramSocket.close();
             }
@@ -134,16 +130,18 @@ class UDPesponder implements Responder {
 
     }
 
-    public static void main(String[] args) throws IOException {
-        ConnectionServer connectionServer = new ConnectionServer(1234,
-                "/Users/almogomer/Desktop/infinity/almog-omer/fs/java/projects");
-        connectionServer.start();
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        connectionServer.stop();
-    }
+    /*
+     * public static void main(String[] args) throws IOException {
+     * ConnectionServer connectionServer = new ConnectionServer(1234,
+     * "/Users/almogomer/Desktop/infinity/almog-omer/fs/java/projects");
+     * connectionServer.start();
+     * try {
+     * Thread.sleep(10000);
+     * } catch (InterruptedException e) {
+     * e.printStackTrace();
+     * }
+     * connectionServer.stop();
+     * }
+     */
 
 }

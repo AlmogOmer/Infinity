@@ -1,208 +1,122 @@
 package il.co.ilrd.GenericIOTInfrastructure;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import il.co.ilrd.factory.Factory;
 import il.co.ilrd.hashmap.Pair;
-import il.co.ilrd.iosystem.FileCRUD;
-import il.co.ilrd.threadpool.ThreadPoolIMP;
+
 
 public class OperationManager {
-    private final Factory<Command, Pair<String, Responder>, String> commandFactory = new Factory<>();
-    private final ThreadPoolIMP threadPool = new ThreadPoolIMP(5);
-    private final String databasePath;
+    private final ExecutorService executor;
+    private final IOTDBMS dbms;
+    private final Factory<Command, FactoryData, String> commandFactory;
 
-    public OperationManager(String path) {
-        databasePath = path;
-        commandFactory.add("CompanyRegister", (str) -> new CompanyRegisterCommand(str));
-        commandFactory.add("ProductRegister", (str) -> new ProductRegisterCommand(str));
-        commandFactory.add("IOTRegister", (str) -> new IOTRegisterCommand(str));
-        commandFactory.add("IOTUpdate", (str) -> new IOTUpdateCommand(str));
-        commandFactory.add("ping", (str) -> new PingCommand(str));
+    public OperationManager(IOTDBMS dbms, Factory<Command, FactoryData, String> commandFactory) {
+        this.dbms = dbms;
+        executor = Executors.newCachedThreadPool();
+        this.commandFactory = commandFactory;
+    
     }
 
     public void handleRequest(String request, Responder respond) {
-        String arr[] = request.split(" ", 2);
-        String key = arr[0];
-        String data = databasePath + request.substring(key.length());
-        Pair<String, Responder> pair = Pair.of(data, respond);
+        String key = request.split(" ")[0];
+        FactoryData factoryData = new FactoryData(request.substring(request.split(" ")[0].length()), respond, dbms);
 
         Callable<Void> callable = new Callable<>() {
 
             @Override
             public Void call() throws Exception {
-                commandFactory.create(key, pair).run();
+                commandFactory.create(key, factoryData).run();
                 return null;
             }
 
         };
 
-        threadPool.submit(callable);
+        executor.submit(callable);
 
     }
 
     public void stop() {
-        threadPool.shutdown();
-        try {
-            threadPool.awaitTermination();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        executor.shutdown();
     }
 }
 
 class CompanyRegisterCommand implements Command {
-    Pair<String, Responder> pair;
+    private final Pair<String, Responder> pair;
+    private final IOTDBMS dbms;
 
-    public CompanyRegisterCommand(Pair<String, Responder> pair) {
-        this.pair = pair;
+    public CompanyRegisterCommand(FactoryData factoryData) {
+        pair = Pair.of(factoryData.getData(), factoryData.getResponder());
+        dbms = factoryData.getDbms();
+
     }
 
     @Override
     public void run() {
-        String arr[] = pair.getKey().split(" ", 3);
-        String path = arr[0];
-        String folderName = arr[1];
-        System.out.println(path + " " + folderName);
-        boolean ret = true;
-        File companyoFolder = new File(path + "/" + folderName);
-
-        if (!companyoFolder.exists()) {
-            ret = companyoFolder.mkdir();
-
-        }
-
-        pair.getValue().respond(ret ? "company registration completed" : "company registration failed");
-
+        dbms.companyAdd(pair);
     }
 }
 
 class ProductRegisterCommand implements Command {
-    Pair<String, Responder> pair;
+    private final Pair<String, Responder> pair;
+    private final IOTDBMS dbms;
 
-    public ProductRegisterCommand(Pair<String, Responder> pair) {
-        this.pair = pair;
+    public ProductRegisterCommand(FactoryData factoryData) {
+        pair = Pair.of(factoryData.getData(), factoryData.getResponder());
+        dbms = factoryData.getDbms();
+
     }
 
     @Override
     public void run() {
-        String arr[] = pair.getKey().split(" ", 4);
-        String path = arr[0];
-        String folderName = arr[1];
-        String fileName = arr[2];
-        String filePath = path + "/" + folderName + "/" + fileName;
-        boolean ret = true;
-        File companyoFolder = new File(path + "/" + folderName);
-
-        ret = companyoFolder.exists();
-        if (ret) {
-            try (FileCRUD fileCRUD = new FileCRUD(filePath)) {
-                pair.getValue().respond("product registration completed");
-            } catch (Exception e) {
-                pair.getValue().respond("product registration failed");
-                e.printStackTrace();
-            }
-
-        } else {
-            pair.getValue().respond("product registration failed - no such company");
-        }
-
+        dbms.productAdd(pair);
     }
 }
 
 class IOTRegisterCommand implements Command {
-    Pair<String, Responder> pair;
+    private final Pair<String, Responder> pair;
+    private final IOTDBMS dbms;
 
-    public IOTRegisterCommand(Pair<String, Responder> pair) {
-        this.pair = pair;
+    public IOTRegisterCommand(FactoryData factoryData) {
+        pair = Pair.of(factoryData.getData(), factoryData.getResponder());
+        dbms = factoryData.getDbms();
+
     }
 
     @Override
     public void run() {
-        String arr[] = pair.getKey().split(" ", 5);
-        String path = arr[0];
-        String folderName = arr[1];
-        String fileName = arr[2];
-        String IOTName = arr[3];
-        String filePath = path + "/" + folderName + "/" + fileName;
-        boolean ret = true;
-        File product = new File(filePath);
-
-        ret = product.exists();
-        if (ret) {
-            try (FileCRUD fileCRUD = new FileCRUD(filePath)) {
-                fileCRUD.create(IOTName);
-                pair.getValue().respond("IOT registration completed");
-            } catch (Exception e) {
-                pair.getValue().respond("IOT registration failed");
-                e.printStackTrace();
-            }
-        }
-
-        else {
-            pair.getValue().respond("IOT registration failed - no such product");
-        }
-
+        dbms.IOTAdd(pair);
     }
 }
 
 class IOTUpdateCommand implements Command {
-    Pair<String, Responder> pair;
+    private final Pair<String, Responder> pair;
+    private final IOTDBMS dbms;
 
-    public IOTUpdateCommand(Pair<String, Responder> pair) {
-        this.pair = pair;
+    public IOTUpdateCommand(FactoryData factoryData) {
+        pair = Pair.of(factoryData.getData(), factoryData.getResponder());
+        dbms = factoryData.getDbms();
+
     }
 
     @Override
     public void run() {
-        String arr[] = pair.getKey().split(" ", 5);
-        String path = arr[0];
-        String folderName = arr[1];
-        String fileName = arr[2];
-        String IOTName = arr[3];
-        String update = arr[4];
-        String filePath = path + "/" + folderName + "/" + fileName;
-        boolean ret = true;
-        File product = new File(filePath);
-
-        ret = product.exists();
-        if (ret) {
-            try (FileCRUD fileCRUD = new FileCRUD(filePath)) {
-                List<String> lines = Files.readAllLines(Paths.get(filePath));
-
-                for (int i = 0; i < lines.size(); ++i) {
-                    if (lines.get(i).split(" ")[0].equals(IOTName)) {
-                        fileCRUD.update(i, IOTName + " " + update);
-                    }
-                }
-                pair.getValue().respond("IOT update completed");
-            } catch (Exception e) {
-                pair.getValue().respond("IOT update failed");
-                e.printStackTrace();
-            }
-        }
-
-        else {
-            pair.getValue().respond("IOT update failed - no such IOT");
-        }
-
+        dbms.IOTUpdate(pair);
     }
 }
 
 class PingCommand implements Command {
-    Pair<String, Responder> pair;
+    private final Responder responder;
 
-    public PingCommand(Pair<String, Responder> pair) {
-        this.pair = pair;
+    public PingCommand(FactoryData factoryData) {
+        this.responder = factoryData.getResponder();
     }
 
     @Override
     public void run() {
-        pair.getValue().respond("pong");
+        responder.respond("pong");
 
     }
 }

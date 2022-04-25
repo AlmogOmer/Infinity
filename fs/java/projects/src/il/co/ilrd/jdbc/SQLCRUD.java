@@ -12,7 +12,7 @@ import java.util.List;
 
 import il.co.ilrd.iosystem.CRUD;
 
-public class DataObjectCRUD implements CRUD<String, String> {
+public class SQLCRUD implements CRUD<String, String> {
     private Connection con = null;
     private String table = "";
     private List<String> pk = new ArrayList<>();
@@ -21,7 +21,7 @@ public class DataObjectCRUD implements CRUD<String, String> {
     private int numOfColumns = 0;
     private String columnsNames = "";
 
-    public DataObjectCRUD(String url, String username, String password, String table)
+    public SQLCRUD(String url, String username, String password, String table)
             throws ClassNotFoundException, SQLException {
         this.table = table;
 
@@ -148,7 +148,7 @@ public class DataObjectCRUD implements CRUD<String, String> {
     }
 
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
-        DataObjectCRUD docrud = new DataObjectCRUD("jdbc:mysql://localhost:3306/computerStore", "root", "", "Computer");
+        SQLCRUD docrud = new SQLCRUD("jdbc:mysql://localhost:3306/computerStore", "root", "", "Computer");
 
         String newComputer = "10,0,32,300,250,500,0,1,1200";
         try {
